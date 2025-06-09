@@ -14,77 +14,88 @@
 
 package lessons
 
-type lesson struct {
-	Text string
-	Code string
-}
+import (
+	"errors"
+	"fmt"
+	"io/fs"
+	"os"
 
-var data = []struct {
-	Title   string
-	Content []lesson
-}{
-	{
-		Title: "Chapter 1",
-		Content: []lesson{
-			{
-				Text: "Lesson 1.1</br>Some other</br>text.",
-				Code: `package main
-
-func Main() float32 {
-  return 2+3
-}
-`,
-			},
-			{
-				Text: "Lesson 1.2",
-				Code: "Some code for 1.2",
-			},
-		},
-	},
-	{
-		Title: "Chapter 2",
-		Content: []lesson{
-			{
-				Text: "Lesson 2.1",
-				Code: "Some code for 2.1",
-			},
-			{
-				Text: "Lesson 2.2",
-				Code: "Some code for 2.2",
-			},
-		},
-	},
-}
+	"github.com/gx-org/gx-org/lessons"
+	"golang.org/x/tools/txtar"
+)
 
 type (
 	Chapter struct {
 		Title   string
 		Content []*Lesson
+		ID      int
 	}
 
 	Lesson struct {
 		Chapter *Chapter
+		ID      int
 
 		Text string
 		Code string
 	}
 )
 
-func New() []Chapter {
-	chapters := make([]Chapter, len(data))
-	for i, chap := range data {
-		chapters[i] = Chapter{
-			Title: chap.Title,
-		}
-		lessons := make([]*Lesson, len(chap.Content))
-		for lessonI, lesson := range chap.Content {
-			lessons[lessonI] = &Lesson{
-				Chapter: &chapters[i],
-				Text:    lesson.Text,
-				Code:    lesson.Code,
+func read(archFS fs.FS, name string) (string, error) {
+	data, err := fs.ReadFile(archFS, name)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
+func readLesson(chap *Chapter) (bool, error) {
+	lessonID := len(chap.Content) + 1
+	fileName := fmt.Sprintf("lesson_%d_%d.txtar", chap.ID, lessonID)
+	data, err := lessons.Lessons.ReadFile(fileName)
+	if errors.Is(err, os.ErrNotExist) {
+		return false, nil
+	}
+	if err != nil {
+		return false, fmt.Errorf("cannot read %s: %v", fileName, err)
+	}
+	arch := txtar.Parse(data)
+	archFS, err := txtar.FS(arch)
+	if err != nil {
+		return false, err
+	}
+	lesson := &Lesson{Chapter: chap, ID: lessonID}
+	lesson.Text, err = read(archFS, "lesson")
+	if err != nil {
+		return false, fmt.Errorf("cannot read file lesson in archive %s: %v", fileName, err)
+	}
+	lesson.Code, err = read(archFS, "code")
+	if err != nil {
+		return false, fmt.Errorf("cannot read file code in archive %s: %v", fileName, err)
+	}
+	chap.Content = append(chap.Content, lesson)
+	return true, nil
+}
+
+func New() ([]*Chapter, error) {
+	var chapters []*Chapter
+	chapterFound := true
+	for chapterFound {
+		chap := &Chapter{ID: len(chapters) + 1}
+		lessonFound := true
+		for lessonFound {
+			var err error
+			lessonFound, err = readLesson(chap)
+			if err != nil {
+				return nil, err
 			}
 		}
-		chapters[i].Content = lessons
+		if len(chap.Content) == 0 {
+			break
+		}
+		chapters = append(chapters, chap)
 	}
-	return chapters
+	if len(chapters) == 0 {
+		return nil, fmt.Errorf("no content found")
+	}
+	return chapters, nil
 }

@@ -37,7 +37,11 @@ func main() {
 	textElement := text.New(gui, body)
 	codeElement := code.New(gui, body)
 
-	chapters := lessons.New()
+	chapters, err := lessons.New()
+	if err != nil {
+		fmt.Println("ERROR:", err.Error())
+		return
+	}
 	current := chapters[0].Content[0]
 	textElement.SetContent(current)
 	codeElement.SetContent(current)

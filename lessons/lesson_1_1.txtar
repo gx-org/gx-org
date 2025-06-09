@@ -1,5 +1,6 @@
 Welcome to the GX overview
-"-- lesson --"
+
+-- lesson --
 GX is a domain specialised language to write array-based programs, including machine learning algorithms, data processing, or scientific programming.
 
 This overview is split into chapters, each chapter is composed of lessons.
@@ -8,7 +9,7 @@ Click on the Run button to execute the function named `Main`.
 
 Access to the next lesson by clicking on the array below.
 
-"-- code --"
+-- code --
 package main
 
 func Main() [2]float32 {

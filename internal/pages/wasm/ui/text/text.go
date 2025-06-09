@@ -17,6 +17,9 @@
 package text
 
 import (
+	"github.com/gomarkdown/markdown"
+	"github.com/gomarkdown/markdown/html"
+	"github.com/gomarkdown/markdown/parser"
 	"github.com/gx-org/gx-org/internal/pages/wasm/lessons"
 	"github.com/gx-org/gx-org/internal/pages/wasm/ui"
 	"honnef.co/go/js/dom/v2"
@@ -34,6 +37,16 @@ func New(gui *ui.UI, parent dom.HTMLElement) *Text {
 	}
 }
 
+func htmlFromMD(md string) string {
+	p := parser.NewWithExtensions(parser.CommonExtensions)
+	doc := p.Parse([]byte(md))
+	htmlFlags := html.CommonFlags | html.HrefTargetBlank
+	opts := html.RendererOptions{Flags: htmlFlags}
+	renderer := html.NewRenderer(opts)
+
+	return string(markdown.Render(doc, renderer))
+}
+
 func (tt *Text) SetContent(les *lessons.Lesson) {
-	tt.div.SetInnerHTML(les.Text)
+	tt.div.SetInnerHTML(htmlFromMD(les.Text))
 }

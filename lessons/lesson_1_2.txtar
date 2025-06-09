@@ -1,9 +1,9 @@
-"-- lesson --"
+-- lesson --
 GX is a domain specialised language. GX is strongly typed, including array axes. GX has no state and requires a host language (which is Go running in your navigator in this overview). The host language is in charge of the state of the program and to schedule compute programs specified by GX. Supported host languages include Python, C++, and Go. Any programming language able to call a C exported function can embed GX.
 
 When clicking on the Run button, the host language calls the `Main` function, fetch the results, and prints a string representation of the result in the output element. GX uses a backend to run the code. In this overview, we use a Go native backend (also running in your navigator). Another backend supported by GX is XLA, to run accelerated code on CPUs, GPUs, and TPUs.
 
-"-- code --"
+-- code --
 package main
 
 func Main() [2][3]float32 {
