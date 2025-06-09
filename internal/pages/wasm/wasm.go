@@ -19,10 +19,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/tdegris/tdegris/internal/pages/wasm/lessons"
-	"github.com/tdegris/tdegris/internal/pages/wasm/ui"
-	"github.com/tdegris/tdegris/internal/pages/wasm/ui/code"
-	"github.com/tdegris/tdegris/internal/pages/wasm/ui/text"
+	"github.com/gx-org/gx-org/internal/pages/wasm/lessons"
+	"github.com/gx-org/gx-org/internal/pages/wasm/ui"
+	"github.com/gx-org/gx-org/internal/pages/wasm/ui/code"
+	"github.com/gx-org/gx-org/internal/pages/wasm/ui/text"
 	"honnef.co/go/js/dom/v2"
 )
 

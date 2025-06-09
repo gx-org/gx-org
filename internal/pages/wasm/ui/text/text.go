@@ -17,8 +17,8 @@
 package text
 
 import (
-	"github.com/tdegris/tdegris/internal/pages/wasm/lessons"
-	"github.com/tdegris/tdegris/internal/pages/wasm/ui"
+	"github.com/gx-org/gx-org/internal/pages/wasm/lessons"
+	"github.com/gx-org/gx-org/internal/pages/wasm/ui"
 	"honnef.co/go/js/dom/v2"
 )
 

@@ -1,4 +1,4 @@
-module github.com/tdegris/tdegris
+module github.com/gx-org/gx-org
 
 go 1.24.2
 

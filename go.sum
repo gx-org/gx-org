@@ -8,5 +8,7 @@ github.com/gx-org/gx v0.0.0-20250607000355-728bde4f1382 h1:3RJEHXqnOyG1ORThRvQ+/
 github.com/gx-org/gx v0.0.0-20250607000355-728bde4f1382/go.mod h1:geXtTYDH78bSs/vTH61OHi/vmd/7nwQOvDgfAK9Ktkc=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+golang.org/x/mod v0.22.0 h1:D4nJWe9zXqHOmWqj4VMOJhvzj7bEZg4wEYa759z1pH4=
+golang.org/x/mod v0.22.0/go.mod h1:6SkKJ3Xj0I0BrPOZoBy3bdMptDDU9oJrpohJ3eWZ1fY=
 honnef.co/go/js/dom/v2 v2.0.0-20250304181735-b5e52f05e89d h1:ONCmIS7pmOp+CZaqNKu7umBrvOnmthfmPbs4ZMR9v+U=
 honnef.co/go/js/dom/v2 v2.0.0-20250304181735-b5e52f05e89d/go.mod h1:+JtEcbinwR4znM12aluJ3WjKgvhDPKPQ8hnP4YM+4jI=
