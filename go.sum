@@ -1,0 +1,12 @@
+github.com/go-chi/chi/v5 v5.2.1 h1:KOIHODQj58PmL80G2Eak4WdvUzjSJSm0vG72crDCqb8=
+github.com/go-chi/chi/v5 v5.2.1/go.mod h1:L2yAIGWB3H+phAw1NxKwWM+7eUH/lU8pOMm5hHcoops=
+github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
+github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
+github.com/gx-org/backend v0.0.0-20250605223104-6683978c7883 h1:Nklyz/TA00UT0SDanuP3X/zm/dFQXds9fAuVuPWptjY=
+github.com/gx-org/backend v0.0.0-20250605223104-6683978c7883/go.mod h1:7/vxVrdZy+XCB2lXO+rCAhHrYlx3Byi6fivxAPVtRUE=
+github.com/gx-org/gx v0.0.0-20250607000355-728bde4f1382 h1:3RJEHXqnOyG1ORThRvQ+/j/WT3Zgu2JYLuZi0hI/5LM=
+github.com/gx-org/gx v0.0.0-20250607000355-728bde4f1382/go.mod h1:geXtTYDH78bSs/vTH61OHi/vmd/7nwQOvDgfAK9Ktkc=
+github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
+github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+honnef.co/go/js/dom/v2 v2.0.0-20250304181735-b5e52f05e89d h1:ONCmIS7pmOp+CZaqNKu7umBrvOnmthfmPbs4ZMR9v+U=
+honnef.co/go/js/dom/v2 v2.0.0-20250304181735-b5e52f05e89d/go.mod h1:+JtEcbinwR4znM12aluJ3WjKgvhDPKPQ8hnP4YM+4jI=

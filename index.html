@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8"/>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto Sans"/>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+	<link rel="stylesheet" href="res/style.css"/>
+	<script src="res/wasm_exec.js"></script>
+	<script src="res/wasm.js"></script>
+	<script>
+	var globalWASMBuffer;
+	
+	async function loadWASM(wasmURL) {
+		globalWASMBuffer = await (await fetch(wasmURL)).arrayBuffer();
+	}
+	
+	loadWASM("res/main.wasm").then(function() {
+		runWASM(globalWASMBuffer);
+	});
+	</script>
+</head>
+
+<body class="root_container">
+</body>
+
+</html>

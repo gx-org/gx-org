@@ -1,0 +1,67 @@
+:root {
+	--main-fg-color: black;
+	--main-bg-color: rgb(83, 131, 236); 
+	/* --main-bg-color: rgb(180, 180, 236); */
+	--main-element-bg-color: rgb(255, 255, 255);
+
+	--language-keyword: rgb(175, 0, 0);
+	--type-keyword: rgb(60, 140, 225);
+}
+
+html {
+	height: 100%;
+}
+ 
+body {
+	font-family: "Noto Sans";
+	font-size: 16px;
+	background: var(--main-bg-color);
+	color: var(--main-fg-color);
+	padding: 0px;
+	margin: 0px;
+}
+
+.root_container {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: stretch;
+	gap: 1px;
+	height: 100%;
+}
+
+.text_container {
+	display: flex;
+	background: var(--main-element-bg-color);
+	min-width: 50%;
+}
+
+.code_container {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	flex-grow: 1; /* Fill the remaining space */
+}
+
+.code_source_container {
+	display: flex;
+	background: var(--main-element-bg-color);
+	flex-direction: column-reverse;
+}
+
+.code_source_textinput_container {
+	font-family: monospace, monospace;
+	background: rgb(200, 227, 255);
+	height: 80%;
+}
+
+.code_source_controls_container {
+	display: flex;
+	flex-direction: row-reverse;
+}
+
+.code_output_container {
+	background: var(--main-element-bg-color);
+	flex-grow: 1; /* Fill the remaining space */
+}
