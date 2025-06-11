@@ -17,6 +17,8 @@
 package text
 
 import (
+	"fmt"
+
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
@@ -25,16 +27,29 @@ import (
 	"honnef.co/go/js/dom/v2"
 )
 
-type Text struct {
-	gui *ui.UI
-	div *dom.HTMLDivElement
-}
-
-func New(gui *ui.UI, parent dom.HTMLElement) *Text {
-	return &Text{
-		gui: gui,
-		div: gui.CreateDIV(parent, ui.Class("text_container")),
+type (
+	Text struct {
+		gui     *ui.UI
+		page    Page
+		lesson  *dom.HTMLDivElement
+		content *dom.HTMLDivElement
+		nav     *dom.HTMLDivElement
 	}
+
+	Page interface {
+		DisplayLesson(*lessons.Lesson)
+	}
+)
+
+func New(gui *ui.UI, parent dom.HTMLElement, page Page) *Text {
+	text := &Text{
+		gui:    gui,
+		lesson: gui.CreateDIV(parent, ui.Class("lesson_container")),
+		page:   page,
+	}
+	text.content = gui.CreateDIV(text.lesson, ui.Class("lesson_content"))
+	text.nav = gui.CreateDIV(text.lesson, ui.Class("lesson_navigation"))
+	return text
 }
 
 func htmlFromMD(md string) string {
@@ -43,10 +58,27 @@ func htmlFromMD(md string) string {
 	htmlFlags := html.CommonFlags | html.HrefTargetBlank
 	opts := html.RendererOptions{Flags: htmlFlags}
 	renderer := html.NewRenderer(opts)
-
 	return string(markdown.Render(doc, renderer))
 }
 
 func (tt *Text) SetContent(les *lessons.Lesson) {
-	tt.div.SetInnerHTML(htmlFromMD(les.Text))
+	ui.ClearChildren(tt.nav)
+	tt.gui.CreateButton(tt.nav, "←",
+		func(dom.Event) {
+			tt.page.DisplayLesson(les.Prev)
+		},
+		ui.SetVisible(les.Prev != nil),
+		ui.Class("navigation_button"),
+	)
+	tt.gui.CreateParagraph(tt.nav, fmt.Sprintf("Chapter %d, lesson %d/%d", les.Chapter.ID, les.ID, les.Chapter.NumLessons()))
+	tt.gui.CreateButton(tt.nav, "→",
+		func(dom.Event) {
+			tt.page.DisplayLesson(les.Next)
+		},
+		ui.SetVisible(les.Next != nil),
+		ui.Class("navigation_button"),
+	)
+	text := fmt.Sprintf("# %s\n\n", les.Chapter.Title)
+	text += les.Text
+	tt.content.SetInnerHTML(htmlFromMD(text))
 }

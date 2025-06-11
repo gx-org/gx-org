@@ -18,6 +18,8 @@ package main
 
 import (
 	"fmt"
+	"net/url"
+	"strconv"
 
 	"github.com/gx-org/gx-org/internal/pages/wasm/lessons"
 	"github.com/gx-org/gx-org/internal/pages/wasm/ui"
@@ -25,6 +27,38 @@ import (
 	"github.com/gx-org/gx-org/internal/pages/wasm/ui/text"
 	"honnef.co/go/js/dom/v2"
 )
+
+type root struct {
+	gui  *ui.UI
+	text *text.Text
+	code *code.Code
+}
+
+func (r *root) DisplayLesson(les *lessons.Lesson) {
+	r.text.SetContent(les)
+	r.code.SetContent(les)
+	r.gui.UpdateURL(fmt.Sprintf("?chapter=%d&lesson=%d", les.Chapter.ID, les.ID))
+}
+
+func idsFromURL(loc *url.URL) (int, int) {
+	chapS := loc.Query().Get("chapter")
+	if chapS == "" {
+		return 0, 0
+	}
+	chapID, err := strconv.Atoi(chapS)
+	if err != nil {
+		fmt.Println("ERROR: cannot parse chapter ID %q: %v", chapS, err)
+	}
+	lesS := loc.Query().Get("lesson")
+	if lesS == "" {
+		return chapID, 0
+	}
+	lesID, err := strconv.Atoi(chapS)
+	if err != nil {
+		fmt.Println("ERROR: cannot parse lessons ID %q: %v", lesS, err)
+	}
+	return lesID, chapID
+}
 
 func main() {
 	gui := ui.New(dom.GetWindow())
@@ -34,17 +68,23 @@ func main() {
 		return
 	}
 
-	textElement := text.New(gui, body)
-	codeElement := code.New(gui, body)
+	root := &root{gui: gui}
+	root.text = text.New(gui, body, root)
+	root.code = code.New(gui, body)
 
 	chapters, err := lessons.New()
 	if err != nil {
 		fmt.Println("ERROR:", err.Error())
 		return
 	}
-	current := chapters[0].Content[0]
-	textElement.SetContent(current)
-	codeElement.SetContent(current)
+	loc, err := gui.URL()
+	var chapID, lessonID int
+	if err != nil {
+		fmt.Println("URL ERROR", err.Error())
+	} else {
+		chapID, lessonID = idsFromURL(loc)
+	}
+	root.DisplayLesson(lessons.FindLesson(chapters, chapID, lessonID))
 
 	<-make(chan bool)
 }

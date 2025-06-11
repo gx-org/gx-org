@@ -30,7 +30,7 @@ func (f ElementOptionF) Apply(el dom.Element) {
 
 func Class(class string) ElementOption {
 	return ElementOptionF(func(el dom.Element) {
-		el.SetAttribute("class", class)
+		el.Class().Add(class)
 	})
 }
 
@@ -50,4 +50,20 @@ func InnerHTML(s string) ElementOption {
 	return ElementOptionF(func(el dom.Element) {
 		el.SetInnerHTML(s)
 	})
+}
+
+func SetVisible(visible bool) ElementOption {
+	return ElementOptionF(func(el dom.Element) {
+		propertyValue := ""
+		if !visible {
+			propertyValue = "none"
+		}
+		el.(dom.HTMLElement).Style().SetProperty("display", propertyValue, "")
+	})
+}
+
+func applyAll(el dom.Element, opts []ElementOption) {
+	for _, opt := range opts {
+		opt.Apply(el)
+	}
 }

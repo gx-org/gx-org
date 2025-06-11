@@ -1,5 +1,4 @@
-Builtin types in GX
-
+Chapter: Builtin types in GX
 -- lesson --
 GX builtin types are:
 
@@ -9,7 +8,7 @@ GX builtin types are:
 * boolean: `bool`
 * string: `string`
 
-This list is temporary. We expect more types to be added as needs grow. Like the Go language, numbers (like `2`) are automatically casted to the correct type given the context.
+This list is temporary. We expect more types to be added as needs grow. Like the Go language, numbers (like the number `2` in `return 2, 2`) are automatically casted to the correct type given the context.
 
 -- code --
 package main

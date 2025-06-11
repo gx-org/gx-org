@@ -96,9 +96,7 @@ func format(s string) string {
 func (s *Source) set(src string) {
 	s.lastSrc = src
 	parent := s.input
-	for _, child := range parent.ChildNodes() {
-		parent.RemoveChild(child)
-	}
+	ui.ClearChildren(parent)
 	for _, line := range strings.Split(src, "\n") {
 		if line == "" {
 			line = "<br>"

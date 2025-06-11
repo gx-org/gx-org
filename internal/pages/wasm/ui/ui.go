@@ -17,6 +17,7 @@ package ui
 import (
 	"fmt"
 	"html"
+	"net/url"
 	"strings"
 	"syscall/js"
 	"unicode/utf8"
@@ -32,21 +33,25 @@ func New(win dom.Window) *UI {
 	return &UI{win}
 }
 
+func (ui *UI) UpdateURL(newURL string) {
+	js.Global().Get("window").Get("history").Call("pushState", nil, "GX", newURL)
+}
+
+func (ui *UI) URL() (*url.URL, error) {
+	return url.Parse(ui.win.Location().Href())
+}
+
 func (ui *UI) CreateDIV(parent dom.Element, opts ...ElementOption) *dom.HTMLDivElement {
 	el := ui.win.Document().CreateElement("div")
 	parent.AppendChild(el)
-	for _, opt := range opts {
-		opt.Apply(el)
-	}
+	applyAll(el, opts)
 	return el.(*dom.HTMLDivElement)
 }
 
 func (ui *UI) CreateBR(parent dom.Element, opts ...ElementOption) *dom.HTMLBRElement {
 	el := ui.win.Document().CreateElement("br")
 	parent.AppendChild(el)
-	for _, opt := range opts {
-		opt.Apply(el)
-	}
+	applyAll(el, opts)
 	return el.(*dom.HTMLBRElement)
 }
 
@@ -56,13 +61,18 @@ func (ui *UI) CreateButton(parent dom.Element, text string, f EventFunc, opts ..
 	el := ui.win.Document().CreateElement("button")
 	el.SetTextContent(text)
 	parent.AppendChild(el)
-	for _, opt := range opts {
-		opt.Apply(el)
-	}
+	applyAll(el, opts)
 	el.AddEventListener("click", true, func(ev dom.Event) {
 		go f(ev)
 	})
 	return el.(*dom.HTMLButtonElement)
+}
+
+func (ui *UI) CreateParagraph(parent dom.Element, text string, opts ...ElementOption) *dom.HTMLParagraphElement {
+	el := ui.win.Document().CreateElement("p")
+	parent.AppendChild(el)
+	el.SetInnerHTML(html.EscapeString(text))
+	return el.(*dom.HTMLParagraphElement)
 }
 
 func FindElementByClass[T dom.Element](ui *UI, class string) (zero T, err error) {
@@ -224,4 +234,10 @@ func (sel *Selection) String() string {
 		return "nil"
 	}
 	return fmt.Sprintf("line: %d col: %d", sel.line, sel.column)
+}
+
+func ClearChildren(node dom.Node) {
+	for _, child := range node.ChildNodes() {
+		node.RemoveChild(child)
+	}
 }
