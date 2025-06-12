@@ -4,6 +4,7 @@
 	--flex-bg-color: rgb(83, 131, 236); 
 	/* --main-bg-color: rgb(180, 180, 236); */
 	--main-element-bg-color: rgb(255, 255, 255);
+	--code-bg-color: rgb(220, 220, 220);
 
 	--language-keyword: rgb(175, 0, 0);
 	--type-keyword: rgb(60, 140, 225);
@@ -20,6 +21,10 @@ body {
 	color: var(--main-fg-color);
 	padding: 0px;
 	margin: 0px;
+}
+
+code {
+	background: var(--code-bg-color);
 }
 
 .root_container {
@@ -75,6 +80,7 @@ body {
 	flex-direction: column;
 	align-items: flex-start;
 	flex-grow: 1;
+	margin: 1em;
 }
 
 .lesson_navigation {
