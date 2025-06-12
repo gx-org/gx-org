@@ -37,7 +37,7 @@ type root struct {
 func (r *root) DisplayLesson(les *lessons.Lesson) {
 	r.text.SetContent(les)
 	r.code.SetContent(les)
-	r.gui.UpdateURL(fmt.Sprintf("?chapter=%d&lesson=%d", les.Chapter.ID, les.ID))
+	r.gui.UpdateURL(fmt.Sprintf("index.html?chapter=%d&lesson=%d", les.Chapter.ID, les.ID))
 }
 
 func idsFromURL(loc *url.URL) (int, int) {
@@ -47,7 +47,7 @@ func idsFromURL(loc *url.URL) (int, int) {
 	}
 	chapID, err := strconv.Atoi(chapS)
 	if err != nil {
-		fmt.Println("ERROR: cannot parse chapter ID %q: %v", chapS, err)
+		fmt.Printf("ERROR: cannot parse chapter ID %q: %v\n", chapS, err)
 	}
 	lesS := loc.Query().Get("lesson")
 	if lesS == "" {
@@ -55,7 +55,7 @@ func idsFromURL(loc *url.URL) (int, int) {
 	}
 	lesID, err := strconv.Atoi(chapS)
 	if err != nil {
-		fmt.Println("ERROR: cannot parse lessons ID %q: %v", lesS, err)
+		fmt.Printf("ERROR: cannot parse lessons ID %q: %v\n", lesS, err)
 	}
 	return lesID, chapID
 }

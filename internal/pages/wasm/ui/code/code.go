@@ -132,26 +132,34 @@ func buildString(bld *strings.Builder, out []values.Value) error {
 	return nil
 }
 
-func (cd *Code) runFunc(fun ir.Func) string {
-	runner, err := tracer.Trace(cd.dev, fun.(*ir.FuncDecl), nil, nil, nil)
-	if err != nil {
-		return err.Error()
+func (cd *Code) runFunc(fun ir.Func, args []values.Value) ([]values.Value, string, bool) {
+	numArgs := fun.FuncType().Params.Len()
+	if len(args) < numArgs {
+		return nil, fmt.Sprintf("not enough arguments to pass to %s: got %d but want %d", fun.Name(), len(args), numArgs), false
 	}
-	values, err := runner.Run(nil, nil, nil)
+	args = args[:numArgs]
+	runner, err := tracer.Trace(cd.dev, fun.(*ir.FuncDecl), nil, args, nil)
 	if err != nil {
-		return err.Error()
+		return nil, err.Error(), false
+	}
+	vals, err := runner.Run(nil, args, nil)
+	if err != nil {
+		return nil, err.Error(), false
 	}
 	bld := strings.Builder{}
-	if err := buildString(&bld, values); err != nil {
-		return err.Error()
+	if err := buildString(&bld, vals); err != nil {
+		return nil, err.Error(), false
 	}
-	return bld.String()
+	return vals, bld.String(), true
 }
 
 func indent(s string) string {
 	var lines []string
 	for line := range strings.Lines(s) {
 		lines = append(lines, "  "+line)
+	}
+	if lines[len(lines)-1] != "\n" {
+		lines = append(lines, "\n")
 	}
 	return strings.Join(lines, "")
 }
@@ -162,10 +170,16 @@ func (cd *Code) runCode(src string) error {
 		return err
 	}
 	bld := strings.Builder{}
+	var vals []values.Value
 	for fun := range irPkg.ExportedFuncs() {
 		bld.WriteString(fun.Name() + ":\n")
-		s := cd.runFunc(fun)
+		var s string
+		var ok bool
+		vals, s, ok = cd.runFunc(fun, vals)
 		bld.WriteString(indent(s))
+		if !ok {
+			break
+		}
 	}
 	cd.out.set(bld.String())
 	return nil
