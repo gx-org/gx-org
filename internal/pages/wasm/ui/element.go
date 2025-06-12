@@ -14,7 +14,12 @@
 
 package ui
 
-import "honnef.co/go/js/dom/v2"
+import (
+	"fmt"
+	"reflect"
+
+	"honnef.co/go/js/dom/v2"
+)
 
 type (
 	ElementOption interface {
@@ -40,9 +45,16 @@ func Property(property, value string) ElementOption {
 	})
 }
 
-func Listener(typ string, listener func(dom.Event)) ElementOption {
+func Listener[T dom.Event](typ string, listener func(T)) ElementOption {
+	castEvent := func(ev dom.Event) {
+		evT, ok := any(ev).(T)
+		if !ok {
+			fmt.Printf("INTERNAL ERROR: event %T cannot be casted to %s\n", ev, reflect.TypeFor[T]().Name())
+		}
+		listener(evT)
+	}
 	return ElementOptionF(func(el dom.Element) {
-		el.AddEventListener(typ, true, listener)
+		el.AddEventListener(typ, false, castEvent)
 	})
 }
 

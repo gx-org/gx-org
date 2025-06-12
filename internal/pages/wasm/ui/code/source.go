@@ -41,6 +41,8 @@ func newSource(code *Code, parent dom.Element) *Source {
 		ui.Class("code_source_textinput_container"),
 		ui.Property("contenteditable", "true"),
 		ui.Listener("input", s.onSourceChange),
+		ui.Listener("keypress", s.onKeyPress),
+		ui.Listener("keydown", s.onKeyDown),
 	)
 	s.input.AddEventListener("input", true, func(ev dom.Event) {
 	})
@@ -49,6 +51,38 @@ func newSource(code *Code, parent dom.Element) *Source {
 	)
 	code.gui.CreateButton(s.control, "Run", s.onRun)
 	return s
+}
+
+func (s *Source) onKeyDown(ev *dom.KeyboardEvent) {
+	const tabKey = 9
+	if ev.KeyCode() != tabKey {
+		return
+	}
+	ev.PreventDefault()
+	s.updateSource(insertTab)
+}
+
+func insertTab(src string, sel *ui.Selection) (string, bool) {
+	srcLines := strings.Split(src, "\n")
+	cursorLine := sel.Line()
+	if cursorLine >= len(srcLines) {
+		return src, false
+	}
+	currentLine := []rune(srcLines[cursorLine])
+	cursorColumn := sel.Column()
+	newLine := append([]rune{}, currentLine[:cursorColumn]...)
+	newLine = append(newLine, []rune(tabSpaces)...)
+	newLine = append(newLine, currentLine[cursorColumn:]...)
+	srcLines[cursorLine] = string(newLine)
+	sel.MoveColumnBy(tabSpaces)
+	return strings.Join(srcLines, "\n"), true
+}
+
+func (s *Source) onKeyPress(ev *dom.KeyboardEvent) {
+	if ev.ShiftKey() && ev.Key() == "Enter" {
+		s.onRun(ev)
+		ev.PreventDefault()
+	}
 }
 
 func (s *Source) extractSource() string {
@@ -81,7 +115,12 @@ var keywordToColor = []struct {
 	},
 }
 
+const tabSize = 4
+
+var tabSpaces = strings.Repeat(" ", tabSize)
+
 func format(s string) string {
+	s = strings.ReplaceAll(s, "\t", tabSpaces)
 	s = strings.ReplaceAll(s, " ", "\u00a0")
 	s = html.EscapeString(s)
 	for _, color := range keywordToColor {
@@ -113,13 +152,21 @@ func (s *Source) onRun(dom.Event) {
 	go s.code.callAndWrite(s.code.runCode, s.lastSrc)
 }
 
-func (s *Source) onSourceChange(dom.Event) {
+func (s *Source) updateSource(process func(src string, sel *ui.Selection) (string, bool)) {
 	currentSrc := s.extractSource()
-	if currentSrc == s.lastSrc {
+	sel := s.code.gui.CurrentSelection(s.input)
+	currentSrc, cont := process(currentSrc, sel)
+	if !cont {
 		return
 	}
-	sel := s.code.gui.CurrentSelection(s.input)
 	defer sel.SetAsCurrent()
 	s.set(currentSrc)
 	go s.code.callAndWrite(s.code.compileAndWrite, currentSrc)
+
+}
+
+func (s *Source) onSourceChange(dom.Event) {
+	s.updateSource(func(src string, sel *ui.Selection) (string, bool) {
+		return src, s.lastSrc != src
+	})
 }

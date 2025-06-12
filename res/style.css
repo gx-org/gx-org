@@ -50,6 +50,7 @@ body {
 	font-family: monospace, monospace;
 	background: rgb(200, 227, 255);
 	height: 80%;
+	padding: 2px;
 }
 
 .code_source_controls_container {

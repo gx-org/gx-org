@@ -20,6 +20,7 @@ import (
 	"net/url"
 	"strings"
 	"syscall/js"
+	"unicode/utf16"
 	"unicode/utf8"
 
 	"honnef.co/go/js/dom/v2"
@@ -92,11 +93,12 @@ func FindElementByClass[T dom.Element](ui *UI, class string) (zero T, err error)
 }
 
 type Selection struct {
-	ui     *UI
-	el     dom.HTMLElement
-	line   int
-	column int
-	rang   js.Value
+	ui          *UI
+	el          dom.HTMLElement
+	line        int
+	utf16Column int
+	utf8Column  int
+	rang        js.Value
 }
 
 func selection() js.Value {
@@ -132,9 +134,13 @@ func lineNumFromElement(el js.Value) int {
 	return line
 }
 
-func textLenFromPreviousElement(el js.Value) int {
+func utf16Count(s string) int {
+	return len(utf16.Encode([]rune(s)))
+}
+
+func textLenFromPreviousElement(el js.Value) (utf16Pos, utf8Pos int) {
 	if nodeName(el.Get("firstChild")) == "BR" {
-		return 0
+		return
 	}
 	// Make sure that the parent is DIV
 	// (moving up from text to font in a font tag)
@@ -142,17 +148,30 @@ func textLenFromPreviousElement(el js.Value) int {
 		el = el.Get("parentNode")
 	}
 	if el.Get("parentNode").Get("childNodes").Length() <= 1 {
-		return 0
+		return
 	}
 	// Start counting text context in the previous element
 	// (ignoring the current element)
-	strLen := 0
 	prev := el.Get("previousSibling")
 	for !prev.IsNull() {
-		strLen += utf8.RuneCountInString(TextContent(prev))
+		text := TextContent(prev)
+		utf16Pos += utf16Count(text)
+		utf8Pos += utf8.RuneCountInString(text)
 		prev = prev.Get("previousSibling")
 	}
-	return strLen
+	return
+}
+
+func textLenFromElement(rang js.Value, ancestor js.Value) (utf16Pos, utf8Pos int) {
+	utf16Pos = rang.Get("startOffset").Int()
+	utf8Str := TextContent(ancestor)
+	utf16Str := utf16.Encode([]rune(utf8Str))
+	if utf16Pos > len(utf16Str) {
+		return 0, 0
+	}
+	subUTF16 := utf16Str[:utf16Pos]
+	utf8Pos = len(utf16.Decode(subUTF16))
+	return
 }
 
 func (ui *UI) CurrentSelection(el dom.HTMLElement) *Selection {
@@ -165,12 +184,15 @@ func (ui *UI) CurrentSelection(el dom.HTMLElement) *Selection {
 	if len(el.InnerHTML()) > 1 { // Necessary condition to handle the edge case when there is only a single character.
 		line = lineNumFromElement(ancestor)
 	}
+	utf16Prev, utf8Prev := textLenFromPreviousElement(ancestor)
+	utf16Column, utf8Column := textLenFromElement(rang, ancestor)
 	return &Selection{
-		ui:     ui,
-		el:     el,
-		rang:   rang,
-		column: textLenFromPreviousElement(ancestor) + rang.Get("startOffset").Int(),
-		line:   line,
+		ui:          ui,
+		el:          el,
+		rang:        rang,
+		utf16Column: utf16Prev + utf16Column,
+		utf8Column:  utf8Prev + utf8Column,
+		line:        line,
 	}
 }
 
@@ -218,9 +240,9 @@ func (sel *Selection) SetAsCurrent() {
 		return
 	}
 	lineDiv := children[sel.line]
-	column := sel.column
+	column := sel.utf16Column
 	for _, child := range lineDiv.ChildNodes() {
-		textLen := utf8.RuneCountInString(TextContent(child.Underlying()))
+		textLen := utf16Count(TextContent(child.Underlying()))
 		if column <= textLen {
 			selection().Call("collapse", findFirstLeaf(child).Underlying(), column)
 			return
@@ -229,11 +251,24 @@ func (sel *Selection) SetAsCurrent() {
 	}
 }
 
+func (sel *Selection) Line() int {
+	return sel.line
+}
+
+func (sel *Selection) Column() int {
+	return sel.utf8Column
+}
+
+func (sel *Selection) MoveColumnBy(s string) {
+	sel.utf16Column += utf16Count(s)
+	sel.utf8Column += utf8.RuneCountInString(s)
+}
+
 func (sel *Selection) String() string {
 	if sel == nil {
 		return "nil"
 	}
-	return fmt.Sprintf("line: %d col: %d", sel.line, sel.column)
+	return fmt.Sprintf("line: %d col: %d", sel.line, sel.utf16Column)
 }
 
 func ClearChildren(node dom.Node) {
