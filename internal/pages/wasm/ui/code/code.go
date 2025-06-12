@@ -21,6 +21,8 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/gx-org/gx-org/internal/pages/wasm/lessons"
+	"github.com/gx-org/gx-org/internal/pages/wasm/ui"
 	"github.com/gx-org/gx/api"
 	"github.com/gx-org/gx/api/tracer"
 	"github.com/gx-org/gx/api/values"
@@ -30,8 +32,6 @@ import (
 	"github.com/gx-org/gx/golang/backend"
 	"github.com/gx-org/gx/golang/backend/kernels"
 	"github.com/gx-org/gx/stdlib"
-	"github.com/gx-org/gx-org/internal/pages/wasm/lessons"
-	"github.com/gx-org/gx-org/internal/pages/wasm/ui"
 	"honnef.co/go/js/dom/v2"
 )
 
@@ -114,22 +114,46 @@ func flatten(out []values.Value) []values.Value {
 	return flat
 }
 
-func buildString(out []values.Value) (string, error) {
+func buildString(bld *strings.Builder, out []values.Value) error {
 	out, err := values.ToHost(kernels.Allocator(), flatten(out))
 	if err != nil {
-		return "", err
+		return err
 	}
 	if len(out) == 0 {
-		return "", nil
+		return nil
 	}
 	if len(out) == 1 {
-		return fmt.Sprint(out[0]), nil
+		bld.WriteString(fmt.Sprint(out[0]))
+		return nil
 	}
-	bld := strings.Builder{}
 	for i, s := range out {
 		bld.WriteString(fmt.Sprintf("%d: %v\n", i, s))
 	}
-	return bld.String(), nil
+	return nil
+}
+
+func (cd *Code) runFunc(fun ir.Func) string {
+	runner, err := tracer.Trace(cd.dev, fun.(*ir.FuncDecl), nil, nil, nil)
+	if err != nil {
+		return err.Error()
+	}
+	values, err := runner.Run(nil, nil, nil)
+	if err != nil {
+		return err.Error()
+	}
+	bld := strings.Builder{}
+	if err := buildString(&bld, values); err != nil {
+		return err.Error()
+	}
+	return bld.String()
+}
+
+func indent(s string) string {
+	var lines []string
+	for line := range strings.Lines(s) {
+		lines = append(lines, "  "+line)
+	}
+	return strings.Join(lines, "")
 }
 
 func (cd *Code) runCode(src string) error {
@@ -137,23 +161,12 @@ func (cd *Code) runCode(src string) error {
 	if err != nil {
 		return err
 	}
-	const fnName = "Main"
-	fn := irPkg.FindFunc(fnName)
-	if fn == nil {
-		return fmt.Errorf("function %s not found", fnName)
+	bld := strings.Builder{}
+	for fun := range irPkg.ExportedFuncs() {
+		bld.WriteString(fun.Name() + ":\n")
+		s := cd.runFunc(fun)
+		bld.WriteString(indent(s))
 	}
-	runner, err := tracer.Trace(cd.dev, fn.(*ir.FuncDecl), nil, nil, nil)
-	if err != nil {
-		return err
-	}
-	values, err := runner.Run(nil, nil, nil)
-	if err != nil {
-		return err
-	}
-	outS, err := buildString(values)
-	if err != nil {
-		return err
-	}
-	cd.out.set(outS)
+	cd.out.set(bld.String())
 	return nil
 }
