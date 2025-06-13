@@ -46,41 +46,45 @@ func (c *checker) checkHistory(t *testing.T, want []int) {
 	}
 }
 
+func eq(a, b int) bool {
+	return a == b
+}
+
 func TestHistory(t *testing.T) {
-	hist := history.New[int]()
+	hist := history.New(eq)
 	c := &checker{hist: hist}
 	for i := range 4 {
-		hist.Append(i)
+		hist.Append(i + 1)
 	}
-	c.checkHistory(t, []int{0, 1, 2, 3})
-	c.checkCurrent(t, 3)
+	c.checkHistory(t, []int{1, 2, 3, 4})
+	c.checkCurrent(t, 4)
 
 	hist.Undo()
 	hist.Undo()
-	c.checkCurrent(t, 1)
-
-	hist.Redo()
 	c.checkCurrent(t, 2)
+
 	hist.Redo()
 	c.checkCurrent(t, 3)
 	hist.Redo()
-	c.checkCurrent(t, 3)
+	c.checkCurrent(t, 4)
+	hist.Redo()
+	c.checkCurrent(t, 4)
 
 	for range 10 {
 		hist.Undo()
 	}
-	c.checkCurrent(t, 0)
+	c.checkCurrent(t, 1)
 
 	for range 10 {
 		hist.Redo()
 	}
-	c.checkCurrent(t, 3)
+	c.checkCurrent(t, 4)
 
 	hist.Undo()
 	hist.Undo()
-	c.checkCurrent(t, 1)
+	c.checkCurrent(t, 2)
 
 	hist.Append(100)
 	c.checkCurrent(t, 100)
-	c.checkHistory(t, []int{0, 1, 100})
+	c.checkHistory(t, []int{1, 2, 100})
 }

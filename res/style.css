@@ -33,26 +33,27 @@ pre {
 
 .root_container {
 	display: flex;
-	flex-wrap: wrap;
 	flex-direction: row;
 	justify-content: flex-start;
 	align-items: stretch;
 	gap: 1px;
 	height: 100%;
 	background: var(--flex-bg-color);
+	flex-grow: 0;
 }
 
 .code_container {
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
-	flex-grow: 1; /* Fill the remaining space */
+	flex-grow: 1;
 }
 
 .code_source_container {
 	display: flex;
 	background: var(--main-element-bg-color);
 	flex-direction: column-reverse;
+	flex-grow: 0;
 }
 
 .code_source_textinput_container {
@@ -69,7 +70,7 @@ pre {
 
 .code_output_container {
 	background: var(--main-element-bg-color);
-	flex-grow: 1; /* Fill the remaining space */
+	flex-grow: 1;
 }
 
 .lesson_container {
@@ -77,6 +78,7 @@ pre {
 	flex-direction: column;
 	background: var(--main-element-bg-color);
 	width: 50%;
+	flex-shrink: 0;
 }
 
 .lesson_content {

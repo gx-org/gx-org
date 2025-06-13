@@ -14,23 +14,34 @@
 
 package history
 
+import (
+	"fmt"
+	"strings"
+)
+
 type History[T any] struct {
 	timeline []T
 	next     int
+
+	cmp func(T, T) bool
 }
 
-func New[T any]() *History[T] {
-	return &History[T]{}
+func New[T any](cmp func(T, T) bool) *History[T] {
+	return &History[T]{cmp: cmp}
 }
 
 func (h *History[T]) Append(t T) {
+	cur := h.Current()
+	if h.cmp(cur, t) {
+		return
+	}
 	h.timeline = h.timeline[:h.next]
 	h.timeline = append(h.timeline, t)
 	h.next = len(h.timeline)
 }
 
 func (h *History[T]) Undo() {
-	if h.next == 0 {
+	if h.next <= 1 {
 		return
 	}
 	h.next--
@@ -53,4 +64,17 @@ func (h *History[T]) Current() T {
 		return current
 	}
 	return h.timeline[h.next-1]
+}
+
+func (h *History[T]) String() string {
+	lines := make([]string, len(h.timeline))
+	for i, tl := range h.timeline {
+		s := "  "
+		if i == h.next-1 {
+			s = "->"
+		}
+		lines[i] = fmt.Sprintf("%s%v", s, tl)
+	}
+	lines = append(lines, fmt.Sprintf("next: %d", h.next))
+	return strings.Join(lines, "\n")
 }

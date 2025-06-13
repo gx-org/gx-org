@@ -20,8 +20,26 @@ import (
 	"strings"
 
 	"github.com/gx-org/gx-org/internal/pages/wasm/ui"
+	"github.com/gx-org/gx-org/internal/pages/wasm/ui/history"
 	"honnef.co/go/js/dom/v2"
 )
+
+type state struct {
+	src string
+	sel *ui.Selection
+}
+
+func (s state) String() string {
+	line, column := -1, -1
+	if s.sel != nil {
+		line, column = s.sel.Line(), s.sel.Column()
+	}
+	return fmt.Sprintf("%d:%d:%s", line, column, s.src)
+}
+
+func stateEq(a, b state) bool {
+	return a.src == b.src
+}
 
 type Source struct {
 	code      *Code
@@ -29,23 +47,22 @@ type Source struct {
 	input     *dom.HTMLDivElement
 	control   *dom.HTMLDivElement
 
-	lastSrc string
+	keys   *ui.Keys
+	source *history.History[state]
 }
 
 func newSource(code *Code, parent dom.Element) *Source {
 	s := &Source{
 		code:      code,
 		container: code.gui.CreateDIV(parent, ui.Class("code_source_container")),
+		source:    history.New[state](stateEq),
 	}
 	s.input = code.gui.CreateDIV(parent,
 		ui.Class("code_source_textinput_container"),
 		ui.Property("contenteditable", "true"),
 		ui.Listener("input", s.onSourceChange),
-		ui.Listener("keypress", s.onKeyPress),
-		ui.Listener("keydown", s.onKeyDown),
+		ui.KeyListener(s.onKeyPress),
 	)
-	s.input.AddEventListener("input", true, func(ev dom.Event) {
-	})
 	s.control = code.gui.CreateDIV(parent,
 		ui.Class("code_source_controls_container"),
 	)
@@ -53,20 +70,11 @@ func newSource(code *Code, parent dom.Element) *Source {
 	return s
 }
 
-func (s *Source) onKeyDown(ev *dom.KeyboardEvent) {
-	const tabKey = 9
-	if ev.KeyCode() != tabKey {
-		return
-	}
-	ev.PreventDefault()
-	s.updateSource(insertTab)
-}
-
-func insertTab(src string, sel *ui.Selection) (string, bool) {
+func insertTab(src string, sel *ui.Selection) (string, *ui.Selection, bool) {
 	srcLines := strings.Split(src, "\n")
 	cursorLine := sel.Line()
 	if cursorLine >= len(srcLines) {
-		return src, false
+		return src, nil, false
 	}
 	currentLine := []rune(srcLines[cursorLine])
 	cursorColumn := sel.Column()
@@ -75,13 +83,32 @@ func insertTab(src string, sel *ui.Selection) (string, bool) {
 	newLine = append(newLine, currentLine[cursorColumn:]...)
 	srcLines[cursorLine] = string(newLine)
 	sel.MoveColumnBy(tabSpaces)
-	return strings.Join(srcLines, "\n"), true
+	return strings.Join(srcLines, "\n"), sel, true
 }
 
-func (s *Source) onKeyPress(ev *dom.KeyboardEvent) {
-	if ev.ShiftKey() && ev.Key() == "Enter" {
+func (s *Source) onKeyPress(keys *ui.Keys, ev *dom.KeyboardEvent) {
+	if keys.On("Shift", "Enter") {
 		s.onRun(ev)
 		ev.PreventDefault()
+		return
+	}
+	if keys.On("Tab") {
+		ev.PreventDefault()
+		s.updateSource(insertTab)
+		return
+	}
+	if (keys.On("Meta") || keys.On("Control")) && keys.On("z") {
+		s.updateSource(func(string, *ui.Selection) (string, *ui.Selection, bool) {
+			if keys.On("Shift") {
+				s.source.Redo()
+			} else {
+				s.source.Undo()
+			}
+			current := s.source.Current()
+			return current.src, current.sel, true
+		})
+		ev.PreventDefault()
+		return
 	}
 }
 
@@ -132,8 +159,8 @@ func format(s string) string {
 	return s
 }
 
-func (s *Source) set(src string) {
-	s.lastSrc = src
+func (s *Source) set(src string, sel *ui.Selection) {
+	s.source.Append(state{src: src, sel: sel})
 	parent := s.input
 	ui.ClearChildren(parent)
 	for _, line := range strings.Split(src, "\n") {
@@ -146,27 +173,29 @@ func (s *Source) set(src string) {
 			ui.InnerHTML(line),
 		)
 	}
+	if sel != nil {
+		sel.SetAsCurrent()
+	}
 }
 
 func (s *Source) onRun(dom.Event) {
-	go s.code.callAndWrite(s.code.runCode, s.lastSrc)
+	go s.code.callAndWrite(s.code.runCode, s.source.Current().src)
 }
 
-func (s *Source) updateSource(process func(src string, sel *ui.Selection) (string, bool)) {
+func (s *Source) updateSource(process func(src string, sel *ui.Selection) (string, *ui.Selection, bool)) {
 	currentSrc := s.extractSource()
 	sel := s.code.gui.CurrentSelection(s.input)
-	currentSrc, cont := process(currentSrc, sel)
+	currentSrc, sel, cont := process(currentSrc, sel)
 	if !cont {
 		return
 	}
-	defer sel.SetAsCurrent()
-	s.set(currentSrc)
+	s.set(currentSrc, sel)
 	go s.code.callAndWrite(s.code.compileAndWrite, currentSrc)
 
 }
 
 func (s *Source) onSourceChange(dom.Event) {
-	s.updateSource(func(src string, sel *ui.Selection) (string, bool) {
-		return src, s.lastSrc != src
+	s.updateSource(func(src string, sel *ui.Selection) (string, *ui.Selection, bool) {
+		return src, sel, s.source.Current().src != src
 	})
 }

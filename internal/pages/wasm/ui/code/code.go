@@ -62,7 +62,7 @@ func New(gui *ui.UI, parent dom.HTMLElement) *Code {
 }
 
 func (cd *Code) SetContent(les *lessons.Lesson) {
-	cd.src.set(les.Code)
+	cd.src.set(les.Code, nil)
 }
 
 func (cd *Code) compileAndWrite(src string) error {
