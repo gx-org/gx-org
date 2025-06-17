@@ -264,6 +264,12 @@ func (sel *Selection) MoveColumnBy(s string) {
 	sel.utf8Column += utf8.RuneCountInString(s)
 }
 
+func (sel *Selection) MoveToNextLine() {
+	sel.utf16Column = 0
+	sel.utf8Column = 0
+	sel.line++
+}
+
 func (sel *Selection) String() string {
 	if sel == nil {
 		return "nil"

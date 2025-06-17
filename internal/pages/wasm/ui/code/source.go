@@ -55,12 +55,13 @@ func newSource(code *Code, parent dom.Element) *Source {
 	s := &Source{
 		code:      code,
 		container: code.gui.CreateDIV(parent, ui.Class("code_source_container")),
-		source:    history.New[state](stateEq),
+		source:    history.New(stateEq),
 	}
 	s.input = code.gui.CreateDIV(parent,
 		ui.Class("code_source_textinput_container"),
 		ui.Property("contenteditable", "true"),
 		ui.Listener("input", s.onSourceChange),
+		ui.Listener("paste", s.onPaste),
 		ui.KeyListener(s.onKeyPress),
 	)
 	s.control = code.gui.CreateDIV(parent,
@@ -70,20 +71,49 @@ func newSource(code *Code, parent dom.Element) *Source {
 	return s
 }
 
-func insertTab(src string, sel *ui.Selection) (string, *ui.Selection, bool) {
-	srcLines := strings.Split(src, "\n")
+func insertSource(src string, sel *ui.Selection, toInsert string) (string, *ui.Selection, bool) {
 	cursorLine := sel.Line()
-	if cursorLine >= len(srcLines) {
-		return src, nil, false
+	var targetLines []string
+	srcLines := strings.Split(src, "\n")
+	for currentSrcLine := 0; currentSrcLine < len(srcLines); currentSrcLine++ {
+		srcLine := srcLines[currentSrcLine]
+		if currentSrcLine < cursorLine {
+			targetLines = append(targetLines, srcLine)
+			continue
+		}
+		if currentSrcLine > cursorLine {
+			targetLines = append(targetLines, srcLine)
+			continue
+		}
+		srcLineRunes := []rune(srcLine)
+		cursorColumn := sel.Column()
+		newLine := append([]rune{}, srcLineRunes[:cursorColumn]...)
+		for insertedLine := range strings.Lines(toInsert) {
+			newLine = append(newLine, []rune(strings.TrimSuffix(insertedLine, "\n"))...)
+			if strings.HasSuffix(insertedLine, "\n") {
+				targetLines = append(targetLines, string(newLine))
+				newLine = []rune{}
+				sel.MoveToNextLine()
+			} else {
+				sel.MoveColumnBy(insertedLine)
+			}
+		}
+		newLine = append(newLine, srcLineRunes[cursorColumn:]...)
+		targetLines = append(targetLines, string(newLine))
 	}
-	currentLine := []rune(srcLines[cursorLine])
-	cursorColumn := sel.Column()
-	newLine := append([]rune{}, currentLine[:cursorColumn]...)
-	newLine = append(newLine, []rune(tabSpaces)...)
-	newLine = append(newLine, currentLine[cursorColumn:]...)
-	srcLines[cursorLine] = string(newLine)
-	sel.MoveColumnBy(tabSpaces)
-	return strings.Join(srcLines, "\n"), sel, true
+	return strings.Join(targetLines, "\n"), sel, true
+}
+
+func (s *Source) insertSource(inserted string) func(src string, sel *ui.Selection) (string, *ui.Selection, bool) {
+	return func(src string, sel *ui.Selection) (string, *ui.Selection, bool) {
+		return insertSource(src, sel, inserted)
+	}
+}
+
+func (s *Source) onPaste(ev *dom.ClipboardEvent) {
+	ev.PreventDefault()
+	txt := ev.ClipboardData().GetData("text/plain")
+	s.updateSource(s.insertSource(txt))
 }
 
 func (s *Source) onKeyPress(keys *ui.Keys, ev *dom.KeyboardEvent) {
@@ -94,7 +124,7 @@ func (s *Source) onKeyPress(keys *ui.Keys, ev *dom.KeyboardEvent) {
 	}
 	if keys.On("Tab") {
 		ev.PreventDefault()
-		s.updateSource(insertTab)
+		s.updateSource(s.insertSource(tabSpaces))
 		return
 	}
 	if (keys.On("Meta") || keys.On("Control")) && keys.On("z") {
