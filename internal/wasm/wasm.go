@@ -21,10 +21,10 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/gx-org/gx-org/internal/pages/wasm/lessons"
-	"github.com/gx-org/gx-org/internal/pages/wasm/ui"
-	"github.com/gx-org/gx-org/internal/pages/wasm/ui/code"
-	"github.com/gx-org/gx-org/internal/pages/wasm/ui/text"
+	"github.com/gx-org/gx-org/internal/lessons"
+	"github.com/gx-org/gx-org/internal/wasm/ui"
+	"github.com/gx-org/gx-org/internal/wasm/ui/code"
+	"github.com/gx-org/gx-org/internal/wasm/ui/text"
 	"honnef.co/go/js/dom/v2"
 )
 

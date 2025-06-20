@@ -21,8 +21,8 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/gx-org/gx-org/internal/pages/wasm/lessons"
-	"github.com/gx-org/gx-org/internal/pages/wasm/ui"
+	"github.com/gx-org/gx-org/internal/lessons"
+	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"github.com/gx-org/gx/api"
 	"github.com/gx-org/gx/api/tracer"
 	"github.com/gx-org/gx/api/values"

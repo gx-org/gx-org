@@ -17,26 +17,24 @@ package lessons
 import (
 	"errors"
 	"fmt"
-	"io/fs"
 	"os"
-	"strings"
 
+	"github.com/gx-org/gx-org/internal/mdtext"
 	"github.com/gx-org/gx-org/lessons"
-	"golang.org/x/tools/txtar"
 )
 
 type (
 	Chapter struct {
-		Title   string
-		Content []*Lesson
-		ID      int
+		titleHTML string
+		Content   []*Lesson
+		ID        int
 	}
 
 	Lesson struct {
 		Chapter *Chapter
 		ID      int
 
-		Text string
+		HTML string
 		Code string
 
 		Prev *Lesson
@@ -78,68 +76,31 @@ func New() ([]*Chapter, error) {
 	return chapters, nil
 }
 
-func read(archFS fs.FS, name string) (string, error) {
-	data, err := fs.ReadFile(archFS, name)
-	if err != nil {
-		return "", err
-	}
-	return string(data), nil
-}
-
-func readTitle(s string) (string, error) {
-	var title string
-	for line := range strings.Lines(s) {
-		splits := strings.SplitN(line, ":", 2)
-		if len(splits) != 2 {
-			continue
-		}
-		if splits[0] != "Chapter" {
-			continue
-		}
-		if title != "" {
-			return "", fmt.Errorf("cannot specified more than one title")
-		}
-		title = splits[1]
-	}
-	return title, nil
-}
-
 func readLesson(chap *Chapter) (*Lesson, error) {
 	lessonID := len(chap.Content) + 1
-	fileName := fmt.Sprintf("lesson_%d_%d.txtar", chap.ID, lessonID)
+	fileName := fmt.Sprintf("%d_%d.md", chap.ID, lessonID)
 	data, err := lessons.Lessons.ReadFile(fileName)
-	if errors.Is(err, os.ErrNotExist) {
+	if errors.Is(err, os.ErrNotExist) && (chap.ID > 1 || lessonID > 1) {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, fmt.Errorf("cannot read %s: %v", fileName, err)
 	}
-	arch := txtar.Parse(data)
-	archFS, err := txtar.FS(arch)
-	if err != nil {
-		return nil, err
-	}
+	mdt := mdtext.Parse(data)
 	lesson := &Lesson{Chapter: chap, ID: lessonID}
-	title, err := readTitle(string(arch.Comment))
-	if err != nil {
-		return nil, fmt.Errorf("error parsing %s: %v", fileName, err)
-	}
-	if title != "" && lessonID != 1 {
+	if mdt.TitleHTML != "" && lessonID != 1 {
 		return nil, fmt.Errorf("%s: chapter title can only be specified for the first lesson", fileName)
 	}
-	if title == "" && lessonID == 1 {
+	if mdt.TitleHTML == "" && lessonID == 1 {
 		return nil, fmt.Errorf("%s: no chapter title specified", fileName)
 	}
 	if lessonID == 1 {
-		chap.Title = title
+		chap.titleHTML = mdt.TitleHTML
 	}
-	lesson.Text, err = read(archFS, "lesson")
-	if err != nil {
-		return nil, fmt.Errorf("cannot read file lesson in archive %s: %v", fileName, err)
-	}
-	lesson.Code, err = read(archFS, "code")
-	if err != nil {
-		return nil, fmt.Errorf("cannot read file code in archive %s: %v", fileName, err)
+	lesson.HTML = chap.titleHTML + "\n\n" + mdt.HTML
+	lesson.Code = mdt.Code[mdtext.TagPrefix+"code"]
+	if lesson.Code == "" {
+		return nil, fmt.Errorf("lesson %s has no GX source code", fileName)
 	}
 	chap.Content = append(chap.Content, lesson)
 	return lesson, nil

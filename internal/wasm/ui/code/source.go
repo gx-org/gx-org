@@ -19,8 +19,8 @@ import (
 	"html"
 	"strings"
 
-	"github.com/gx-org/gx-org/internal/pages/wasm/ui"
-	"github.com/gx-org/gx-org/internal/pages/wasm/ui/history"
+	"github.com/gx-org/gx-org/internal/wasm/ui"
+	"github.com/gx-org/gx-org/internal/wasm/ui/history"
 	"honnef.co/go/js/dom/v2"
 )
 
@@ -159,7 +159,7 @@ var keywordToColor = []struct {
 	{
 		color: "var(--language-keyword)",
 		words: []string{
-			"var", "const", "return", "struct", "func", "package", "import",
+			"var", "const", "return", "struct", "func", "package", "import", "type", "interface",
 		},
 	},
 	{

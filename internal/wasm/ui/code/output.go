@@ -17,7 +17,7 @@ package code
 import (
 	"fmt"
 
-	"github.com/gx-org/gx-org/internal/pages/wasm/ui"
+	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"honnef.co/go/js/dom/v2"
 )
 

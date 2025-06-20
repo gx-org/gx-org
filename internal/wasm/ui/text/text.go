@@ -19,11 +19,8 @@ package text
 import (
 	"fmt"
 
-	"github.com/gomarkdown/markdown"
-	"github.com/gomarkdown/markdown/html"
-	"github.com/gomarkdown/markdown/parser"
-	"github.com/gx-org/gx-org/internal/pages/wasm/lessons"
-	"github.com/gx-org/gx-org/internal/pages/wasm/ui"
+	"github.com/gx-org/gx-org/internal/lessons"
+	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"honnef.co/go/js/dom/v2"
 )
 
@@ -52,15 +49,6 @@ func New(gui *ui.UI, parent dom.HTMLElement, page Page) *Text {
 	return text
 }
 
-func htmlFromMD(md string) string {
-	p := parser.NewWithExtensions(parser.CommonExtensions)
-	doc := p.Parse([]byte(md))
-	htmlFlags := html.CommonFlags | html.HrefTargetBlank
-	opts := html.RendererOptions{Flags: htmlFlags}
-	renderer := html.NewRenderer(opts)
-	return string(markdown.Render(doc, renderer))
-}
-
 func (tt *Text) SetContent(les *lessons.Lesson) {
 	ui.ClearChildren(tt.nav)
 	tt.gui.CreateButton(tt.nav, "←",
@@ -78,7 +66,5 @@ func (tt *Text) SetContent(les *lessons.Lesson) {
 		ui.SetVisible(les.Next != nil),
 		ui.Class("navigation_button"),
 	)
-	text := fmt.Sprintf("# %s\n\n", les.Chapter.Title)
-	text += les.Text
-	tt.content.SetInnerHTML(htmlFromMD(text))
+	tt.content.SetInnerHTML(les.HTML)
 }
