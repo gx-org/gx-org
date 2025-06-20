@@ -24,15 +24,26 @@ import (
 type Output struct {
 	code *Code
 	div  *dom.HTMLDivElement
+
+	crash string
 }
 
 func newOutput(code *Code, parent dom.Element) *Output {
-	return &Output{
+	out := &Output{
 		code: code,
 		div:  code.gui.CreateDIV(parent, ui.Class("code_output_container")),
 	}
+	ui.SetCrashOutput(func(crash string) {
+		out.crash = crash
+		out.set("")
+	})
+	return out
 }
 
-func (s *Output) set(src string) {
-	s.div.SetInnerHTML(fmt.Sprintf("<pre>%s<pre>", src))
+func (out *Output) set(src string) {
+	crash := ""
+	if out.crash != "" {
+		crash = "\n" + out.crash
+	}
+	out.div.SetInnerHTML(fmt.Sprintf("<pre>%s%s<pre>", src, crash))
 }

@@ -51,7 +51,9 @@ func Listener[T dom.Event](typ string, listener func(T)) ElementOption {
 		if !ok {
 			fmt.Printf("INTERNAL ERROR: event %T cannot be casted to %s\n", ev, reflect.TypeFor[T]().Name())
 		}
-		listener(evT)
+		Protect(func() {
+			listener(evT)
+		})
 	}
 	return ElementOptionF(func(el dom.Element) {
 		el.AddEventListener(typ, false, castEvent)

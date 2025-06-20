@@ -62,10 +62,14 @@ func (ui *UI) CreateButton(parent dom.Element, text string, f EventFunc, opts ..
 	el := ui.win.Document().CreateElement("button")
 	el.SetTextContent(text)
 	parent.AppendChild(el)
-	applyAll(el, opts)
-	el.AddEventListener("click", true, func(ev dom.Event) {
-		go f(ev)
+	applyAll(el, []ElementOption{
+		Listener("click", func(ev dom.Event) {
+			Go(func() {
+				f(ev)
+			})
+		}),
 	})
+	applyAll(el, opts)
 	return el.(*dom.HTMLButtonElement)
 }
 

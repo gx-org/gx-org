@@ -209,7 +209,7 @@ func (s *Source) set(src string, sel *ui.Selection) {
 }
 
 func (s *Source) onRun(dom.Event) {
-	go s.code.callAndWrite(s.code.runCode, s.source.Current().src)
+	s.code.callAndWrite(s.code.runCode, s.source.Current().src)
 }
 
 func (s *Source) updateSource(process func(src string, sel *ui.Selection) (string, *ui.Selection, bool)) {
@@ -220,7 +220,9 @@ func (s *Source) updateSource(process func(src string, sel *ui.Selection) (strin
 		return
 	}
 	s.set(currentSrc, sel)
-	go s.code.callAndWrite(s.code.compileAndWrite, currentSrc)
+	ui.Go(func() {
+		s.code.callAndWrite(s.code.compileAndWrite, currentSrc)
+	})
 
 }
 
