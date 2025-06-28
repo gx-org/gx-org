@@ -18,7 +18,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/gx-org/gx-org/internal/pages/wasm/ui/history"
+	"github.com/gx-org/gx-org/internal/history"
 )
 
 type checker struct {

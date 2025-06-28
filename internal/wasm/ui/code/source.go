@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//go:build js && wasm
+
 package code
 
 import (
@@ -19,8 +21,8 @@ import (
 	"html"
 	"strings"
 
+	"github.com/gx-org/gx-org/internal/history"
 	"github.com/gx-org/gx-org/internal/wasm/ui"
-	"github.com/gx-org/gx-org/internal/wasm/ui/history"
 	"honnef.co/go/js/dom/v2"
 )
 
