@@ -37,28 +37,23 @@ type root struct {
 func (r *root) DisplayLesson(les *lessons.Lesson) {
 	r.text.SetContent(les)
 	r.code.SetContent(les)
-	r.gui.UpdateURL(fmt.Sprintf("index.html?chapter=%d&lesson=%d", les.Chapter.ID, les.ID))
+	r.gui.UpdateURL(fmt.Sprintf("index.html?chapter=%s&lesson=%d", les.Chapter.Name(), les.ID))
 }
 
-func idsFromURL(loc *url.URL) (int, int) {
+func idsFromURL(loc *url.URL) (string, int) {
 	chapS := loc.Query().Get("chapter")
 	if chapS == "" {
-		return 0, 0
-	}
-	chapID, err := strconv.Atoi(chapS)
-	if err != nil {
-		fmt.Printf("ERROR: cannot parse chapter ID %q: %v\n", chapS, err)
+		return "", 0
 	}
 	lesS := loc.Query().Get("lesson")
 	if lesS == "" {
-		return chapID, 0
+		return chapS, 0
 	}
-
 	lesID, err := strconv.Atoi(chapS)
 	if err != nil {
 		fmt.Printf("ERROR: cannot parse lessons ID %q: %v\n", lesS, err)
 	}
-	return lesID, chapID
+	return chapS, lesID
 }
 
 func main() {
@@ -79,13 +74,14 @@ func main() {
 		return
 	}
 	loc, err := gui.URL()
-	var chapID, lessonID int
+	var chapName string
+	var lessonID int
 	if err != nil {
 		fmt.Println("URL ERROR", err.Error())
 	} else {
-		chapID, lessonID = idsFromURL(loc)
+		chapName, lessonID = idsFromURL(loc)
 	}
-	root.DisplayLesson(lessons.FindLesson(chapters, chapID, lessonID))
+	root.DisplayLesson(lessons.FindLesson(chapters, chapName, lessonID))
 
 	<-make(chan bool)
 }

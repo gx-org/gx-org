@@ -25,9 +25,11 @@ import (
 
 type (
 	Chapter struct {
-		titleHTML string
-		Content   []*Lesson
 		ID        int
+		name      string
+		titleHTML string
+
+		Content []*Lesson
 	}
 
 	Lesson struct {
@@ -42,12 +44,17 @@ type (
 	}
 )
 
-func New() ([]*Chapter, error) {
-	var chapters []*Chapter
-	chapterFound := true
+var chapterNames = []string{
+	"intro",
+	"types",
+}
+
+func New() (map[string]*Chapter, error) {
+	chapters := make(map[string]*Chapter, len(chapterNames))
 	var prev *Lesson
-	for chapterFound {
-		chap := &Chapter{ID: len(chapters) + 1}
+	for _, name := range chapterNames {
+		chap := &Chapter{name: name, ID: len(chapters) + 1}
+		chapters[name] = chap
 		lessonFound := true
 		for lessonFound {
 			lesson, err := readLesson(chap)
@@ -68,7 +75,6 @@ func New() ([]*Chapter, error) {
 		if len(chap.Content) == 0 {
 			break
 		}
-		chapters = append(chapters, chap)
 	}
 	if len(chapters) == 0 {
 		return nil, fmt.Errorf("no content found")
@@ -78,9 +84,9 @@ func New() ([]*Chapter, error) {
 
 func readLesson(chap *Chapter) (*Lesson, error) {
 	lessonID := len(chap.Content) + 1
-	fileName := fmt.Sprintf("%d_%d.md", chap.ID, lessonID)
+	fileName := fmt.Sprintf("%s_%d.md", chap.Name(), lessonID)
 	data, err := lessons.Lessons.ReadFile(fileName)
-	if errors.Is(err, os.ErrNotExist) && (chap.ID > 1 || lessonID > 1) {
+	if errors.Is(err, os.ErrNotExist) && lessonID > 1 {
 		return nil, nil
 	}
 	if err != nil {
@@ -106,20 +112,23 @@ func readLesson(chap *Chapter) (*Lesson, error) {
 	return lesson, nil
 }
 
+func (chap *Chapter) Name() string {
+	return chap.name
+}
+
 func (chap *Chapter) NumLessons() int {
 	return len(chap.Content)
 }
 
-func FindLesson(chapters []*Chapter, chapID, lessonID int) *Lesson {
-	chapI := chapID - 1
+func FindLesson(chapters map[string]*Chapter, chapName string, lessonID int) *Lesson {
+	if chapName == "" {
+		chapName = chapterNames[0]
+	}
 	lessonI := lessonID - 1
-	if chapI <= 0 {
-		return chapters[0].Content[0]
+	chap, ok := chapters[chapName]
+	if !ok {
+		return nil
 	}
-	if chapI >= len(chapters) {
-		return chapters[0].Content[0]
-	}
-	chap := chapters[chapI]
 	if lessonI <= 0 {
 		return chap.Content[0]
 	}

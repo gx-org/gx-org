@@ -58,7 +58,7 @@ func (tt *Text) SetContent(les *lessons.Lesson) {
 		ui.SetVisible(les.Prev != nil),
 		ui.Class("navigation_button"),
 	)
-	tt.gui.CreateParagraph(tt.nav, fmt.Sprintf("Chapter %d, lesson %d/%d", les.Chapter.ID, les.ID, les.Chapter.NumLessons()))
+	tt.gui.CreateParagraph(tt.nav, fmt.Sprintf("Chapter %d Lesson %d/%d", les.Chapter.ID, les.ID, les.Chapter.NumLessons()))
 	tt.gui.CreateButton(tt.nav, "→",
 		func(dom.Event) {
 			tt.page.DisplayLesson(les.Next)
