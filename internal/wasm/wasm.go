@@ -49,10 +49,7 @@ func idsFromURL(loc *url.URL) (string, int) {
 	if lesS == "" {
 		return chapS, 0
 	}
-	lesID, err := strconv.Atoi(chapS)
-	if err != nil {
-		fmt.Printf("ERROR: cannot parse lessons ID %q: %v\n", lesS, err)
-	}
+	lesID, _ := strconv.Atoi(lesS)
 	return chapS, lesID
 }
 

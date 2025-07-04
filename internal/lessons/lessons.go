@@ -47,6 +47,7 @@ type (
 var chapterNames = []string{
 	"intro",
 	"types",
+	"fill",
 }
 
 func New() (map[string]*Chapter, error) {
@@ -82,6 +83,9 @@ func New() (map[string]*Chapter, error) {
 	return chapters, nil
 }
 
+const defaultCode = `package main
+`
+
 func readLesson(chap *Chapter) (*Lesson, error) {
 	lessonID := len(chap.Content) + 1
 	fileName := fmt.Sprintf("%s_%d.md", chap.Name(), lessonID)
@@ -106,7 +110,7 @@ func readLesson(chap *Chapter) (*Lesson, error) {
 	lesson.HTML = chap.titleHTML + "\n\n" + mdt.HTML
 	lesson.Code = mdt.Code[mdtext.TagPrefix+"code"]
 	if lesson.Code == "" {
-		return nil, fmt.Errorf("lesson %s has no GX source code", fileName)
+		lesson.Code = defaultCode
 	}
 	chap.Content = append(chap.Content, lesson)
 	return lesson, nil

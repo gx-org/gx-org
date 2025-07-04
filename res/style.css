@@ -46,14 +46,14 @@ pre {
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
-	flex-grow: 1;
+	flex-grow: 0;
+	width: 50%;
 }
 
 .code_source_container {
 	display: flex;
 	background: var(--main-element-bg-color);
 	flex-direction: column-reverse;
-	flex-grow: 0;
 }
 
 .code_source_textinput_container {
@@ -61,6 +61,9 @@ pre {
 	background: rgb(200, 227, 255);
 	height: 80%;
 	padding: 2px;
+	white-space: nowrap;
+	overflow-x: auto;
+	overflow-y: auto;
 }
 
 .code_source_controls_container {
@@ -69,6 +72,7 @@ pre {
 }
 
 .code_output_container {
+	display: flex;
 	background: var(--main-element-bg-color);
 	flex-grow: 1;
 }
@@ -85,7 +89,8 @@ pre {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	flex-grow: 1;
+	height: 100%;
+	overflow-y: auto;
 	margin: 1em;
 }
 
@@ -95,7 +100,7 @@ pre {
 	flex-direction: row;
 	justify-content: center;
 	align-content: space-around;
-	margin: 1em;
+	margin: 0em;
 }
 
 .navigation_button {

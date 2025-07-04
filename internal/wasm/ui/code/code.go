@@ -76,7 +76,7 @@ func (cd *Code) compileAndWrite(src string) error {
 
 func (cd *Code) compileCode(src string) (*ir.Package, error) {
 	if cd.devErr != nil {
-		return nil, fmt.Errorf("Cannot initialise backend: %s", cd.devErr.Error())
+		return nil, fmt.Errorf("cannot initialise backend: %s", cd.devErr.Error())
 	}
 	pkg := cd.bld.NewIncrementalPackage("main")
 	if err := pkg.Build(src); err != nil {
