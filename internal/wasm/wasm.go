@@ -37,20 +37,18 @@ type root struct {
 func (r *root) DisplayLesson(les *lessons.Lesson) {
 	r.text.SetContent(les)
 	r.code.SetContent(les)
-	r.gui.UpdateURL(fmt.Sprintf("index.html?chapter=%s&lesson=%d", les.Chapter.Name(), les.ID))
+	var pathPrefix string
+	if les.Chapter.PathPrefix != "" {
+		pathPrefix = fmt.Sprintf("&pathPrefix=%s", les.Chapter.PathPrefix)
+	}
+	r.gui.UpdateURL(fmt.Sprintf("index.html?chapter=%d&lesson=%d%s", les.Chapter.ID, les.ID, pathPrefix))
 }
 
-func idsFromURL(loc *url.URL) (string, int) {
-	chapS := loc.Query().Get("chapter")
-	if chapS == "" {
-		return "", 0
-	}
-	lesS := loc.Query().Get("lesson")
-	if lesS == "" {
-		return chapS, 0
-	}
-	lesID, _ := strconv.Atoi(lesS)
-	return chapS, lesID
+func idsFromURL(loc *url.URL) (string, int, int) {
+	pathPrefix := loc.Query().Get("prefix")
+	chapID, _ := strconv.Atoi(loc.Query().Get("chapter"))
+	lesID, _ := strconv.Atoi(loc.Query().Get("lesson"))
+	return pathPrefix, chapID, lesID
 }
 
 func main() {
@@ -70,15 +68,16 @@ func main() {
 		fmt.Println("ERROR:", err.Error())
 		return
 	}
+
 	loc, err := gui.URL()
-	var chapName string
-	var lessonID int
+	var pathPrefix string
+	var chapID, lessonID int
 	if err != nil {
 		fmt.Println("URL ERROR", err.Error())
 	} else {
-		chapName, lessonID = idsFromURL(loc)
+		pathPrefix, chapID, lessonID = idsFromURL(loc)
 	}
-	root.DisplayLesson(lessons.FindLesson(chapters, chapName, lessonID))
+	root.DisplayLesson(lessons.FindLesson(chapters, pathPrefix, chapID, lessonID))
 
 	<-make(chan bool)
 }

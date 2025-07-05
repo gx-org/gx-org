@@ -18,6 +18,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/gx-org/gx-org/internal/mdtext"
 	"github.com/gx-org/gx-org/lessons"
@@ -25,11 +26,14 @@ import (
 
 type (
 	Chapter struct {
-		ID        int
 		name      string
 		titleHTML string
 
-		Content []*Lesson
+		PathPrefix string
+		ID         int
+		Content    []*Lesson
+		Prev       *Chapter
+		Next       *Chapter
 	}
 
 	Lesson struct {
@@ -44,37 +48,38 @@ type (
 	}
 )
 
-var chapterNames = []string{
-	"intro",
-	"types",
-	"fill",
+var chapters = map[string][]string{
+	"": {
+		"intro",
+		"types",
+	},
+	"devs": {
+		"fill",
+	},
 }
 
-func New() (map[string]*Chapter, error) {
-	chapters := make(map[string]*Chapter, len(chapterNames))
-	var prev *Lesson
-	for _, name := range chapterNames {
-		chap := &Chapter{name: name, ID: len(chapters) + 1}
-		chapters[name] = chap
-		lessonFound := true
-		for lessonFound {
-			lesson, err := readLesson(chap)
-			if err != nil {
-				return nil, err
-			}
-			if lesson != nil {
-				lessonFound = true
-				if prev != nil {
-					lesson.Prev = prev
-					prev.Next = lesson
-				}
-				prev = lesson
-			} else {
-				lessonFound = false
-			}
+func New() (map[string][]*Chapter, error) {
+	m := make(map[string][]*Chapter)
+	for pathPrefix, chapterNames := range chapters {
+		var err error
+		m[pathPrefix], err = readChapters(pathPrefix, chapterNames)
+		if err != nil {
+			return nil, err
 		}
-		if len(chap.Content) == 0 {
-			break
+	}
+	return m, nil
+}
+
+func readChapters(pathPrefix string, chapterNames []string) ([]*Chapter, error) {
+	chapters := make([]*Chapter, len(chapterNames))
+	var last *Lesson
+	for i, name := range chapterNames {
+		chap := &Chapter{name: name, ID: i + 1, PathPrefix: pathPrefix}
+		chapters[i] = chap
+		var err error
+		last, err = chap.readLessons(last)
+		if err != nil {
+			return nil, err
 		}
 	}
 	if len(chapters) == 0 {
@@ -83,25 +88,47 @@ func New() (map[string]*Chapter, error) {
 	return chapters, nil
 }
 
+func (chap *Chapter) readLessons(prevL *Lesson) (*Lesson, error) {
+	for {
+		lesson, err := chap.readLesson()
+		if err != nil {
+			return nil, err
+		}
+		if lesson == nil {
+			return prevL, nil
+		}
+		if prevL != nil {
+			lesson.Prev = prevL
+			prevL.Next = lesson
+		}
+		prevL = lesson
+	}
+}
+
 const defaultCode = `package main
 `
 
-func readLesson(chap *Chapter) (*Lesson, error) {
+func (chap *Chapter) readLesson() (*Lesson, error) {
 	lessonID := len(chap.Content) + 1
 	fileName := fmt.Sprintf("%s_%d.md", chap.Name(), lessonID)
-	data, err := lessons.Lessons.ReadFile(fileName)
+	path := fileName
+	if chap.PathPrefix != "" {
+		path = filepath.Join(chap.PathPrefix, path)
+	}
+	data, err := lessons.Lessons.ReadFile(path)
 	if errors.Is(err, os.ErrNotExist) && lessonID > 1 {
 		return nil, nil
 	}
 	if err != nil {
-		return nil, fmt.Errorf("cannot read %s: %v", fileName, err)
+		return nil, fmt.Errorf("cannot read %s: %v", path, err)
 	}
 	mdt := mdtext.Parse(data)
 	lesson := &Lesson{Chapter: chap, ID: lessonID}
-	if mdt.TitleHTML != "" && lessonID != 1 {
+	needChapter := lessonID == 1
+	if mdt.TitleHTML != "" && !needChapter {
 		return nil, fmt.Errorf("%s: chapter title can only be specified for the first lesson", fileName)
 	}
-	if mdt.TitleHTML == "" && lessonID == 1 {
+	if mdt.TitleHTML == "" && needChapter {
 		return nil, fmt.Errorf("%s: no chapter title specified", fileName)
 	}
 	if lessonID == 1 {
@@ -124,20 +151,21 @@ func (chap *Chapter) NumLessons() int {
 	return len(chap.Content)
 }
 
-func FindLesson(chapters map[string]*Chapter, chapName string, lessonID int) *Lesson {
-	if chapName == "" {
-		chapName = chapterNames[0]
+func get[T any](i int, ts []T) T {
+	if i < 0 {
+		return ts[0]
 	}
-	lessonI := lessonID - 1
-	chap, ok := chapters[chapName]
-	if !ok {
-		return nil
+	if i >= len(ts) {
+		return ts[len(ts)-1]
 	}
-	if lessonI <= 0 {
-		return chap.Content[0]
+	return ts[i]
+}
+
+func FindLesson(allChapters map[string][]*Chapter, pathPrefix string, chapID, lessonID int) *Lesson {
+	chapters := allChapters[pathPrefix]
+	if chapters == nil {
+		chapters = allChapters[""]
 	}
-	if lessonI >= len(chap.Content) {
-		return chap.Content[0]
-	}
-	return chap.Content[lessonI]
+	chap := get(chapID-1, chapters)
+	return get(lessonID-1, chap.Content)
 }
