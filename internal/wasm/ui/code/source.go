@@ -208,6 +208,9 @@ func (s *Source) set(src string, sel *ui.Selection) {
 	if sel != nil {
 		sel.SetAsCurrent()
 	}
+	ui.Go(func() {
+		s.code.callAndWrite(s.code.compileAndWrite, src)
+	})
 }
 
 func (s *Source) onRun(dom.Event) {
@@ -222,10 +225,6 @@ func (s *Source) updateSource(process func(src string, sel *ui.Selection) (strin
 		return
 	}
 	s.set(currentSrc, sel)
-	ui.Go(func() {
-		s.code.callAndWrite(s.code.compileAndWrite, currentSrc)
-	})
-
 }
 
 func (s *Source) onSourceChange(dom.Event) {

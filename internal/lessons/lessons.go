@@ -55,6 +55,7 @@ var chapters = map[string][]string{
 	},
 	"devs": {
 		"fill",
+		"demo",
 	},
 }
 
