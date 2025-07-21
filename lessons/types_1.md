@@ -13,7 +13,7 @@ This list is temporary. We expect more types to be added as needs grow. Like the
 ```overview:code
 package main
 
-func Main() float32, int32 {
+func Main() (float32, int32) {
     return 2, 2
 }
 ```
