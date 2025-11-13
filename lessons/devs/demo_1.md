@@ -1,4 +1,4 @@
-# Spot the bug
+# Compiler errors
 
 ```code:main
 package main
@@ -10,14 +10,17 @@ import "math"
 var QKVDim intlen
 
 func rope(x [QKVDim]float32, pos float32) [QKVDim]float32 {
-    maxWavelength := shapes.Broadcast([1]float32{10000}, []intlen{QKVDim / 2})
+    maxWavelength := [QKVDim/2]float32(10000)
     maxIota := 2 / float32(QKVDim)
-    freqExp := [...]float32(num.IotaFull([]intlen{QKVDim})) * maxIota
+    freqExp := [...]float32(num.IotaFull([]intlen{QKVDim/2})) * maxIota
     timescale := math.Pow(maxWavelength, freqExp)
     radians := pos / timescale
-    sin, cos := math.Sin[float32](radians), math.Cos[float32](radians)
+    sin, cos := math.Sin(radians), math.Cos(radians)
     xx := shapes.Split(0, x, 2)
-    return shapes.Concat(0, xx[0]*cos-xx[1]*sin, xx[1]*cos+xx[0]*sin).([QKVDim]float32)
+    return shapes.Concat(0, 
+        xx[0]*cos-xx[1]*sin, 
+        xx[1]*cos+xx[0]*sin,
+    ).([QKVDim]float32)
 }
 ```
 
