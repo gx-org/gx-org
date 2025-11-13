@@ -39,7 +39,7 @@ func (r *root) DisplayLesson(les *lessons.Lesson) {
 	r.code.SetContent(les)
 	var pathPrefix string
 	if les.Chapter.PathPrefix != "" {
-		pathPrefix = fmt.Sprintf("&pathPrefix=%s", les.Chapter.PathPrefix)
+		pathPrefix = fmt.Sprintf("&prefix=%s", les.Chapter.PathPrefix)
 	}
 	r.gui.UpdateURL(fmt.Sprintf("index.html?chapter=%d&lesson=%d%s", les.Chapter.ID, les.ID, pathPrefix))
 }
