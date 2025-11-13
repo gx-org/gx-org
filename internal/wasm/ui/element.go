@@ -68,13 +68,17 @@ func InnerHTML(s string) ElementOption {
 	})
 }
 
+func SetVisibleProperty(el dom.Element, visible bool) {
+	propertyValue := ""
+	if !visible {
+		propertyValue = "none"
+	}
+	el.(dom.HTMLElement).Style().SetProperty("display", propertyValue, "")
+}
+
 func SetVisible(visible bool) ElementOption {
 	return ElementOptionF(func(el dom.Element) {
-		propertyValue := ""
-		if !visible {
-			propertyValue = "none"
-		}
-		el.(dom.HTMLElement).Style().SetProperty("display", propertyValue, "")
+		SetVisibleProperty(el, visible)
 	})
 }
 

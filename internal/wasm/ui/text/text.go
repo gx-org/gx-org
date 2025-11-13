@@ -50,6 +50,12 @@ func New(gui *ui.UI, parent dom.HTMLElement, page Page) *Text {
 }
 
 func (tt *Text) SetContent(les *lessons.Lesson) {
+	if les.Options.HideText {
+		ui.SetVisibleProperty(tt.lesson, false)
+		return
+	} else {
+		ui.SetVisibleProperty(tt.lesson, true)
+	}
 	ui.ClearChildren(tt.nav)
 	tt.gui.CreateButton(tt.nav, "←",
 		func(dom.Event) {

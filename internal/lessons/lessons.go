@@ -15,6 +15,7 @@
 package lessons
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -25,6 +26,10 @@ import (
 )
 
 type (
+	Options struct {
+		HideText bool `json:"hide_text"`
+	}
+
 	Chapter struct {
 		name      string
 		titleHTML string
@@ -37,11 +42,13 @@ type (
 	}
 
 	Lesson struct {
-		Chapter *Chapter
-		ID      int
+		Chapter  *Chapter
+		FileName string
+		ID       int
 
-		HTML string
-		Code string
+		HTML    string
+		Code    string
+		Options Options
 
 		Prev *Lesson
 		Next *Lesson
@@ -124,7 +131,7 @@ func (chap *Chapter) readLesson() (*Lesson, error) {
 		return nil, fmt.Errorf("cannot read %s: %v", path, err)
 	}
 	mdt := mdtext.Parse(data)
-	lesson := &Lesson{Chapter: chap, ID: lessonID}
+	lesson := &Lesson{Chapter: chap, FileName: fileName, ID: lessonID}
 	needChapter := lessonID == 1
 	if mdt.TitleHTML != "" && !needChapter {
 		return nil, fmt.Errorf("%s: chapter title can only be specified for the first lesson", fileName)
@@ -141,6 +148,9 @@ func (chap *Chapter) readLesson() (*Lesson, error) {
 		lesson.Code = defaultCode
 	}
 	chap.Content = append(chap.Content, lesson)
+	if err := lesson.parseOptions(mdt); err != nil {
+		return nil, err
+	}
 	return lesson, nil
 }
 
@@ -160,6 +170,17 @@ func get[T any](i int, ts []T) T {
 		return ts[len(ts)-1]
 	}
 	return ts[i]
+}
+
+func (l *Lesson) parseOptions(mdt *mdtext.MDText) error {
+	options := mdt.Code["options"]
+	if options == "" {
+		return nil
+	}
+	if err := json.Unmarshal([]byte(options), &(l.Options)); err != nil {
+		return fmt.Errorf("%s: cannot load options: %v\n%s", l.FileName, err, options)
+	}
+	return nil
 }
 
 func FindLesson(allChapters map[string][]*Chapter, pathPrefix string, chapID, lessonID int) *Lesson {
