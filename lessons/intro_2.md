@@ -2,7 +2,7 @@ GX is a domain specialised language. GX is strongly typed, including array axes.
 
 When clicking on the Run button, the host language calls the `Main` function, fetch the results, and prints a string representation of the result in the output element. GX uses a backend to run the code. In this overview, we use a Go native backend (also running in your navigator). Another backend supported by GX is XLA, to run accelerated code on CPUs, GPUs, and TPUs.
 
-```overview:code
+```code:main
 package main
 
 func Main() [2][3]float32 {

@@ -1,6 +1,6 @@
 # Spot the bug
 
-```overview:code
+```code:main
 package main
 
 import "shapes"
@@ -19,5 +19,4 @@ func rope(x [QKVDim]float32, pos float32) [QKVDim]float32 {
     xx := shapes.Split(0, x, 2)
     return shapes.Concat(0, xx[0]*cos-xx[1]*sin, xx[1]*cos+xx[0]*sin).([QKVDim]float32)
 }
-
 ```

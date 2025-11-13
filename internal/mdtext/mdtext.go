@@ -9,7 +9,7 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 )
 
-const TagPrefix = "overview:"
+const TagPrefix = "code:"
 
 func processCodeWithGXTags(m map[string]*ast.CodeBlock) func(node *ast.CodeBlock) ast.WalkStatus {
 	return func(node *ast.CodeBlock) ast.WalkStatus {
@@ -17,7 +17,7 @@ func processCodeWithGXTags(m map[string]*ast.CodeBlock) func(node *ast.CodeBlock
 		if !strings.HasPrefix(codeTag, TagPrefix) {
 			return ast.GoToNext
 		}
-		m[codeTag] = node
+		m[strings.TrimPrefix(codeTag, TagPrefix)] = node
 		return ast.GoToNext
 	}
 }

@@ -10,7 +10,7 @@ First, let's start with GX builtin types:
 
 This list is temporary. We expect more types to be added as needs grow. Like the Go language, numbers (like the number `2` in `return 2, 2`) are automatically casted to the correct type given the context.
 
-```overview:code
+```code:main
 package main
 
 func Main() (float32, int32) {

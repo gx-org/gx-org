@@ -8,7 +8,7 @@ Click on the Run button to execute the function named `Main`.
 
 Access to the next lesson by clicking on the array below.
 
-```overview:code
+```code:main
 package main
 
 func Main() [2]float32 {

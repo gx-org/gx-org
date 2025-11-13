@@ -136,7 +136,7 @@ func (chap *Chapter) readLesson() (*Lesson, error) {
 		chap.titleHTML = mdt.TitleHTML
 	}
 	lesson.HTML = chap.titleHTML + "\n\n" + mdt.HTML
-	lesson.Code = mdt.Code[mdtext.TagPrefix+"code"]
+	lesson.Code = mdt.Code["main"]
 	if lesson.Code == "" {
 		lesson.Code = defaultCode
 	}
