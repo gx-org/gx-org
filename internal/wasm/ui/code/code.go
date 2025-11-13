@@ -105,8 +105,8 @@ func flatten(out []values.Value) []values.Value {
 			flat = append(flat, v)
 			continue
 		}
-		vals := make([]values.Value, slice.Size())
-		for i := 0; i < slice.Size(); i++ {
+		vals := make([]values.Value, slice.Len())
+		for i := 0; i < slice.Len(); i++ {
 			vals[i] = slice.Element(i)
 		}
 		flat = append(flat, flatten(vals)...)
@@ -135,7 +135,7 @@ func buildString(bld *strings.Builder, out []values.Value) error {
 func (cd *Code) runFunc(fun ir.Func, args []values.Value) ([]values.Value, string, bool) {
 	numArgs := fun.FuncType().Params.Len()
 	if len(args) < numArgs {
-		return nil, fmt.Sprintf("not enough arguments to pass to %s: got %d but want %d", fun.Name(), len(args), numArgs), false
+		return nil, fmt.Sprintf("not enough arguments to pass to %s: got %d but want %d", fun.ShortString(), len(args), numArgs), false
 	}
 	args = args[:numArgs]
 	runner, err := tracer.Trace(cd.dev, fun.(*ir.FuncDecl), nil, args, nil)
