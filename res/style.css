@@ -72,9 +72,10 @@ pre {
 }
 
 .code_output_container {
-	display: flex;
 	background: var(--main-element-bg-color);
-	flex-grow: 1;
+	height: 20%;
+	overflow-x: auto;
+	overflow-y: auto;
 }
 
 .lesson_container {
