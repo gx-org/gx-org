@@ -5,6 +5,7 @@ go 1.24.4
 toolchain go1.24.8
 
 require (
+	github.com/alecthomas/chroma/v2 v2.20.0
 	github.com/go-chi/chi/v5 v5.2.2
 	github.com/gomarkdown/markdown v0.0.0-20250311123330-531bef5e742b
 	github.com/google/go-cmp v0.7.0
@@ -13,6 +14,7 @@ require (
 )
 
 require (
+	github.com/dlclark/regexp2 v1.11.5 // indirect
 	github.com/gx-org/backend v0.3.1-0.20251008204911-df311e14b84e // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 )

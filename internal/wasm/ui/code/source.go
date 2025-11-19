@@ -49,8 +49,9 @@ type Source struct {
 	input     *dom.HTMLDivElement
 	control   *dom.HTMLDivElement
 
-	keys   *ui.Keys
-	source *history.History[state]
+	keys      *ui.Keys
+	source    *history.History[state]
+	formatter *formatter
 }
 
 func newSource(code *Code, parent dom.Element) *Source {
@@ -58,6 +59,7 @@ func newSource(code *Code, parent dom.Element) *Source {
 		code:      code,
 		container: code.gui.CreateDIV(parent, ui.Class("code_source_container")),
 		source:    history.New(stateEq),
+		formatter: newFormatter(),
 	}
 	s.input = code.gui.CreateDIV(parent,
 		ui.Class("code_source_textinput_container"),
@@ -145,13 +147,7 @@ func (s *Source) onKeyPress(keys *ui.Keys, ev *dom.KeyboardEvent) {
 }
 
 func (s *Source) extractSource() string {
-	var srcs []string
-	for _, child := range s.input.ChildNodes() {
-		srcs = append(srcs, ui.TextContent(child.Underlying()))
-	}
-	src := strings.Join(srcs, "\n")
-	src = strings.ReplaceAll(src, "\u00a0", " ")
-	return src
+	return ui.TextContent(s.input.Underlying())
 }
 
 var keywordToColor = []struct {
@@ -178,33 +174,25 @@ const tabSize = 4
 
 var tabSpaces = strings.Repeat(" ", tabSize)
 
-func format(s string) string {
-	s = strings.ReplaceAll(s, "\t", tabSpaces)
-	s = strings.ReplaceAll(s, " ", "\u00a0")
-	s = html.EscapeString(s)
+func (s *Source) format(src string) string {
+	fmt.Println(s.formatter.format(src))
+	src = strings.ReplaceAll(src, "\t", tabSpaces)
+	src = strings.ReplaceAll(src, " ", "\u00a0")
+	src = html.EscapeString(src)
 	for _, color := range keywordToColor {
 		fontTag := fmt.Sprintf(`<span style="color:%s;">%%s</span>`, color.color)
 		for _, word := range color.words {
-			s = strings.ReplaceAll(s, word, fmt.Sprintf(fontTag, word))
+			src = strings.ReplaceAll(src, word, fmt.Sprintf(fontTag, word))
 		}
 	}
-	return s
+	return src
 }
 
 func (s *Source) set(src string, sel *ui.Selection) {
 	s.source.Append(state{src: src, sel: sel})
 	parent := s.input
 	ui.ClearChildren(parent)
-	for _, line := range strings.Split(src, "\n") {
-		if line == "" {
-			line = "<br>"
-		} else {
-			line = format(line)
-		}
-		s.code.gui.CreateDIV(parent,
-			ui.InnerHTML(line),
-		)
-	}
+	parent.SetInnerHTML(s.formatter.format(src))
 	if sel != nil {
 		sel.SetAsCurrent()
 	}
