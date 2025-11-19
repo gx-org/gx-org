@@ -18,7 +18,6 @@ package code
 
 import (
 	"fmt"
-	"html"
 	"strings"
 
 	"github.com/gx-org/gx-org/internal/history"
@@ -147,7 +146,7 @@ func (s *Source) onKeyPress(keys *ui.Keys, ev *dom.KeyboardEvent) {
 }
 
 func (s *Source) extractSource() string {
-	return ui.TextContent(s.input.Underlying())
+	return ui.TextContent(s.input)
 }
 
 var keywordToColor = []struct {
@@ -174,20 +173,6 @@ const tabSize = 4
 
 var tabSpaces = strings.Repeat(" ", tabSize)
 
-func (s *Source) format(src string) string {
-	fmt.Println(s.formatter.format(src))
-	src = strings.ReplaceAll(src, "\t", tabSpaces)
-	src = strings.ReplaceAll(src, " ", "\u00a0")
-	src = html.EscapeString(src)
-	for _, color := range keywordToColor {
-		fontTag := fmt.Sprintf(`<span style="color:%s;">%%s</span>`, color.color)
-		for _, word := range color.words {
-			src = strings.ReplaceAll(src, word, fmt.Sprintf(fontTag, word))
-		}
-	}
-	return src
-}
-
 func (s *Source) set(src string, sel *ui.Selection) {
 	s.source.Append(state{src: src, sel: sel})
 	parent := s.input
@@ -208,6 +193,7 @@ func (s *Source) onRun(dom.Event) {
 func (s *Source) updateSource(process func(src string, sel *ui.Selection) (string, *ui.Selection, bool)) {
 	currentSrc := s.extractSource()
 	sel := s.code.gui.CurrentSelection(s.input)
+	fmt.Println("Selection", sel.String())
 	currentSrc, sel, cont := process(currentSrc, sel)
 	if !cont {
 		return

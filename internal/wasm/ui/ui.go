@@ -122,53 +122,46 @@ func isDiv(el js.Value) bool {
 	return nodeName(el) == "DIV"
 }
 
-func findParentDIV(el js.Value) js.Value {
+func findParentLineAndCode(el dom.Element) (line, code dom.Element) {
 	current := el
-	for !isDiv(current) {
-		current = current.Get("parentElement")
+	for current != nil && NodeName(current) != "CODE" {
+		for _, class := range ClassOf(current) {
+			if strings.HasSuffix(class, "line") {
+				line = current
+			}
+		}
+		current = current.ParentElement()
 	}
-	return current
+	code = current
+	return
 }
 
-func lineNumFromElement(el js.Value) int {
-	line := 0
-	prev := findParentDIV(el).Get("previousElementSibling")
-	for !prev.IsNull() {
-		prev = prev.Get("previousElementSibling")
-		line++
+func lineNumFromElement(el dom.Element) (dom.Element, int) {
+	lineEl, codeEl := findParentLineAndCode(el)
+	if codeEl == nil || lineEl == nil {
+		return nil, 0
 	}
-	return line
+	line := 0
+	for i, child := range codeEl.ChildNodes() {
+		if child.IsEqualNode(lineEl) {
+			line = i + 1
+		}
+	}
+	return lineEl, line
 }
 
 func utf16Count(s string) int {
 	return len(utf16.Encode([]rune(s)))
 }
 
-func textLenFromPreviousElement(el js.Value) (utf16Pos, utf8Pos int) {
-	if nodeName(el.Get("firstChild")) == "BR" {
-		return
-	}
-	// Make sure that the parent is DIV
-	// (moving up from text to font in a font tag)
-	for !isDiv(el.Get("parentNode")) {
-		el = el.Get("parentNode")
-	}
-	if el.Get("parentNode").Get("childNodes").Length() <= 1 {
-		return
-	}
-	// Start counting text context in the previous element
-	// (ignoring the current element)
-	prev := el.Get("previousSibling")
-	for !prev.IsNull() {
-		text := TextContent(prev)
-		utf16Pos += utf16Count(text)
-		utf8Pos += utf8.RuneCountInString(text)
-		prev = prev.Get("previousSibling")
-	}
-	return
+func textLenFromPreviousElement(ancestor dom.Element, line dom.Element) (utf16Pos, utf8Pos int) {
+	text := TextContentUntil(line, func(el dom.Node) bool {
+		return !el.IsEqualNode(ancestor)
+	})
+	return utf16Count(text), utf8.RuneCountInString(text)
 }
 
-func textLenFromElement(rang js.Value, ancestor js.Value) (utf16Pos, utf8Pos int) {
+func textLenFromElement(rang js.Value, ancestor dom.Element) (utf16Pos, utf8Pos int) {
 	utf16Pos = rang.Get("startOffset").Int()
 	utf8Str := TextContent(ancestor)
 	utf16Str := utf16.Encode([]rune(utf8Str))
@@ -185,12 +178,9 @@ func (ui *UI) CurrentSelection(el dom.HTMLElement) *Selection {
 		return nil
 	}
 	rang := selection().Call("getRangeAt", 0)
-	ancestor := rang.Get("commonAncestorContainer")
-	line := 0
-	if len(el.InnerHTML()) > 1 { // Necessary condition to handle the edge case when there is only a single character.
-		line = lineNumFromElement(ancestor)
-	}
-	utf16Prev, utf8Prev := textLenFromPreviousElement(ancestor)
+	ancestor := dom.WrapElement(rang.Get("commonAncestorContainer"))
+	lineEl, line := lineNumFromElement(ancestor)
+	utf16Prev, utf8Prev := textLenFromPreviousElement(ancestor, lineEl)
 	utf16Column, utf8Column := textLenFromElement(rang, ancestor)
 	return &Selection{
 		ui:          ui,
@@ -202,9 +192,17 @@ func (ui *UI) CurrentSelection(el dom.HTMLElement) *Selection {
 	}
 }
 
-func TextContent(el js.Value) string {
+func noFilter(dom.Node) bool {
+	return true
+}
+
+func TextContent(el dom.Node) string {
+	return TextContentUntil(el, noFilter)
+}
+
+func TextContentUntil(el dom.Node, filter func(dom.Node) bool) string {
 	var content strings.Builder
-	for leaf := range iterLeaves(&dom.BasicNode{Value: el}) {
+	for leaf := range iterLeaves(el, filter) {
 		data := leaf.Underlying().Get("data")
 		if data.IsNull() || data.IsUndefined() {
 			continue
@@ -214,14 +212,20 @@ func TextContent(el js.Value) string {
 	return html.UnescapeString(content.String())
 }
 
-func iterLeaves(el dom.Node) func(yield func(dom.Node) bool) {
+func iterLeaves(el dom.Node, filter func(dom.Node) bool) func(yield func(dom.Node) bool) {
 	return func(yield func(dom.Node) bool) {
+		if !filter(el) {
+			return
+		}
 		if !el.HasChildNodes() {
 			yield(el)
 			return
 		}
 		for _, child := range el.ChildNodes() {
-			for leaf := range iterLeaves(child) {
+			if !filter(child) {
+				return
+			}
+			for leaf := range iterLeaves(child, filter) {
 				if !yield(leaf) {
 					return
 				}
@@ -231,7 +235,7 @@ func iterLeaves(el dom.Node) func(yield func(dom.Node) bool) {
 }
 
 func findFirstLeaf(el dom.Node) dom.Node {
-	for leaf := range iterLeaves(el) {
+	for leaf := range iterLeaves(el, noFilter) {
 		return leaf
 	}
 	return nil
@@ -248,7 +252,7 @@ func (sel *Selection) SetAsCurrent() {
 	lineDiv := children[sel.line]
 	column := sel.utf16Column
 	for _, child := range lineDiv.ChildNodes() {
-		textLen := utf16Count(TextContent(child.Underlying()))
+		textLen := utf16Count(TextContent(child))
 		if column <= textLen {
 			selection().Call("collapse", findFirstLeaf(child).Underlying(), column)
 			return
@@ -287,4 +291,20 @@ func ClearChildren(node dom.Node) {
 	for _, child := range node.ChildNodes() {
 		node.RemoveChild(child)
 	}
+}
+
+func NodeName(el dom.Node) string {
+	return strings.ToUpper(el.NodeName())
+}
+
+func ClassOf(el dom.Element) []string {
+	if el.Underlying().Get("classList").IsUndefined() {
+		return nil
+	}
+	classes := el.Class()
+	ss := make([]string, classes.Length())
+	for i := range ss {
+		ss[i] = classes.Item(i)
+	}
+	return ss
 }
