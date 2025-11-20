@@ -22,7 +22,9 @@ func mainErr() error {
 	if err := ft.WriteCSS(&css, styles.Get("xcode")); err != nil {
 		return err
 	}
-	return os.WriteFile(os.Args[1], []byte(css.String()), 0666)
+	content := css.String()
+	content = strings.ReplaceAll(content, "display: flex;", "display: block;")
+	return os.WriteFile(os.Args[1], []byte(content), 0666)
 }
 
 func main() {

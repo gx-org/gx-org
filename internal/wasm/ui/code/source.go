@@ -120,9 +120,14 @@ func (s *Source) onPaste(ev *dom.ClipboardEvent) {
 }
 
 func (s *Source) onKeyPress(keys *ui.Keys, ev *dom.KeyboardEvent) {
-	if keys.On("Shift", "Enter") {
+	if keys.On("Shift") {
 		s.onRun(ev)
 		ev.PreventDefault()
+		return
+	}
+	if keys.On("Enter") {
+		ev.PreventDefault()
+		s.updateSource(s.insertSource("\n"))
 		return
 	}
 	if keys.On("Tab") {
@@ -149,26 +154,6 @@ func (s *Source) extractSource() string {
 	return ui.TextContent(s.input)
 }
 
-var keywordToColor = []struct {
-	color string
-	words []string
-}{
-	{
-		color: "var(--language-keyword)",
-		words: []string{
-			"var", "const", "return", "struct", "func", "package", "import", "type", "interface",
-		},
-	},
-	{
-		color: "var(--type-keyword)",
-		words: []string{
-			"bool", "string",
-			"int32", "int64",
-			"bfloat64", "float32", "float64",
-		},
-	},
-}
-
 const tabSize = 4
 
 var tabSpaces = strings.Repeat(" ", tabSize)
@@ -193,7 +178,6 @@ func (s *Source) onRun(dom.Event) {
 func (s *Source) updateSource(process func(src string, sel *ui.Selection) (string, *ui.Selection, bool)) {
 	currentSrc := s.extractSource()
 	sel := s.code.gui.CurrentSelection(s.input)
-	fmt.Println("Selection", sel.String())
 	currentSrc, sel, cont := process(currentSrc, sel)
 	if !cont {
 		return

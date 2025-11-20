@@ -57,8 +57,11 @@ pre {
 }
 
 .code_source_textinput_container {
+	display: block;
 	font-family: monospace, monospace;
 	background: rgb(200, 227, 255);
+	border: 0; 
+    	outline: 0;
 	height: 80%;
 	padding: 2px;
 	white-space: nowrap;
