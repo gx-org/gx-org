@@ -23,6 +23,7 @@ func mainErr() error {
 		return err
 	}
 	content := css.String()
+	content = strings.ReplaceAll(content, "background-color: #ffffff;", "")
 	content = strings.ReplaceAll(content, "display: flex;", "display: block;")
 	return os.WriteFile(os.Args[1], []byte(content), 0666)
 }

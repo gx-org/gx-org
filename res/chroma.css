@@ -1,5 +1,5 @@
-/* Background */ .chroma_bg { background-color: #ffffff; }
-/* PreWrapper */ .chroma_chroma { background-color: #ffffff; }
+/* Background */ .chroma_bg {  }
+/* PreWrapper */ .chroma_chroma {  }
 /* Error */ .chroma_chroma .chroma_err { color: #000000 }
 /* LineLink */ .chroma_chroma .chroma_lnlinks { outline: none; text-decoration: none; color: inherit }
 /* LineTableTD */ .chroma_chroma .chroma_lntd { vertical-align: top; padding: 0; margin: 0; border: 0; }

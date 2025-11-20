@@ -19,6 +19,7 @@ package ui
 import (
 	"fmt"
 	"html"
+	"math"
 	"net/url"
 	"strings"
 	"syscall/js"
@@ -230,6 +231,9 @@ func (lc *lineCollector) String() string {
 	if lc.all != "" {
 		return lc.all
 	}
+	if lc.buf.Len() > 0 {
+		lc.nextLine = 0
+	}
 	lc.flush()
 	lc.all = strings.Join(lc.lines, "\n")
 	lc.lines = nil
@@ -325,7 +329,8 @@ func (sel *Selection) SetAsCurrent() {
 	}
 	lineEls := codeNode.ChildNodes()
 	if sel.line >= len(lineEls) {
-		return
+		sel.line = len(lineEls) - 1
+		sel.utf16Column = math.MaxInt
 	}
 	child, column := computeChildColumn(lineEls[sel.line], sel.utf16Column)
 	selection().Call("collapse", findFirstLeaf(child).Underlying(), column)

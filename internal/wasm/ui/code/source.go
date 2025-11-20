@@ -120,9 +120,10 @@ func (s *Source) onPaste(ev *dom.ClipboardEvent) {
 }
 
 func (s *Source) onKeyPress(keys *ui.Keys, ev *dom.KeyboardEvent) {
-	if keys.On("Shift") {
-		s.onRun(ev)
+	if keys.On("Shift") && keys.On("Enter") {
+		// Run the code
 		ev.PreventDefault()
+		s.runCode()
 		return
 	}
 	if keys.On("Enter") {
@@ -151,7 +152,8 @@ func (s *Source) onKeyPress(keys *ui.Keys, ev *dom.KeyboardEvent) {
 }
 
 func (s *Source) extractSource() string {
-	return ui.TextContent(s.input)
+	src := ui.TextContent(s.input)
+	return src + "\n"
 }
 
 const tabSize = 4
@@ -171,8 +173,12 @@ func (s *Source) set(src string, sel *ui.Selection) {
 	})
 }
 
-func (s *Source) onRun(dom.Event) {
+func (s *Source) runCode() {
 	s.code.callAndWrite(s.code.runCode, s.source.Current().src)
+}
+
+func (s *Source) onRun(dom.Event) {
+	s.runCode()
 }
 
 func (s *Source) updateSource(process func(src string, sel *ui.Selection) (string, *ui.Selection, bool)) {
