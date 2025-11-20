@@ -249,38 +249,42 @@ func TextContentUntil(el dom.Node, filter func(dom.Node) bool) string {
 		}
 		return filter(node)
 	}
-	for _, data := range iterLeaves(el, processLine) {
+	for _, data := range IterLeaves(el, processLine) {
 		lc.buf.WriteString(data)
 	}
 	return html.UnescapeString(lc.String())
 }
 
-func walkChildren(el dom.Node, filter func(dom.Node) bool, yield func(dom.Node, string) bool) bool {
-	if !filter(el) {
+func Walk(el dom.Node, onAllNode func(dom.Node) bool, onLeaf func(dom.Node, string) bool) bool {
+	if onAllNode != nil && !onAllNode(el) {
 		return false
 	}
-	data := el.Underlying().Get("data")
-	if !data.IsNull() && !data.IsUndefined() {
-		if !yield(el, data.String()) {
+	if onLeaf != nil && !el.HasChildNodes() {
+		data := el.Underlying().Get("data")
+		text := ""
+		if !data.IsNull() && !data.IsUndefined() {
+			text = data.String()
+		}
+		if !onLeaf(el, text) {
 			return false
 		}
 	}
 	for _, child := range el.ChildNodes() {
-		if !walkChildren(child, filter, yield) {
+		if !Walk(child, onAllNode, onLeaf) {
 			return false
 		}
 	}
 	return true
 }
 
-func iterLeaves(el dom.Node, filter func(dom.Node) bool) func(yield func(dom.Node, string) bool) {
+func IterLeaves(el dom.Node, filter func(dom.Node) bool) func(yield func(dom.Node, string) bool) {
 	return func(yield func(dom.Node, string) bool) {
-		walkChildren(el, filter, yield)
+		Walk(el, filter, yield)
 	}
 }
 
 func findFirstLeaf(el dom.Node) dom.Node {
-	for leaf := range iterLeaves(el, noFilter) {
+	for leaf := range IterLeaves(el, noFilter) {
 		return leaf
 	}
 	return nil
@@ -300,9 +304,9 @@ func findChild(el dom.Node, filter func(dom.Node) bool) dom.Node {
 
 func computeChildColumn(line dom.Node, until int) (dom.Node, int) {
 	column := until
-	var last dom.Node
+	last := line
 	var lastLen int
-	for child := range iterLeaves(line, noFilter) {
+	for child := range IterLeaves(line, noFilter) {
 		textLen := utf16Count(TextContent(child))
 		if column <= textLen {
 			return child, column

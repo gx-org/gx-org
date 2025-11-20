@@ -160,11 +160,40 @@ const tabSize = 4
 
 var tabSpaces = strings.Repeat(" ", tabSize)
 
+func replaceNewLineWithBR(el dom.Node) bool {
+	if ui.NodeName(el) != "SPAN" {
+		return true
+	}
+	isChromaW := false
+	for _, class := range ui.ClassOf(el) {
+		if class == "chroma_w" {
+			isChromaW = true
+		}
+	}
+	if !isChromaW {
+		return true
+	}
+	children := el.ChildNodes()
+	if len(children) != 1 {
+		return true
+	}
+	data := children[0].Underlying().Get("data")
+	if data.IsNull() || data.IsUndefined() {
+		return true
+	}
+	if data.String() != "\n" {
+		return true
+	}
+	dom.WrapHTMLElement(el.Underlying()).SetInnerHTML("<br>")
+	return true
+}
+
 func (s *Source) set(src string, sel *ui.Selection) {
 	s.source.Append(state{src: src, sel: sel})
 	parent := s.input
 	ui.ClearChildren(parent)
 	parent.SetInnerHTML(s.formatter.format(src))
+	ui.Walk(parent, replaceNewLineWithBR, nil)
 	if sel != nil {
 		sel.SetAsCurrent()
 	}
