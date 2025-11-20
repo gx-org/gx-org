@@ -21,6 +21,7 @@ import (
 	"html"
 	"math"
 	"net/url"
+	"strconv"
 	"strings"
 	"syscall/js"
 	"unicode/utf16"
@@ -145,13 +146,9 @@ func lineNumFromElement(el dom.Element) (dom.Element, int) {
 	if codeEl == nil || lineEl == nil {
 		return nil, 0
 	}
-	line := 0
-	for i, child := range codeEl.ChildNodes() {
-		if child.IsEqualNode(lineEl) {
-			line = i
-		}
-	}
-	return lineEl, line
+	lineAttr := lineEl.Attributes()["line_num"]
+	line, _ := strconv.Atoi(lineAttr)
+	return codeEl, line
 }
 
 func utf16Count(s string) int {
@@ -159,6 +156,9 @@ func utf16Count(s string) int {
 }
 
 func textLenFromPreviousElement(ancestor dom.Element, line dom.Element) (utf16Pos, utf8Pos int) {
+	if line == nil {
+		line = ancestor
+	}
 	want := ancestor.Underlying()
 	text := TextContentUntil(line, func(el dom.Node) bool {
 		return !el.Underlying().Equal(want)
@@ -179,22 +179,25 @@ func textLenFromElement(rang js.Value, ancestor dom.Element) (utf16Pos, utf8Pos 
 }
 
 func (ui *UI) CurrentSelection(el dom.HTMLElement) *Selection {
+	sel := &Selection{
+		ui: ui,
+		el: el,
+	}
 	if numRange := selection().Get("rangeCount").Int(); numRange == 0 {
-		return nil
+		return sel
 	}
-	rang := selection().Call("getRangeAt", 0)
-	ancestor := dom.WrapElement(rang.Get("commonAncestorContainer"))
-	lineEl, line := lineNumFromElement(ancestor)
+	sel.rang = selection().Call("getRangeAt", 0)
+	ancestor := dom.WrapElement(sel.rang.Get("commonAncestorContainer"))
+	if ancestor == nil {
+		return sel
+	}
+	var lineEl dom.Element
+	lineEl, sel.line = lineNumFromElement(ancestor)
 	utf16Prev, utf8Prev := textLenFromPreviousElement(ancestor, lineEl)
-	utf16Column, utf8Column := textLenFromElement(rang, ancestor)
-	return &Selection{
-		ui:          ui,
-		el:          el,
-		rang:        rang,
-		utf16Column: utf16Prev + utf16Column,
-		utf8Column:  utf8Prev + utf8Column,
-		line:        line,
-	}
+	utf16Column, utf8Column := textLenFromElement(sel.rang, ancestor)
+	sel.utf16Column = utf16Prev + utf16Column
+	sel.utf8Column = utf8Prev + utf8Column
+	return sel
 }
 
 func noFilter(dom.Node) bool {
@@ -224,7 +227,7 @@ func (lc *lineCollector) flush() {
 	line := lc.buf.String()
 	line = strings.TrimSuffix(line, "\n")
 	lc.lines = append(lc.lines, line)
-	lc.buf.Reset()
+	lc.buf = strings.Builder{}
 }
 
 func (lc *lineCollector) String() string {
@@ -238,6 +241,7 @@ func (lc *lineCollector) String() string {
 	lc.all = strings.Join(lc.lines, "\n")
 	lc.lines = nil
 	lc.nextLine = -1
+	lc.buf = strings.Builder{}
 	return lc.all
 }
 
@@ -322,7 +326,7 @@ func computeChildColumn(line dom.Node, until int) (dom.Node, int) {
 }
 
 func (sel *Selection) SetAsCurrent() {
-	if sel == nil {
+	if sel.rang.IsNull() {
 		return
 	}
 	codeNode := findChild(sel.el, func(node dom.Node) bool {
@@ -332,6 +336,9 @@ func (sel *Selection) SetAsCurrent() {
 		return
 	}
 	lineEls := codeNode.ChildNodes()
+	if len(lineEls) == 0 {
+		return
+	}
 	if sel.line >= len(lineEls) {
 		sel.line = len(lineEls) - 1
 		sel.utf16Column = math.MaxInt

@@ -1,7 +1,6 @@
 # Types in GX
 
 First, let's start with GX builtin types:
-
 * floating point numbers: `bfloat16`, `float32`, `float64`
 * integers: `int32`, `int64`
 * unsigned integers: `uint32`, `uint64`

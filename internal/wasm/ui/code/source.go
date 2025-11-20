@@ -18,6 +18,7 @@ package code
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/gx-org/gx-org/internal/history"
@@ -78,8 +79,7 @@ func insertSource(src string, sel *ui.Selection, toInsert string) (string, *ui.S
 	cursorLine := sel.Line()
 	var targetLines []string
 	srcLines := strings.Split(src, "\n")
-	for currentSrcLine := 0; currentSrcLine < len(srcLines); currentSrcLine++ {
-		srcLine := srcLines[currentSrcLine]
+	for currentSrcLine, srcLine := range srcLines {
 		if currentSrcLine < cursorLine {
 			targetLines = append(targetLines, srcLine)
 			continue
@@ -89,7 +89,7 @@ func insertSource(src string, sel *ui.Selection, toInsert string) (string, *ui.S
 			continue
 		}
 		srcLineRunes := []rune(srcLine)
-		cursorColumn := sel.Column()
+		cursorColumn := min(sel.Column(), len(srcLineRunes))
 		newLine := append([]rune{}, srcLineRunes[:cursorColumn]...)
 		for insertedLine := range strings.Lines(toInsert) {
 			newLine = append(newLine, []rune(strings.TrimSuffix(insertedLine, "\n"))...)
@@ -104,7 +104,8 @@ func insertSource(src string, sel *ui.Selection, toInsert string) (string, *ui.S
 		newLine = append(newLine, srcLineRunes[cursorColumn:]...)
 		targetLines = append(targetLines, string(newLine))
 	}
-	return strings.Join(targetLines, "\n"), sel, true
+	out := strings.Join(targetLines, "\n")
+	return out, sel, true
 }
 
 func (s *Source) insertSource(inserted string) func(src string, sel *ui.Selection) (string, *ui.Selection, bool) {
@@ -153,39 +154,52 @@ func (s *Source) onKeyPress(keys *ui.Keys, ev *dom.KeyboardEvent) {
 
 func (s *Source) extractSource() string {
 	src := ui.TextContent(s.input)
-	return src + "\n"
+	if len(src) > 0 {
+		src += "\n"
+	}
+	return src
 }
 
 const tabSize = 4
 
 var tabSpaces = strings.Repeat(" ", tabSize)
 
-func replaceNewLineWithBR(el dom.Node) bool {
-	if ui.NodeName(el) != "SPAN" {
-		return true
-	}
-	isChromaW := false
-	for _, class := range ui.ClassOf(el) {
-		if class == "chroma_w" {
-			isChromaW = true
-		}
-	}
-	if !isChromaW {
-		return true
-	}
+func replaceNewLineWithBRTag(el dom.Node) {
 	children := el.ChildNodes()
 	if len(children) != 1 {
-		return true
+		return
 	}
 	data := children[0].Underlying().Get("data")
 	if data.IsNull() || data.IsUndefined() {
-		return true
+		return
 	}
 	if data.String() != "\n" {
-		return true
+		return
 	}
 	dom.WrapHTMLElement(el.Underlying()).SetInnerHTML("<br>")
-	return true
+}
+
+func setLineNumber(node dom.Node, lineNumber int) {
+	dom.WrapElement(node.Underlying()).SetAttribute("line_num", strconv.Itoa(lineNumber))
+}
+
+func customizeChromaHTML() func(el dom.Node) bool {
+	lineNumber := 0
+	return func(el dom.Node) bool {
+		if ui.NodeName(el) != "SPAN" {
+			return true
+		}
+		for _, class := range ui.ClassOf(el) {
+			switch class {
+			case "chroma_w":
+				replaceNewLineWithBRTag(el)
+			case "chroma_line":
+				setLineNumber(el, lineNumber)
+				lineNumber++
+			}
+		}
+		return true
+	}
 }
 
 func (s *Source) set(src string, sel *ui.Selection) {
@@ -193,7 +207,7 @@ func (s *Source) set(src string, sel *ui.Selection) {
 	parent := s.input
 	ui.ClearChildren(parent)
 	parent.SetInnerHTML(s.formatter.format(src))
-	ui.Walk(parent, replaceNewLineWithBR, nil)
+	ui.Walk(parent, customizeChromaHTML(), nil)
 	if sel != nil {
 		sel.SetAsCurrent()
 	}
