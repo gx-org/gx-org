@@ -22,11 +22,22 @@ body {
 
 code {
 	background: var(--code-bg-color);
+	font-size: 14px;
 }
 
 pre {
 	margin: 2px;
 }
+
+p {
+	margin: 0;
+	padding: 0;
+}
+
+ul {
+	margin: 1px;
+}
+
 
 .root_container {
 	display: flex;
