@@ -20,6 +20,7 @@ import (
 	"fmt"
 
 	"github.com/gx-org/gx-org/internal/lessons"
+	"github.com/gx-org/gx-org/internal/wasm/codefmt"
 	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"honnef.co/go/js/dom/v2"
 )
@@ -32,6 +33,8 @@ type (
 		content *dom.HTMLDivElement
 		config  *dom.HTMLDivElement
 		nav     *dom.HTMLDivElement
+
+		configFmt *codefmt.Formatter
 	}
 
 	Page interface {
@@ -41,12 +44,16 @@ type (
 
 func New(gui *ui.UI, parent dom.HTMLElement, page Page) *Text {
 	text := &Text{
-		gui:    gui,
-		lesson: gui.CreateDIV(parent, ui.Class("lesson_container")),
-		page:   page,
+		gui:       gui,
+		lesson:    gui.CreateDIV(parent, ui.Class("lesson_container")),
+		page:      page,
+		configFmt: codefmt.JSON(),
 	}
 	text.content = gui.CreateDIV(text.lesson, ui.Class("lesson_content"))
-	text.config = gui.CreateDIV(text.lesson, ui.Class("lesson_config"))
+	text.config = gui.CreateDIV(
+		gui.CreateDIV(text.lesson, ui.Class("lesson_config")),
+		ui.Class("code_source_textinput"),
+	)
 	text.nav = gui.CreateDIV(text.lesson, ui.Class("lesson_navigation"))
 	return text
 }
@@ -77,6 +84,18 @@ func (tt *Text) setNavigation(les *lessons.Lesson) {
 	)
 }
 
+func (tt *Text) setConfig(les *lessons.Lesson) {
+	ui.ClearChildren(tt.config)
+	if len(les.Config) == 0 {
+		ui.SetVisibleProperty(tt.config, false)
+		return
+	} else {
+		ui.SetVisibleProperty(tt.config, true)
+	}
+	config := tt.configFmt.Format(les.ConfigSrc)
+	tt.config.SetInnerHTML("GX Config:<br>" + config)
+}
+
 func (tt *Text) SetContent(les *lessons.Lesson) {
 	if les.Options.HideText {
 		ui.SetVisibleProperty(tt.lesson, false)
@@ -84,6 +103,7 @@ func (tt *Text) SetContent(les *lessons.Lesson) {
 	} else {
 		ui.SetVisibleProperty(tt.lesson, true)
 	}
+	tt.setConfig(les)
 	tt.setNavigation(les)
 	tt.content.SetInnerHTML(les.HTML)
 }

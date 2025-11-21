@@ -45,10 +45,11 @@ type (
 		FileName string
 		ID       int
 
-		HTML    string
-		Code    string
-		Options Options
-		Config  map[string]any
+		HTML      string
+		Code      string
+		Options   Options
+		Config    map[string]any
+		ConfigSrc string
 
 		Prev *Lesson
 		Next *Lesson
@@ -182,12 +183,12 @@ func (l *Lesson) parseOptions(mdt *mdtext.MDText) error {
 }
 
 func (l *Lesson) parseConfig(mdt *mdtext.MDText) error {
-	config := mdt.Code["config"]
-	if config == "" {
+	l.ConfigSrc = mdt.Code["config"]
+	if l.ConfigSrc == "" {
 		return nil
 	}
-	if err := json.Unmarshal([]byte(config), &(l.Config)); err != nil {
-		return fmt.Errorf("%s: cannot load config: %v\n%s", l.FileName, err, config)
+	if err := json.Unmarshal([]byte(l.ConfigSrc), &(l.Config)); err != nil {
+		return fmt.Errorf("%s: cannot load config: %v\n%s", l.FileName, err, l.ConfigSrc)
 	}
 	return nil
 }

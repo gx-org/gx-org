@@ -14,7 +14,7 @@
 
 //go:build js && wasm
 
-package code
+package codefmt
 
 import (
 	"fmt"
@@ -27,15 +27,23 @@ import (
 	"github.com/alecthomas/chroma/v2/styles"
 )
 
-type formatter struct {
+type Formatter struct {
 	lexer chroma.Lexer
 	fmt   *chromahtml.Formatter
 	style *chroma.Style
 }
 
-func newFormatter() *formatter {
-	return &formatter{
-		lexer: lexers.Go,
+func Go() *Formatter {
+	return newFormatter(lexers.Go)
+}
+
+func JSON() *Formatter {
+	return newFormatter(lexers.Get("JSON"))
+}
+
+func newFormatter(lexer chroma.Lexer) *Formatter {
+	return &Formatter{
+		lexer: lexer,
 		fmt: chromahtml.New(
 			chromahtml.Standalone(false),
 			chromahtml.WithClasses(true),
@@ -46,13 +54,13 @@ func newFormatter() *formatter {
 }
 
 func defaultFormat(s string) string {
-	s = strings.ReplaceAll(s, "\t", tabSpaces)
+	s = strings.ReplaceAll(s, "\t", "    ")
 	s = strings.ReplaceAll(s, " ", "\u00a0")
 	s = html.EscapeString(s)
 	return s
 }
 
-func (ft formatter) format(src string) string {
+func (ft Formatter) Format(src string) string {
 	it, err := ft.lexer.Tokenise(nil, src)
 	if err != nil {
 		fmt.Printf("cannot tokenise source code: %v\nSource:\n%s", err.Error(), src)

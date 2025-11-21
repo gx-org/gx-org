@@ -65,12 +65,16 @@ ul {
 }
 
 .code_source_textinput_container {
+	height: 80%;
+	background: var(--code-bg-color);
+}
+
+.code_source_textinput {
 	display: block;
 	font-family: monospace, monospace;
 	background: var(--code-bg-color);
 	border: 0; 
     	outline: 0;
-	height: 80%;
 	padding: 2px;
 	white-space: nowrap;
 	overflow-x: auto;
@@ -106,6 +110,11 @@ ul {
 	height: 100%;
 	overflow-y: auto;
 	margin: 1em;
+}
+
+.lesson_config {
+	display: block;
+	justify-content: left;
 }
 
 .lesson_navigation {

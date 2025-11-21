@@ -22,6 +22,7 @@ import (
 	"strings"
 
 	"github.com/gx-org/gx-org/internal/history"
+	"github.com/gx-org/gx-org/internal/wasm/codefmt"
 	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"honnef.co/go/js/dom/v2"
 )
@@ -51,7 +52,7 @@ type Source struct {
 
 	keys      *ui.Keys
 	source    *history.History[state]
-	formatter *formatter
+	formatter *codefmt.Formatter
 }
 
 func newSource(code *Code, parent dom.Element) *Source {
@@ -59,10 +60,11 @@ func newSource(code *Code, parent dom.Element) *Source {
 		code:      code,
 		container: code.gui.CreateDIV(parent, ui.Class("code_source_container")),
 		source:    history.New(stateEq),
-		formatter: newFormatter(),
+		formatter: codefmt.Go(),
 	}
-	s.input = code.gui.CreateDIV(parent,
-		ui.Class("code_source_textinput_container"),
+	s.input = code.gui.CreateDIV(
+		code.gui.CreateDIV(parent, ui.Class("code_source_textinput_container")),
+		ui.Class("code_source_textinput"),
 		ui.Property("contenteditable", "true"),
 		ui.Listener("input", s.onSourceChange),
 		ui.Listener("paste", s.onPaste),
@@ -206,7 +208,7 @@ func (s *Source) set(src string, sel *ui.Selection) {
 	s.source.Append(state{src: src, sel: sel})
 	parent := s.input
 	ui.ClearChildren(parent)
-	parent.SetInnerHTML(s.formatter.format(src))
+	parent.SetInnerHTML(s.formatter.Format(src))
 	ui.Walk(parent, customizeChromaHTML(), nil)
 	if sel != nil {
 		sel.SetAsCurrent()
@@ -239,4 +241,3 @@ func (s *Source) onSourceChange(dom.Event) {
 		return src, sel, s.source.Current().src != src
 	})
 }
-
