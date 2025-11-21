@@ -132,25 +132,27 @@ func buildString(bld *strings.Builder, out []values.Value) error {
 	return nil
 }
 
-func (cd *Code) runFunc(fun ir.Func, args []values.Value) ([]values.Value, string, bool) {
+func (cd *Code) runFunc(fun ir.Func) string {
+	if fun == nil {
+		return "Main function not found"
+	}
 	numArgs := fun.FuncType().Params.Len()
-	if len(args) < numArgs {
-		return nil, fmt.Sprintf("not enough arguments to pass to %s: got %d but want %d", fun.ShortString(), len(args), numArgs), false
+	if numArgs > 0 {
+		return "func Main must have no arguments"
 	}
-	args = args[:numArgs]
-	runner, err := tracer.Trace(cd.dev, fun.(*ir.FuncDecl), nil, args, nil)
+	runner, err := tracer.Trace(cd.dev, fun.(*ir.FuncDecl), nil, nil, nil)
 	if err != nil {
-		return nil, err.Error(), false
+		return err.Error()
 	}
-	vals, err := runner.Run(nil, args, nil)
+	vals, err := runner.Run(nil, nil, nil)
 	if err != nil {
-		return nil, err.Error(), false
+		return err.Error()
 	}
 	bld := strings.Builder{}
 	if err := buildString(&bld, vals); err != nil {
-		return nil, err.Error(), false
+		return err.Error()
 	}
-	return vals, bld.String(), true
+	return bld.String()
 }
 
 func indent(s string) string {
@@ -169,18 +171,7 @@ func (cd *Code) runCode(src string) error {
 	if err != nil {
 		return err
 	}
-	bld := strings.Builder{}
-	var vals []values.Value
-	for fun := range irPkg.ExportedFuncs() {
-		bld.WriteString(fun.Name() + ":\n")
-		var s string
-		var ok bool
-		vals, s, ok = cd.runFunc(fun, vals)
-		bld.WriteString(indent(s))
-		if !ok {
-			break
-		}
-	}
-	cd.out.set(bld.String())
+	out := cd.runFunc(irPkg.FindFunc("Main"))
+	cd.out.set(out)
 	return nil
 }
