@@ -23,7 +23,7 @@ import (
 
 	"github.com/gx-org/gx-org/internal/lessons"
 	"github.com/gx-org/gx-org/internal/wasm/ui"
-	"github.com/gx-org/gx/api"
+	"github.com/gx-org/gx/api/options"
 	"github.com/gx-org/gx/api/tracer"
 	"github.com/gx-org/gx/api/values"
 	"github.com/gx-org/gx/build/builder"
@@ -31,6 +31,7 @@ import (
 	"github.com/gx-org/gx/build/ir"
 	"github.com/gx-org/gx/golang/backend"
 	"github.com/gx-org/gx/golang/backend/kernels"
+	"github.com/gx-org/gx/golang/binder/gobindings/types"
 	"github.com/gx-org/gx/stdlib"
 	"honnef.co/go/js/dom/v2"
 )
@@ -39,10 +40,9 @@ type Code struct {
 	gui *ui.UI
 	src *Source
 	out *Output
+	les *lessons.Lesson
 
-	bld    *builder.Builder
-	dev    *api.Device
-	devErr error
+	bld *builder.Builder
 }
 
 func New(gui *ui.UI, parent dom.HTMLElement) *Code {
@@ -57,12 +57,12 @@ func New(gui *ui.UI, parent dom.HTMLElement) *Code {
 	cd.src = newSource(cd, container)
 	cd.out = newOutput(cd, container)
 
-	cd.dev, cd.devErr = backend.New(bld).Device(0)
 	return cd
 }
 
 func (cd *Code) SetContent(les *lessons.Lesson) {
 	cd.src.set(les.Code, nil)
+	cd.les = les
 }
 
 func (cd *Code) compileAndWrite(src string) error {
@@ -75,9 +75,6 @@ func (cd *Code) compileAndWrite(src string) error {
 }
 
 func (cd *Code) compileCode(src string) (*ir.Package, error) {
-	if cd.devErr != nil {
-		return nil, fmt.Errorf("cannot initialise backend: %s", cd.devErr.Error())
-	}
 	pkg := cd.bld.NewIncrementalPackage("main")
 	if err := pkg.Build(src); err != nil {
 		return nil, err
@@ -132,6 +129,32 @@ func buildString(bld *strings.Builder, out []values.Value) error {
 	return nil
 }
 
+func (cd *Code) lessonOptions(fun ir.Func) []options.PackageOption {
+	if cd.les == nil {
+		return nil
+	}
+	if cd.les.Config == nil {
+		return nil
+	}
+	var opts []options.PackageOption
+	pkg := fun.File().Package
+	for name, val := range cd.les.Config {
+		for _, spec := range pkg.Decls.Vars {
+			for _, vr := range spec.Exprs {
+				if vr.VName.Name != name {
+					continue
+				}
+				opts = append(opts, options.PackageVarSetValue{
+					Pkg:   pkg.FullName(),
+					Var:   name,
+					Value: types.DefaultInt(ir.Int(val.(float64))).GXValue(),
+				})
+			}
+		}
+	}
+	return opts
+}
+
 func (cd *Code) runFunc(fun ir.Func) string {
 	if fun == nil {
 		return "Main function not found"
@@ -140,7 +163,11 @@ func (cd *Code) runFunc(fun ir.Func) string {
 	if numArgs > 0 {
 		return "func Main must have no arguments"
 	}
-	runner, err := tracer.Trace(cd.dev, fun.(*ir.FuncDecl), nil, nil, nil)
+	dev, err := backend.New(cd.bld).Device(0)
+	if err != nil {
+		return fmt.Sprintf("cannot initialise backend: %v", err)
+	}
+	runner, err := tracer.Trace(dev, fun.(*ir.FuncDecl), nil, nil, cd.lessonOptions(fun))
 	if err != nil {
 		return err.Error()
 	}
