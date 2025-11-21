@@ -27,7 +27,8 @@ import (
 
 type (
 	Options struct {
-		HideText bool `json:"hide_text"`
+		HideText     bool   `json:"hide_text"`
+		ChapterTitle string `json:"chapter_title"`
 	}
 
 	Chapter struct {
@@ -35,6 +36,7 @@ type (
 
 		PathPrefix string
 		ID         int
+		Title      string
 		Content    []*Lesson
 		Prev       *Chapter
 		Next       *Chapter
@@ -60,6 +62,7 @@ var chapters = map[string][]string{
 	"": {
 		"intro",
 		"types",
+		"func",
 	},
 	"devs": {
 		"fill",
@@ -146,6 +149,12 @@ func (chap *Chapter) readLesson() (*Lesson, error) {
 	chap.Content = append(chap.Content, lesson)
 	if err := lesson.parseOptions(mdt); err != nil {
 		return nil, err
+	}
+	if chap.Title == "" {
+		chap.Title = fmt.Sprintf("Chapter %d", chap.ID)
+	}
+	if lesson.Options.ChapterTitle != "" {
+		chap.Title = lesson.Options.ChapterTitle
 	}
 	if err := lesson.parseConfig(mdt); err != nil {
 		return nil, err

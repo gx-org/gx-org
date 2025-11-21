@@ -59,10 +59,7 @@ func New(gui *ui.UI, parent dom.HTMLElement, page Page) *Text {
 }
 
 func lessonFooter(les *lessons.Lesson) string {
-	if les.Chapter.Name() == "intro" {
-		return "Introduction"
-	}
-	return fmt.Sprintf("Chapter %d Lesson %d/%d", les.Chapter.ID, les.ID, les.Chapter.NumLessons())
+	return fmt.Sprintf("%s. Lesson %d/%d", les.Chapter.Title, les.ID, les.Chapter.NumLessons())
 }
 
 func (tt *Text) setNavigation(les *lessons.Lesson) {

@@ -1,3 +1,5 @@
+# Types in GX
+
 ## Basic Types
 
 GX has the following basic types:
@@ -16,4 +18,8 @@ package main
 func Main() (float32, int32, string, bool) {
     return 1, 2, "Hi", true
 }
+```
+
+```code:options
+{ "chapter_title": "Types" }
 ```

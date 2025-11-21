@@ -1,3 +1,5 @@
+# Functions
+
 ## Generic Types
 
 Generic functions can be defined for multiple types as long as these types satisfy some constraints. The package [`dtype`](https://github.com/gx-org/gx/blob/main/stdlib/dtype/dtype.gx) defines sets of basic types, notably `Floats`, `Ints`, and `Num` respectively for floats, integers, and numerical types.
@@ -22,4 +24,8 @@ func Main() ([2][3]int64, [2][3]int64) {
     i64b := ToInts[int64](a)
     return i64a, i64b
 }
+```
+
+```code:options
+{ "chapter_title": "Functions" }
 ```
