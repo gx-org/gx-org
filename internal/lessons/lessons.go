@@ -119,7 +119,7 @@ const defaultCode = `package main
 
 func (chap *Chapter) readLesson() (*Lesson, error) {
 	lessonID := len(chap.Content) + 1
-	fileName := fmt.Sprintf("%s_%d.md", chap.Name(), lessonID)
+	fileName := fmt.Sprintf("%s_%d.mdl", chap.Name(), lessonID)
 	path := fileName
 	if chap.PathPrefix != "" {
 		path = filepath.Join(chap.PathPrefix, path)

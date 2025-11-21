@@ -8,7 +8,7 @@ import (
 	"github.com/gx-org/gx-org/internal/mdtext"
 )
 
-//go:embed test01.md
+//go:embed test01.mdl
 var test01 []byte
 
 func simplify(s string) string {
@@ -31,17 +31,14 @@ func TestParse(t *testing.T) {
 				"main":   "some code for main",
 				"config": "some code for config",
 			},
-			wantTitle: `<h1 id="title-1">Title 1</h1>
-`,
-			wantHTML: `<p>Some text</p>
+			wantHTML: `<h1 id="title-1">Title 1</h1>
+
+<p>Some text</p>
 `,
 		},
 	}
 	for i, test := range tests {
 		mdText := mdtext.Parse(test.md)
-		if mdText.TitleHTML != test.wantTitle {
-			t.Errorf("unexpected title in test %d:\ngot:\n%s\nwant:\n%s\n", i, mdText.TitleHTML, test.wantTitle)
-		}
 		if mdText.HTML != test.wantHTML {
 			t.Errorf("unexpected HTML in test %d:\ngot:\n%s\nwant:\n%s\n", i, mdText.HTML, test.wantHTML)
 		}

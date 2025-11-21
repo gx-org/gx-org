@@ -2,5 +2,5 @@ package lessons
 
 import "embed"
 
-//go:embed *.md devs/*.md
+//go:embed *.mdl devs/*.mdl
 var Lessons embed.FS
