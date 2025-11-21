@@ -1,18 +1,19 @@
-# Types in GX
+## Basic Types
 
-First, let's start with GX builtin types:
+GX has the following basic types:
 * floating point numbers: `bfloat16`, `float32`, `float64`
 * integers: `int32`, `int64`
 * unsigned integers: `uint32`, `uint64`
 * boolean: `bool`
 * string: `string`
 
-This list is temporary. We expect more types to be added as needs grow. Like the Go language, numbers (like the number `2` in `return 2, 2`) are automatically casted to the correct type given the context.
+Literals, like `2`, are automatically converted to the matching basic type: `int32` in the example.
+
 
 ```code:main
 package main
 
-func Main() (float32, int32) {
-    return 2, 2
+func Main() (float32, int32, string, bool) {
+    return 1, 2, "Hi", true
 }
 ```

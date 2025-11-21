@@ -31,8 +31,7 @@ type (
 	}
 
 	Chapter struct {
-		name      string
-		titleHTML string
+		name string
 
 		PathPrefix string
 		ID         int
@@ -49,6 +48,7 @@ type (
 		HTML    string
 		Code    string
 		Options Options
+		Config  map[string]any
 
 		Prev *Lesson
 		Next *Lesson
@@ -82,7 +82,7 @@ func readChapters(pathPrefix string, chapterNames []string) ([]*Chapter, error) 
 	chapters := make([]*Chapter, len(chapterNames))
 	var last *Lesson
 	for i, name := range chapterNames {
-		chap := &Chapter{name: name, ID: i + 1, PathPrefix: pathPrefix}
+		chap := &Chapter{name: name, ID: i, PathPrefix: pathPrefix}
 		chapters[i] = chap
 		var err error
 		last, err = chap.readLessons(last)
@@ -131,24 +131,22 @@ func (chap *Chapter) readLesson() (*Lesson, error) {
 		return nil, fmt.Errorf("cannot read %s: %v", path, err)
 	}
 	mdt := mdtext.Parse(data)
-	lesson := &Lesson{Chapter: chap, FileName: fileName, ID: lessonID}
-	needChapter := lessonID == 1
-	if mdt.TitleHTML != "" && !needChapter {
-		return nil, fmt.Errorf("%s: chapter title can only be specified for the first lesson", fileName)
+	lesson := &Lesson{
+		Chapter:  chap,
+		FileName: fileName,
+		ID:       lessonID,
+		Config:   make(map[string]any),
 	}
-	if mdt.TitleHTML == "" && needChapter {
-		return nil, fmt.Errorf("%s: no chapter title specified", fileName)
-	}
-	if lessonID == 1 {
-		chap.titleHTML = mdt.TitleHTML
-	}
-	lesson.HTML = chap.titleHTML + "\n\n" + mdt.HTML
+	lesson.HTML = mdt.HTML
 	lesson.Code = mdt.Code["main"]
 	if lesson.Code == "" {
 		lesson.Code = defaultCode
 	}
 	chap.Content = append(chap.Content, lesson)
 	if err := lesson.parseOptions(mdt); err != nil {
+		return nil, err
+	}
+	if err := lesson.parseConfig(mdt); err != nil {
 		return nil, err
 	}
 	return lesson, nil
@@ -183,11 +181,22 @@ func (l *Lesson) parseOptions(mdt *mdtext.MDText) error {
 	return nil
 }
 
+func (l *Lesson) parseConfig(mdt *mdtext.MDText) error {
+	config := mdt.Code["config"]
+	if config == "" {
+		return nil
+	}
+	if err := json.Unmarshal([]byte(config), &(l.Config)); err != nil {
+		return fmt.Errorf("%s: cannot load config: %v\n%s", l.FileName, err, config)
+	}
+	return nil
+}
+
 func FindLesson(allChapters map[string][]*Chapter, pathPrefix string, chapID, lessonID int) *Lesson {
 	chapters := allChapters[pathPrefix]
 	if chapters == nil {
 		chapters = allChapters[""]
 	}
-	chap := get(chapID-1, chapters)
+	chap := get(chapID, chapters)
 	return get(lessonID-1, chap.Content)
 }

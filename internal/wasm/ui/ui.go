@@ -148,7 +148,7 @@ func lineNumFromElement(el dom.Element) (dom.Element, int) {
 	}
 	lineAttr := lineEl.Attributes()["line_num"]
 	line, _ := strconv.Atoi(lineAttr)
-	return codeEl, line
+	return lineEl, line
 }
 
 func utf16Count(s string) int {
@@ -159,9 +159,10 @@ func textLenFromPreviousElement(ancestor dom.Element, line dom.Element) (utf16Po
 	if line == nil {
 		line = ancestor
 	}
-	want := ancestor.Underlying()
-	text := TextContentUntil(line, func(el dom.Node) bool {
-		return !el.Underlying().Equal(want)
+	const id = "ancestor_mark"
+	ancestor.SetID(id)
+	text := TextContentUntil(line, func(node dom.Node) bool {
+		return dom.WrapElement(node.Underlying()).ID() != id
 	})
 	return utf16Count(text), utf8.RuneCountInString(text)
 }

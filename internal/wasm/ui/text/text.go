@@ -30,6 +30,7 @@ type (
 		page    Page
 		lesson  *dom.HTMLDivElement
 		content *dom.HTMLDivElement
+		config  *dom.HTMLDivElement
 		nav     *dom.HTMLDivElement
 	}
 
@@ -45,8 +46,35 @@ func New(gui *ui.UI, parent dom.HTMLElement, page Page) *Text {
 		page:   page,
 	}
 	text.content = gui.CreateDIV(text.lesson, ui.Class("lesson_content"))
+	text.config = gui.CreateDIV(text.lesson, ui.Class("lesson_config"))
 	text.nav = gui.CreateDIV(text.lesson, ui.Class("lesson_navigation"))
 	return text
+}
+
+func lessonFooter(les *lessons.Lesson) string {
+	if les.Chapter.Name() == "intro" {
+		return "Introduction"
+	}
+	return fmt.Sprintf("Chapter %d Lesson %d/%d", les.Chapter.ID, les.ID, les.Chapter.NumLessons())
+}
+
+func (tt *Text) setNavigation(les *lessons.Lesson) {
+	ui.ClearChildren(tt.nav)
+	tt.gui.CreateButton(tt.nav, "←",
+		func(dom.Event) {
+			tt.page.DisplayLesson(les.Prev)
+		},
+		ui.SetVisible(les.Prev != nil),
+		ui.Class("navigation_button"),
+	)
+	tt.gui.CreateParagraph(tt.nav, lessonFooter(les))
+	tt.gui.CreateButton(tt.nav, "→",
+		func(dom.Event) {
+			tt.page.DisplayLesson(les.Next)
+		},
+		ui.SetVisible(les.Next != nil),
+		ui.Class("navigation_button"),
+	)
 }
 
 func (tt *Text) SetContent(les *lessons.Lesson) {
@@ -56,21 +84,6 @@ func (tt *Text) SetContent(les *lessons.Lesson) {
 	} else {
 		ui.SetVisibleProperty(tt.lesson, true)
 	}
-	ui.ClearChildren(tt.nav)
-	tt.gui.CreateButton(tt.nav, "←",
-		func(dom.Event) {
-			tt.page.DisplayLesson(les.Prev)
-		},
-		ui.SetVisible(les.Prev != nil),
-		ui.Class("navigation_button"),
-	)
-	tt.gui.CreateParagraph(tt.nav, fmt.Sprintf("Chapter %d Lesson %d/%d", les.Chapter.ID, les.ID, les.Chapter.NumLessons()))
-	tt.gui.CreateButton(tt.nav, "→",
-		func(dom.Event) {
-			tt.page.DisplayLesson(les.Next)
-		},
-		ui.SetVisible(les.Next != nil),
-		ui.Class("navigation_button"),
-	)
+	tt.setNavigation(les)
 	tt.content.SetInnerHTML(les.HTML)
 }

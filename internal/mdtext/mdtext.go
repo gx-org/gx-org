@@ -46,9 +46,8 @@ func walk[T ast.Node](process func(T) ast.WalkStatus) ast.NodeVisitorFunc {
 }
 
 type MDText struct {
-	TitleHTML string
-	Code      map[string]string
-	HTML      string
+	Code map[string]string
+	HTML string
 }
 
 func Parse(src []byte) *MDText {
@@ -67,10 +66,6 @@ func Parse(src []byte) *MDText {
 	renderer := html.NewRenderer(opts)
 	var title *ast.Heading
 	ast.Walk(doc, walk(titleNode(&title)))
-	if title != nil {
-		mdt.TitleHTML = string(markdown.Render(title, renderer))
-		ast.RemoveFromTree(title)
-	}
 	mdt.HTML = string(markdown.Render(doc, renderer))
 	return mdt
 }

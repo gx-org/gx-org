@@ -185,16 +185,16 @@ func setLineNumber(node dom.Node, lineNumber int) {
 
 func customizeChromaHTML() func(el dom.Node) bool {
 	lineNumber := 0
-	return func(el dom.Node) bool {
-		if ui.NodeName(el) != "SPAN" {
+	return func(node dom.Node) bool {
+		if ui.NodeName(node) != "SPAN" {
 			return true
 		}
-		for _, class := range ui.ClassOf(el) {
+		for _, class := range ui.ClassOf(node) {
 			switch class {
 			case "chroma_w":
-				replaceNewLineWithBRTag(el)
+				replaceNewLineWithBRTag(node)
 			case "chroma_line":
-				setLineNumber(el, lineNumber)
+				setLineNumber(node, lineNumber)
 				lineNumber++
 			}
 		}
@@ -239,3 +239,4 @@ func (s *Source) onSourceChange(dom.Event) {
 		return src, sel, s.source.Current().src != src
 	})
 }
+
