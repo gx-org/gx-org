@@ -21,7 +21,6 @@ import (
 	"html"
 	"math"
 	"net/url"
-	"strconv"
 	"strings"
 	"syscall/js"
 	"unicode/utf16"
@@ -113,13 +112,6 @@ func selection() js.Value {
 	return js.Global().Call("getSelection")
 }
 
-func nodeName(el js.Value) string {
-	if el.IsNull() {
-		return ""
-	}
-	return strings.ToUpper(el.Get("nodeName").String())
-}
-
 func isLineNode(node dom.Node) bool {
 	for _, class := range ClassOf(node) {
 		if strings.HasSuffix(class, "line") {
@@ -146,8 +138,12 @@ func lineNumFromElement(el dom.Element) (dom.Element, int) {
 	if codeEl == nil || lineEl == nil {
 		return nil, 0
 	}
-	lineAttr := lineEl.Attributes()["line_num"]
-	line, _ := strconv.Atoi(lineAttr)
+	line := 0
+	prev := lineEl.PreviousElementSibling()
+	for prev != nil {
+		line++
+		prev = prev.PreviousElementSibling()
+	}
 	return lineEl, line
 }
 

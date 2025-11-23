@@ -19,7 +19,6 @@ package code
 import (
 	"fmt"
 	"slices"
-	"strconv"
 	"strings"
 
 	"github.com/gx-org/gx-org/internal/history"
@@ -167,42 +166,6 @@ const tabSize = 4
 
 var tabSpaces = strings.Repeat(" ", tabSize)
 
-func replaceNewLineWithBRTag(el dom.Node) {
-	children := el.ChildNodes()
-	if len(children) != 1 {
-		return
-	}
-	data := children[0].Underlying().Get("data")
-	if data.IsNull() || data.IsUndefined() {
-		return
-	}
-	if data.String() != "\n" {
-		return
-	}
-	dom.WrapHTMLElement(el.Underlying()).SetInnerHTML("<br>")
-}
-
-func setLineNumber(node dom.Node, lineNumber int) {
-	dom.WrapElement(node.Underlying()).SetAttribute("line_num", strconv.Itoa(lineNumber))
-}
-
-func customizeChromaHTML() func(el dom.Node) bool {
-	lineNumber := 0
-	return func(node dom.Node) bool {
-		if ui.NodeName(node) != "SPAN" {
-			return true
-		}
-		for _, class := range ui.ClassOf(node) {
-			switch class {
-			case "chroma_line":
-				setLineNumber(node, lineNumber)
-				lineNumber++
-			}
-		}
-		return true
-	}
-}
-
 func customizeChromaHTMLSource(src string) string {
 	src = strings.ReplaceAll(src,
 		"<span class=\"chroma_w\">\n</span>",
@@ -218,7 +181,6 @@ func (s *Source) set(src string, sel *ui.Selection) {
 	formattedSrc := s.formatter.Format(src)
 	formattedSrc = customizeChromaHTMLSource(formattedSrc)
 	parent.SetInnerHTML(formattedSrc)
-	ui.Walk(parent, customizeChromaHTML(), nil)
 	if sel != nil {
 		sel.SetAsCurrent()
 	}
