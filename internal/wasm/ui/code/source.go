@@ -18,6 +18,7 @@ package code
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -92,7 +93,7 @@ func insertSource(src string, sel *ui.Selection, toInsert string) (string, *ui.S
 		}
 		srcLineRunes := []rune(srcLine)
 		cursorColumn := min(sel.Column(), len(srcLineRunes))
-		newLine := append([]rune{}, srcLineRunes[:cursorColumn]...)
+		newLine := slices.Clone(srcLineRunes[:cursorColumn])
 		for insertedLine := range strings.Lines(toInsert) {
 			newLine = append(newLine, []rune(strings.TrimSuffix(insertedLine, "\n"))...)
 			if strings.HasSuffix(insertedLine, "\n") {
@@ -193,8 +194,6 @@ func customizeChromaHTML() func(el dom.Node) bool {
 		}
 		for _, class := range ui.ClassOf(node) {
 			switch class {
-			case "chroma_w":
-				replaceNewLineWithBRTag(node)
 			case "chroma_line":
 				setLineNumber(node, lineNumber)
 				lineNumber++
@@ -204,11 +203,21 @@ func customizeChromaHTML() func(el dom.Node) bool {
 	}
 }
 
+func customizeChromaHTMLSource(src string) string {
+	src = strings.ReplaceAll(src,
+		"<span class=\"chroma_w\">\n</span>",
+		"<span class=\"chroma_w\"><br></span>",
+	)
+	return src
+}
+
 func (s *Source) set(src string, sel *ui.Selection) {
 	s.source.Append(state{src: src, sel: sel})
 	parent := s.input
 	ui.ClearChildren(parent)
-	parent.SetInnerHTML(s.formatter.Format(src))
+	formattedSrc := s.formatter.Format(src)
+	formattedSrc = customizeChromaHTMLSource(formattedSrc)
+	parent.SetInnerHTML(formattedSrc)
 	ui.Walk(parent, customizeChromaHTML(), nil)
 	if sel != nil {
 		sel.SetAsCurrent()
