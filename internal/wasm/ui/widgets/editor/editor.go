@@ -137,8 +137,8 @@ func (ed *Editor) onKeyPress(keys *ui.Keys, ev *dom.KeyboardEvent) {
 	}
 }
 
-func (ed *Editor) extractSource() string {
-	src := textContent(ed.input)
+func (ed *Editor) extractSource(canContinue func(dom.Node) bool) string {
+	src := textContentUntil(ed.input, canContinue)
 	if len(src) > 0 {
 		src += "\n"
 	}
@@ -174,18 +174,34 @@ func (ed *Editor) set(src string, sel *selection) {
 	ed.updateCode(src)
 }
 
-func (ed *Editor) updateSource(process func(src string, sel *selection) (string, *selection, bool)) {
-	currentSrc := ed.extractSource()
-	sel := currentSelection(ed.gui, ed.input)
-	currentSrc, sel, cont := process(currentSrc, sel)
-	if !cont {
-		return
-	}
-	ed.set(currentSrc, sel)
-}
-
 func (ed *Editor) onSourceChange(dom.Event) {
 	ed.updateSource(func(src string, sel *selection) (string, *selection, bool) {
 		return src, sel, ed.Text() != src
 	})
+}
+
+func (ed *Editor) updateSource(process func(src string, sel *selection) (string, *selection, bool)) {
+	ed.lastUpdate++
+	wantUpdate := ed.lastUpdate
+	canContinue := func(dom.Node) bool {
+		return ed.lastUpdate == wantUpdate
+	}
+	go func() {
+		currentSrc := ed.extractSource(canContinue)
+		if !canContinue(nil) {
+			return
+		}
+		sel := currentSelection(ed.gui, ed.input)
+		if !canContinue(nil) {
+			return
+		}
+		currentSrc, sel, cont := process(currentSrc, sel)
+		if !cont {
+			return
+		}
+		if !canContinue(nil) {
+			return
+		}
+		ed.set(currentSrc, sel)
+	}()
 }

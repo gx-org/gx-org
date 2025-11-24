@@ -12,10 +12,6 @@ func noFilter(dom.Node) bool {
 	return true
 }
 
-func textContent(el dom.Node) string {
-	return textContentUntil(el, noFilter)
-}
-
 type lineCollector struct {
 	nextLine int
 	lines    []string

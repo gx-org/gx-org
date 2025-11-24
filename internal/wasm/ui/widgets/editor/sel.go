@@ -78,7 +78,7 @@ func textLenFromPreviousElement(ancestor dom.Element, line dom.Element) (utf16Po
 
 func textLenFromElement(rang js.Value, ancestor dom.Element) (utf16Pos, utf8Pos int) {
 	utf16Pos = rang.Get("startOffset").Int()
-	utf8Str := textContent(ancestor)
+	utf8Str := textContentUntil(ancestor, noFilter)
 	utf16Str := utf16.Encode([]rune(utf8Str))
 	if utf16Pos > len(utf16Str) {
 		return 0, 0
@@ -127,7 +127,7 @@ func computeChildColumn(line dom.Node, until int) (dom.Node, int) {
 	last := line
 	var lastLen int
 	for child := range ui.IterLeaves(line, noFilter) {
-		textLen := utf16Count(textContent(child))
+		textLen := utf16Count(textContentUntil(child, noFilter))
 		if column <= textLen {
 			return child, column
 		}
