@@ -61,11 +61,11 @@ func New(gui *ui.UI, parent dom.HTMLElement) *Code {
 }
 
 func (cd *Code) SetContent(les *lessons.Lesson) {
-	cd.src.set(les.Code, nil)
+	cd.src.editor.Set(les.Code)
 	cd.les = les
 }
 
-func (cd *Code) compileAndWrite(src string) error {
+func (cd *Code) compile(src string) error {
 	_, err := cd.compileCode(src)
 	if err != nil {
 		return err
@@ -82,7 +82,7 @@ func (cd *Code) compileCode(src string) (*ir.Package, error) {
 	return pkg.IR(), nil
 }
 
-func (cd *Code) callAndWrite(f func(src string) error, src string) {
+func (cd *Code) updateCodeOutput(f func(src string) error, src string) {
 	defer func() {
 		if r := recover(); r != nil {
 			cd.out.set(fmt.Sprintf("GX PANIC: please report everything below so that it can be fixed:\n%s\n%s", src, debug.Stack()))
@@ -193,7 +193,7 @@ func indent(s string) string {
 	return strings.Join(lines, "")
 }
 
-func (cd *Code) runCode(src string) error {
+func (cd *Code) compileAndRun(src string) error {
 	irPkg, err := cd.compileCode(src)
 	if err != nil {
 		return err
