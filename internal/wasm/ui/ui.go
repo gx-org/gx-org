@@ -19,12 +19,9 @@ package ui
 import (
 	"fmt"
 	"html"
-	"math"
 	"net/url"
 	"strings"
 	"syscall/js"
-	"unicode/utf16"
-	"unicode/utf8"
 
 	"honnef.co/go/js/dom/v2"
 )
@@ -99,277 +96,6 @@ func FindElementByClass[T dom.Element](ui *UI, class string) (zero T, err error)
 	return elT, nil
 }
 
-type Selection struct {
-	ui          *UI
-	el          dom.HTMLElement
-	line        int
-	utf16Column int
-	utf8Column  int
-	rang        js.Value
-}
-
-func selection() js.Value {
-	return js.Global().Call("getSelection")
-}
-
-func isLineNode(node dom.Node) bool {
-	for _, class := range ClassOf(node) {
-		if strings.HasSuffix(class, "line") {
-			return true
-		}
-	}
-	return false
-}
-
-func findParentLineAndCode(el dom.Element) (line, code dom.Element) {
-	current := el
-	for current != nil && NodeName(current) != "CODE" {
-		if isLineNode(current) {
-			line = current
-		}
-		current = current.ParentElement()
-	}
-	code = current
-	return
-}
-
-func lineNumFromElement(el dom.Element) (dom.Element, int) {
-	lineEl, codeEl := findParentLineAndCode(el)
-	if codeEl == nil || lineEl == nil {
-		return nil, 0
-	}
-	line := 0
-	prev := lineEl.PreviousElementSibling()
-	for prev != nil {
-		line++
-		prev = prev.PreviousElementSibling()
-	}
-	return lineEl, line
-}
-
-func utf16Count(s string) int {
-	return len(utf16.Encode([]rune(s)))
-}
-
-func textLenFromPreviousElement(ancestor dom.Element, line dom.Element) (utf16Pos, utf8Pos int) {
-	if line == nil {
-		line = ancestor
-	}
-	const id = "ancestor_mark"
-	ancestor.SetID(id)
-	text := TextContentUntil(line, func(node dom.Node) bool {
-		return dom.WrapElement(node.Underlying()).ID() != id
-	})
-	return utf16Count(text), utf8.RuneCountInString(text)
-}
-
-func textLenFromElement(rang js.Value, ancestor dom.Element) (utf16Pos, utf8Pos int) {
-	utf16Pos = rang.Get("startOffset").Int()
-	utf8Str := TextContent(ancestor)
-	utf16Str := utf16.Encode([]rune(utf8Str))
-	if utf16Pos > len(utf16Str) {
-		return 0, 0
-	}
-	subUTF16 := utf16Str[:utf16Pos]
-	utf8Pos = len(utf16.Decode(subUTF16))
-	return
-}
-
-func (ui *UI) CurrentSelection(el dom.HTMLElement) *Selection {
-	sel := &Selection{
-		ui: ui,
-		el: el,
-	}
-	if numRange := selection().Get("rangeCount").Int(); numRange == 0 {
-		return sel
-	}
-	sel.rang = selection().Call("getRangeAt", 0)
-	ancestor := dom.WrapElement(sel.rang.Get("commonAncestorContainer"))
-	if ancestor == nil {
-		return sel
-	}
-	var lineEl dom.Element
-	lineEl, sel.line = lineNumFromElement(ancestor)
-	utf16Prev, utf8Prev := textLenFromPreviousElement(ancestor, lineEl)
-	utf16Column, utf8Column := textLenFromElement(sel.rang, ancestor)
-	sel.utf16Column = utf16Prev + utf16Column
-	sel.utf8Column = utf8Prev + utf8Column
-	return sel
-}
-
-func noFilter(dom.Node) bool {
-	return true
-}
-
-func TextContent(el dom.Node) string {
-	return TextContentUntil(el, noFilter)
-}
-
-type lineCollector struct {
-	nextLine int
-	lines    []string
-	buf      strings.Builder
-	all      string
-}
-
-func newLineCollector() *lineCollector {
-	return &lineCollector{nextLine: -1}
-}
-
-func (lc *lineCollector) flush() {
-	lc.nextLine++
-	if lc.nextLine == 0 {
-		return
-	}
-	line := lc.buf.String()
-	line = strings.TrimSuffix(line, "\n")
-	lc.lines = append(lc.lines, line)
-	lc.buf = strings.Builder{}
-}
-
-func (lc *lineCollector) String() string {
-	if lc.all != "" {
-		return lc.all
-	}
-	if lc.buf.Len() > 0 {
-		lc.nextLine = 0
-	}
-	lc.flush()
-	lc.all = strings.Join(lc.lines, "\n")
-	lc.lines = nil
-	lc.nextLine = -1
-	lc.buf = strings.Builder{}
-	return lc.all
-}
-
-func TextContentUntil(el dom.Node, filter func(dom.Node) bool) string {
-	lc := newLineCollector()
-	processLine := func(node dom.Node) bool {
-		if isLineNode(node) {
-			lc.flush()
-		}
-		return filter(node)
-	}
-	for _, data := range IterLeaves(el, processLine) {
-		lc.buf.WriteString(data)
-	}
-	return html.UnescapeString(lc.String())
-}
-
-func Walk(el dom.Node, onAllNode func(dom.Node) bool, onLeaf func(dom.Node, string) bool) bool {
-	if onAllNode != nil && !onAllNode(el) {
-		return false
-	}
-	if onLeaf != nil && !el.HasChildNodes() {
-		data := el.Underlying().Get("data")
-		text := ""
-		if !data.IsNull() && !data.IsUndefined() {
-			text = data.String()
-		}
-		if !onLeaf(el, text) {
-			return false
-		}
-	}
-	for _, child := range el.ChildNodes() {
-		if !Walk(child, onAllNode, onLeaf) {
-			return false
-		}
-	}
-	return true
-}
-
-func IterLeaves(el dom.Node, filter func(dom.Node) bool) func(yield func(dom.Node, string) bool) {
-	return func(yield func(dom.Node, string) bool) {
-		Walk(el, filter, yield)
-	}
-}
-
-func findFirstLeaf(el dom.Node) dom.Node {
-	for leaf := range IterLeaves(el, noFilter) {
-		return leaf
-	}
-	return nil
-}
-
-func findChild(el dom.Node, filter func(dom.Node) bool) dom.Node {
-	if filter(el) {
-		return el
-	}
-	for _, child := range el.ChildNodes() {
-		if found := findChild(child, filter); found != nil {
-			return found
-		}
-	}
-	return nil
-}
-
-func computeChildColumn(line dom.Node, until int) (dom.Node, int) {
-	column := until
-	last := line
-	var lastLen int
-	for child := range IterLeaves(line, noFilter) {
-		textLen := utf16Count(TextContent(child))
-		if column <= textLen {
-			return child, column
-		}
-		column -= textLen
-		if column < 0 {
-			break
-		}
-		last = child
-		lastLen = textLen
-	}
-	return last, lastLen
-}
-
-func (sel *Selection) SetAsCurrent() {
-	if sel.rang.IsNull() {
-		return
-	}
-	codeNode := findChild(sel.el, func(node dom.Node) bool {
-		return NodeName(node) == "CODE"
-	})
-	if codeNode == nil {
-		return
-	}
-	lineEls := codeNode.ChildNodes()
-	if len(lineEls) == 0 {
-		return
-	}
-	if sel.line >= len(lineEls) {
-		sel.line = len(lineEls) - 1
-		sel.utf16Column = math.MaxInt
-	}
-	child, column := computeChildColumn(lineEls[sel.line], sel.utf16Column)
-	selection().Call("collapse", findFirstLeaf(child).Underlying(), column)
-}
-
-func (sel *Selection) Line() int {
-	return sel.line
-}
-
-func (sel *Selection) Column() int {
-	return sel.utf8Column
-}
-
-func (sel *Selection) MoveColumnBy(s string) {
-	sel.utf16Column += utf16Count(s)
-	sel.utf8Column += utf8.RuneCountInString(s)
-}
-
-func (sel *Selection) MoveToNextLine() {
-	sel.utf16Column = 0
-	sel.utf8Column = 0
-	sel.line++
-}
-
-func (sel *Selection) String() string {
-	if sel == nil {
-		return "nil"
-	}
-	return fmt.Sprintf("line: %d col: %d", sel.line, sel.utf16Column)
-}
-
 func ClearChildren(node dom.Node) {
 	for _, child := range node.ChildNodes() {
 		node.RemoveChild(child)
@@ -390,4 +116,32 @@ func ClassOf(node dom.Node) []string {
 		ss[i] = classes.Item(i)
 	}
 	return ss
+}
+
+func Walk(el dom.Node, onAll func(dom.Node) bool, onLeaf func(dom.Node, string) bool) bool {
+	if onAll != nil && !onAll(el) {
+		return false
+	}
+	if onLeaf != nil && !el.HasChildNodes() {
+		data := el.Underlying().Get("data")
+		text := ""
+		if !data.IsNull() && !data.IsUndefined() {
+			text = data.String()
+		}
+		if !onLeaf(el, text) {
+			return false
+		}
+	}
+	for _, child := range el.ChildNodes() {
+		if !Walk(child, onAll, onLeaf) {
+			return false
+		}
+	}
+	return true
+}
+
+func IterLeaves(el dom.Node, cancel func(dom.Node) bool) func(yield func(dom.Node, string) bool) {
+	return func(yield func(dom.Node, string) bool) {
+		Walk(el, cancel, yield)
+	}
 }

@@ -13,7 +13,7 @@ import (
 
 type state struct {
 	src string
-	sel *ui.Selection
+	sel *selection
 }
 
 func (s state) String() string {
@@ -56,7 +56,7 @@ func New(gui *ui.UI, parent dom.Element, updateCode, runCode func(src string)) *
 	return ed
 }
 
-func insertSource(src string, sel *ui.Selection, toInsert string) (string, *ui.Selection, bool) {
+func insertSource(src string, sel *selection, toInsert string) (string, *selection, bool) {
 	cursorLine := sel.Line()
 	var targetLines []string
 	srcLines := strings.Split(src, "\n")
@@ -89,8 +89,8 @@ func insertSource(src string, sel *ui.Selection, toInsert string) (string, *ui.S
 	return out, sel, true
 }
 
-func (ed *Editor) insertSource(inserted string) func(src string, sel *ui.Selection) (string, *ui.Selection, bool) {
-	return func(src string, sel *ui.Selection) (string, *ui.Selection, bool) {
+func (ed *Editor) insertSource(inserted string) func(src string, sel *selection) (string, *selection, bool) {
+	return func(src string, sel *selection) (string, *selection, bool) {
 		return insertSource(src, sel, inserted)
 	}
 }
@@ -123,7 +123,7 @@ func (ed *Editor) onKeyPress(keys *ui.Keys, ev *dom.KeyboardEvent) {
 		return
 	}
 	if (keys.On("Meta") || keys.On("Control")) && keys.On("z") {
-		ed.updateSource(func(string, *ui.Selection) (string, *ui.Selection, bool) {
+		ed.updateSource(func(string, *selection) (string, *selection, bool) {
 			if keys.On("Shift") {
 				ed.source.Redo()
 			} else {
@@ -138,7 +138,7 @@ func (ed *Editor) onKeyPress(keys *ui.Keys, ev *dom.KeyboardEvent) {
 }
 
 func (ed *Editor) extractSource() string {
-	src := ui.TextContent(ed.input)
+	src := textContent(ed.input)
 	if len(src) > 0 {
 		src += "\n"
 	}
@@ -161,7 +161,7 @@ func (ed *Editor) Text() string {
 	return ed.source.Current().src
 }
 
-func (ed *Editor) set(src string, sel *ui.Selection) {
+func (ed *Editor) set(src string, sel *selection) {
 	ed.source.Append(state{src: src, sel: sel})
 	parent := ed.input
 	ui.ClearChildren(parent)
@@ -174,9 +174,9 @@ func (ed *Editor) set(src string, sel *ui.Selection) {
 	ed.updateCode(src)
 }
 
-func (ed *Editor) updateSource(process func(src string, sel *ui.Selection) (string, *ui.Selection, bool)) {
+func (ed *Editor) updateSource(process func(src string, sel *selection) (string, *selection, bool)) {
 	currentSrc := ed.extractSource()
-	sel := ed.gui.CurrentSelection(ed.input)
+	sel := currentSelection(ed.gui, ed.input)
 	currentSrc, sel, cont := process(currentSrc, sel)
 	if !cont {
 		return
@@ -185,7 +185,7 @@ func (ed *Editor) updateSource(process func(src string, sel *ui.Selection) (stri
 }
 
 func (ed *Editor) onSourceChange(dom.Event) {
-	ed.updateSource(func(src string, sel *ui.Selection) (string, *ui.Selection, bool) {
+	ed.updateSource(func(src string, sel *selection) (string, *selection, bool) {
 		return src, sel, ed.Text() != src
 	})
 }
