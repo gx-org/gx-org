@@ -56,6 +56,10 @@ func (ui *UI) CreateBR(parent dom.Element, opts ...ElementOption) *dom.HTMLBREle
 	return el.(*dom.HTMLBRElement)
 }
 
+func (ui *UI) Dom() dom.Window {
+	return ui.win
+}
+
 type EventFunc func(ev dom.Event)
 
 func (ui *UI) CreateButton(parent dom.Element, text string, f EventFunc, opts ...ElementOption) *dom.HTMLButtonElement {

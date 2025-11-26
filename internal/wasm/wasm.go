@@ -24,14 +24,16 @@ import (
 	"github.com/gx-org/gx-org/internal/lessons"
 	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"github.com/gx-org/gx-org/internal/wasm/ui/code"
+	"github.com/gx-org/gx-org/internal/wasm/ui/header"
 	"github.com/gx-org/gx-org/internal/wasm/ui/text"
 	"honnef.co/go/js/dom/v2"
 )
 
 type root struct {
-	gui  *ui.UI
-	text *text.Text
-	code *code.Code
+	gui    *ui.UI
+	header *header.Header
+	text   *text.Text
+	code   *code.Code
 }
 
 func (r *root) DisplayLesson(les *lessons.Lesson) {
@@ -53,13 +55,14 @@ func idsFromURL(loc *url.URL) (string, int, int) {
 
 func main() {
 	gui := ui.New(dom.GetWindow())
-	body, err := ui.FindElementByClass[dom.HTMLElement](gui, "root_container")
+	body, err := ui.FindElementByClass[dom.HTMLElement](gui, "main_root")
 	if err != nil {
 		fmt.Println("ERROR:", err.Error())
 		return
 	}
 
 	root := &root{gui: gui}
+	root.header = header.New(gui)
 	root.text = text.New(gui, body, root)
 	root.code = code.New(gui, body)
 
