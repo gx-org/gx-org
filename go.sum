@@ -20,12 +20,17 @@ github.com/gx-org/gx v0.6.2-0.20251119145738-fd73b0cccadd h1:7SzXxwMKrGVYH67YBsD
 github.com/gx-org/gx v0.6.2-0.20251119145738-fd73b0cccadd/go.mod h1:vW4Zj/cYPieylK7xGu9IYmF/Sh3hL39feLuk8RPbITo=
 github.com/gx-org/gx v0.6.2-0.20251121194336-68914a93bf84 h1:Fb4pFoI5jSXTWO/aP7EFQAOo2H7xoHUoi1jpaIgQKlw=
 github.com/gx-org/gx v0.6.2-0.20251121194336-68914a93bf84/go.mod h1:ZGBrnlsq/AYo8C3EXku/kDH/i8auI3vRKZmIbvKtObU=
+github.com/gx-org/gx v0.6.2-0.20251125142012-cc60ad3cf6eb h1:AJlnJybB8rM/k/Y0ygcqJCZ2VOcyRHlyWcaEzf4uzB4=
+github.com/gx-org/gx v0.6.2-0.20251125142012-cc60ad3cf6eb/go.mod h1:ZGBrnlsq/AYo8C3EXku/kDH/i8auI3vRKZmIbvKtObU=
+github.com/gx-org/gx v0.6.2-0.20251126145327-aca7e247e332 h1:GebD4JVV7VLCu4Ub2MVroxSa+DH2dknqv7MTEdwMexs=
+github.com/gx-org/gx v0.6.2-0.20251126145327-aca7e247e332/go.mod h1:Vau852YmNbPeuowGZhns25HJgzxNyiw3ALnXL3Yw/Ps=
 github.com/hexops/gotextdiff v1.0.3 h1:gitA9+qJrrTCsiCl7+kh75nPqQt1cx4ZkudSTLoUqJM=
 github.com/hexops/gotextdiff v1.0.3/go.mod h1:pSWU5MAI3yDq+fZBTazCSJysOMbxWL1BSow5/V2vxeg=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 golang.org/x/exp v0.0.0-20251113190631-e25ba8c21ef6 h1:zfMcR1Cs4KNuomFFgGefv5N0czO2XZpUbxGUy8i8ug0=
 golang.org/x/exp v0.0.0-20251113190631-e25ba8c21ef6/go.mod h1:46edojNIoXTNOhySWIWdix628clX9ODXwPsQuG6hsK0=
+golang.org/x/exp v0.0.0-20251125195548-87e1e737ad39 h1:DHNhtq3sNNzrvduZZIiFyXWOL9IWaDPHqTnLJp+rCBY=
 golang.org/x/mod v0.30.0 h1:fDEXFVZ/fmCKProc/yAXXUijritrDzahmwwefnjoPFk=
 golang.org/x/mod v0.30.0/go.mod h1:lAsf5O2EvJeSFMiBxXDki7sCgAxEUcZHXoXMKT4GJKc=
 honnef.co/go/js/dom/v2 v2.0.0-20250304181735-b5e52f05e89d h1:ONCmIS7pmOp+CZaqNKu7umBrvOnmthfmPbs4ZMR9v+U=

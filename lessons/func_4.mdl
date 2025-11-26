@@ -1,0 +1,22 @@
+## Generic Arrays
+
+Finally, functions can define generic arrays by combining generic types with generic number of axes, as follow:
+```
+func Add[T dtype.Floats](a T, b [___S]T) [S___]T
+```
+
+```code:main
+package main
+
+import "dtype"
+
+func Add[T dtype.Floats](a T, b [___S]T) [S___]T {
+    return a+b
+}
+
+func Main() ([1][2]float32, [2][3]float32) {
+    a := Add(-10, [1][2]float32{{1, 2}})
+    b := Add(10, [2][3]float32{{1, 2, 3}, {4, 5, 6}})
+    return a, b
+}
+```
