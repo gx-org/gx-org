@@ -6,7 +6,7 @@
 	--main-element-bg-color: rgb(255, 255, 255);
 	--code-bg-color: rgb(205, 230, 255);
 	--gx-color: rgb(66, 133, 244);
-	--header-height: 60px;
+	--header-height: 50px;
 }
 
 html {
@@ -56,7 +56,7 @@ header {
 	background: var(--gx-color);
 	color: var(--main-bg-color);
 	height: var(--header-height);
-	font-size: 40px;
+	font-size: 35px;
 }
  
 .body_root {
@@ -90,11 +90,12 @@ body {
 }
 
 .code_source_textinput_container {
-	flex: 5;
+	height: 80%;
 	background: var(--code-bg-color);
 	width: 100%;
 	overflow-x: auto;
 	overflow-y: auto;
+	resize: vertical;
 }
 
 .code_source_textinput {
@@ -115,7 +116,9 @@ body {
 
 .code_output_container {
 	background: var(--main-element-bg-color);
-	flex: 1;
+	height: 20%;
+	flex-grow: 1;
+	min-height: 0;
 	overflow-x: auto;
 	overflow-y: auto;
 }
