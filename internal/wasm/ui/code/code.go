@@ -155,6 +155,22 @@ func (cd *Code) lessonOptions(fun ir.Func) []options.PackageOption {
 	return opts
 }
 
+type traceWriter struct {
+	buf strings.Builder
+}
+
+func (r *traceWriter) Trace(file *ir.File, call *ir.FuncCallExpr, vals []values.Value) error {
+	vals, err := values.ToHost(kernels.Allocator(), vals)
+	if err != nil {
+		return err
+	}
+	for _, val := range vals {
+		r.buf.WriteString(fmt.Sprint(val))
+	}
+	r.buf.WriteString("\n")
+	return nil
+}
+
 func (cd *Code) runFunc(fun ir.Func) string {
 	if fun == nil {
 		return "Main function not found"
@@ -171,13 +187,17 @@ func (cd *Code) runFunc(fun ir.Func) string {
 	if err != nil {
 		return err.Error()
 	}
-	vals, err := runner.Run(nil, nil, nil)
+	var trace traceWriter
+	vals, err := runner.Run(nil, nil, &trace)
 	if err != nil {
 		return err.Error()
 	}
 	bld := strings.Builder{}
 	if err := buildString(&bld, vals); err != nil {
 		return err.Error()
+	}
+	if trace.buf.Len() > 0 {
+		bld.WriteString(fmt.Sprintf("\nTrace:\n%s", trace.buf.String()))
 	}
 	return bld.String()
 }
