@@ -24,6 +24,8 @@ github.com/gx-org/gx v0.6.2-0.20251125142012-cc60ad3cf6eb h1:AJlnJybB8rM/k/Y0ygc
 github.com/gx-org/gx v0.6.2-0.20251125142012-cc60ad3cf6eb/go.mod h1:ZGBrnlsq/AYo8C3EXku/kDH/i8auI3vRKZmIbvKtObU=
 github.com/gx-org/gx v0.6.2-0.20251126145327-aca7e247e332 h1:GebD4JVV7VLCu4Ub2MVroxSa+DH2dknqv7MTEdwMexs=
 github.com/gx-org/gx v0.6.2-0.20251126145327-aca7e247e332/go.mod h1:Vau852YmNbPeuowGZhns25HJgzxNyiw3ALnXL3Yw/Ps=
+github.com/gx-org/gx v0.6.2-0.20251128164342-7d5fb93b0203 h1:awaHsVzew4zeWDx48ixvFbfhvA+wIcYyq5kXTwvMFDI=
+github.com/gx-org/gx v0.6.2-0.20251128164342-7d5fb93b0203/go.mod h1:Vau852YmNbPeuowGZhns25HJgzxNyiw3ALnXL3Yw/Ps=
 github.com/hexops/gotextdiff v1.0.3 h1:gitA9+qJrrTCsiCl7+kh75nPqQt1cx4ZkudSTLoUqJM=
 github.com/hexops/gotextdiff v1.0.3/go.mod h1:pSWU5MAI3yDq+fZBTazCSJysOMbxWL1BSow5/V2vxeg=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=

@@ -106,7 +106,7 @@ body {
     	outline: 0;
 	padding: 2px;
 	white-space: nowrap;
-	width: 100%;
+	min-width: 0;
 }
 
 .code_source_controls_container {
@@ -163,3 +163,4 @@ body {
 	border: none;
 	background-color: transparent;
 }
+

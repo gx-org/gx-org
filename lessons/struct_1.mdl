@@ -1,0 +1,34 @@
+A structure defines a collection of fields grouped together to form a single, coherent record. Structures define a custom GX type.
+
+
+```code:main
+package main
+
+var InputSize intlen
+
+type LinearRegression struct {
+    StepSize float32
+    Weights [InputSize]float32
+    Bias float32
+}
+
+func Main() LinearRegression {
+    return LinearRegression{
+        StepSize: .5,
+        Weights: [InputSize]float32{},
+        Bias: 1.0,
+    }
+}
+```
+
+
+```code:config
+{
+    "InputSize": 3
+}
+```
+
+```code:options
+{ "chapter_title": "Structures" }
+```
+

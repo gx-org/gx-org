@@ -1,0 +1,52 @@
+Functions can be defined for a structure, and more generaly any custom type, using methods. This is done using a receiver, a parameter between the `func` keyword and the function name. The receiver defines the type to which the method is attached and the name to use to access the type data.
+
+A receiver is equivalent to `self` in Python but its name should be a reflection of its identity, such as a [one or two letters abbreviation](https://go.dev/wiki/CodeReviewComments#receiver-names). 
+
+```code:main
+package main
+
+import "num"
+
+var InputSize intlen
+
+type LinearRegression struct {
+    StepSize float32
+    Weights [InputSize]float32
+    Bias float32
+}
+
+func (lr LinearRegression) Predict(input [InputSize]float32) float32 {
+    return num.Sum(lr.Weights * input, []intidx{0}) + lr.Bias
+}
+
+func (lr LinearRegression) Update(input [InputSize]float32, diff float32) LinearRegression {
+    lr.Weights += lr.StepSize * input * diff
+    lr.Bias += lr.StepSize * diff
+    return lr
+}
+
+
+func Main() LinearRegression {
+    lr := LinearRegression{
+        StepSize: 0.5/(float32(InputSize)+1),
+        Weights: [InputSize]float32{},
+        Bias: 1.0,
+    }
+    input := [InputSize]float32(2)
+    prediction := lr.Predict(input)
+    target := float32(10)
+    diff := target - prediction
+    return lr.Update(input, diff)
+}
+```
+
+
+```code:config
+{
+    "InputSize": 3
+}
+```
+
+```code:options
+{ "chapter_title": "Structures" }
+```
