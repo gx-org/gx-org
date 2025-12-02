@@ -27,8 +27,9 @@ import (
 
 type (
 	Options struct {
-		HideText     bool   `json:"hide_text"`
-		ChapterTitle string `json:"chapter_title"`
+		HideText                bool   `json:"hide_text"`
+		ChapterTitle            string `json:"chapter_title"`
+		ChapterTitleAsPageTitle bool   `json:"chapter_title_as_page_title"`
 	}
 
 	Chapter struct {
@@ -68,6 +69,9 @@ var chapters = map[string][]string{
 	"devs": {
 		"fill",
 		"demo",
+	},
+	"demos": {
+		"reverse",
 	},
 }
 

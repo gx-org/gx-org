@@ -39,6 +39,7 @@ type root struct {
 func (r *root) DisplayLesson(les *lessons.Lesson) {
 	r.text.SetContent(les)
 	r.code.SetContent(les)
+	r.header.SetContent(les)
 	var pathPrefix string
 	if les.Chapter.PathPrefix != "" {
 		pathPrefix = fmt.Sprintf("&prefix=%s", les.Chapter.PathPrefix)
