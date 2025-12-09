@@ -1,6 +1,6 @@
 # Welcome to the GX overview
 
-GX is a domain specialised language to write array-based programs, including machine learning algorithms, data processing, or scientific programming.
+GX is a domain specialised language to write array-based programs, including machine learning algorithms, data processing, or scientific programming. GX is designed to be embedded in a host language, Javascript and Go WASM for this website, and compiled at runtime.
 
 Click on the Run button to execute the function named `Main`.
 

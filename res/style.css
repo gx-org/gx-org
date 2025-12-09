@@ -123,6 +123,11 @@ body {
 	overflow-y: auto;
 }
 
+.code_output_list {
+	padding-left: 1.5em;
+	margin: 0 0 0 0;
+}
+
 .lesson_container {
 	display: flex;
 	flex-direction: column;

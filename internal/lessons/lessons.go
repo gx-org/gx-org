@@ -69,6 +69,7 @@ var chapters = map[string][]string{
 	"devs": {
 		"fill",
 		"demo",
+		"reverse",
 	},
 	"demos": {
 		"reverse",

@@ -1,0 +1,26 @@
+
+```code:main
+package main
+
+import "math"
+import "math/grad"
+
+func sigmoid(x float32) float32 {
+    return 1 / (1 + math.Exp(-x))
+}
+
+
+func Main() (float32, float32) {
+    vjpSig := grad.VJP(sigmoid) // Macro computed by the compiler
+    y, gradY := vjpSig(0.0) // Returns sigmoid(0.0) and a gradient function at 0.0
+    return y, gradY(1.0)
+}
+```
+
+```code:options
+{ 
+    "hide_text": true,
+    "chapter_title_as_page_title": true,
+    "chapter_title": "Autodiff Reverse Mode"
+}
+```

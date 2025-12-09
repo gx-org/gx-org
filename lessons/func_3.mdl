@@ -1,6 +1,6 @@
 ## Generic Number of Axes
 
-Functions can take arrays with a generic number of axes. A name to the axes of the array is assigned as followed:
+Functions can take arrays with a generic number of axes. A name to the axes of the array is assigned as follows:
 ```
 func Add(a float32, b [___S]float32) [S___]float32
 ```
@@ -13,6 +13,7 @@ We use the notation `___S` to assign all the axis lengths to the variable `S`. T
 package main
 
 func Add(a float32, b [___S]float32) [S___]float32 {
+    trace(S)
     return a+b
 }
 

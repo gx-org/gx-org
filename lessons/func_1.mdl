@@ -2,7 +2,7 @@
 
 ## Generic Types
 
-Generic functions can be defined for multiple types as long as these types satisfy some constraints. The package [`dtype`](https://github.com/gx-org/gx/blob/main/stdlib/dtype/dtype.gx) defines sets of basic types, notably `Floats`, `Ints`, and `Num` respectively for floats, integers, and numerical types.
+Generic functions can be defined for multiple types as long as these types satisfy some constraints. The package [`dtype`](https://github.com/gx-org/gx/blob/main/stdlib/dtype/dtype.gx) defines sets of basic types, notably `Floats`, `Ints`, and `Num` respectively for floats, integers, and the union of floats and integers.
 
 Whenever possible, the compiler will use arguments to infer the type parameters of the function, as in the second call to `ToInts` in the example. GX generic types aims at being as close to Go generics as possible.
 

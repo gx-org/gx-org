@@ -17,7 +17,7 @@
 package code
 
 import (
-	"fmt"
+	"strings"
 
 	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"honnef.co/go/js/dom/v2"
@@ -37,15 +37,15 @@ func newOutput(code *Code, parent dom.Element) *Output {
 	}
 	ui.SetCrashOutput(func(crash string) {
 		out.crash = crash
-		out.set("")
+		out.setHTML("")
 	})
 	return out
 }
 
-func (out *Output) set(src string) {
-	crash := ""
+func (out *Output) setHTML(src string) {
+	var crash strings.Builder
 	if out.crash != "" {
-		crash = "\n" + out.crash
+		preB(&crash, out.crash)
 	}
-	out.div.SetInnerHTML(fmt.Sprintf("<pre>%s%s<pre>", src, crash))
+	out.div.SetInnerHTML(src + crash.String())
 }

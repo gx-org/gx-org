@@ -70,7 +70,7 @@ func (cd *Code) compile(src string) error {
 	if err != nil {
 		return err
 	}
-	cd.out.set("")
+	cd.out.setHTML("")
 	return nil
 }
 
@@ -85,11 +85,11 @@ func (cd *Code) compileCode(src string) (*ir.Package, error) {
 func (cd *Code) updateCodeOutput(f func(src string) error, src string) {
 	defer func() {
 		if r := recover(); r != nil {
-			cd.out.set(fmt.Sprintf("GX PANIC: please report everything below so that it can be fixed:\n%s\n%s", src, debug.Stack()))
+			cd.out.setHTML(toHTML(fmt.Errorf("GX PANIC: please report everything below so that it can be fixed:\n%s\n%s", src, debug.Stack())))
 		}
 	}()
 	if err := f(src); err != nil {
-		cd.out.set(fmt.Sprintf("ERROR: %s", err.Error()))
+		cd.out.setHTML(toHTML(err.Error()))
 		return
 	}
 }
@@ -111,22 +111,24 @@ func flatten(out []values.Value) []values.Value {
 	return flat
 }
 
-func buildString(bld *strings.Builder, out []values.Value) error {
-	out, err := values.ToHost(kernels.Allocator(), flatten(out))
+func buildString(w *strings.Builder, outs []values.Value) {
+	vals, err := values.ToHost(kernels.Allocator(), flatten(outs))
 	if err != nil {
-		return err
+		errorB(w, err)
+		return
 	}
-	if len(out) == 0 {
-		return nil
+	if len(vals) == 0 {
+		return
 	}
-	if len(out) == 1 {
-		bld.WriteString(fmt.Sprint(out[0]))
-		return nil
+	htmls := make([]string, len(vals))
+	for i, val := range vals {
+		htmls[i] = toHTML(val)
 	}
-	for i, s := range out {
-		bld.WriteString(fmt.Sprintf("%d: %v\n", i, s))
+	if len(htmls) == 1 {
+		w.WriteString(htmls[0])
+		return
 	}
-	return nil
+	enumerateB(w, htmls)
 }
 
 func (cd *Code) lessonOptions(fun ir.Func) []options.PackageOption {
@@ -165,27 +167,26 @@ func (r *traceWriter) Trace(file *ir.File, call *ir.FuncCallExpr, vals []values.
 		return err
 	}
 	for _, val := range vals {
-		r.buf.WriteString(fmt.Sprint(val))
+		toHTMLB(&r.buf, val)
 	}
-	r.buf.WriteString("\n")
 	return nil
 }
 
 func (cd *Code) runFunc(fun ir.Func) string {
 	if fun == nil {
-		return "Main function not found"
+		return errorF("Main function not found")
 	}
 	numArgs := fun.FuncType().Params.Len()
 	if numArgs > 0 {
-		return "func Main must have no arguments"
+		return errorF("func Main must have no arguments")
 	}
 	dev, err := backend.New(cd.bld).Device(0)
 	if err != nil {
-		return fmt.Sprintf("cannot initialise backend: %v", err)
+		return errorF("cannot initialise backend: %v", err)
 	}
 	runner, err := tracer.Trace(dev, fun.(*ir.FuncDecl), nil, nil, cd.lessonOptions(fun))
 	if err != nil {
-		return err.Error()
+		return errorF("cannot compile the code: %v", err)
 	}
 	var trace traceWriter
 	vals, err := runner.Run(nil, nil, &trace)
@@ -193,11 +194,9 @@ func (cd *Code) runFunc(fun ir.Func) string {
 		return err.Error()
 	}
 	bld := strings.Builder{}
-	if err := buildString(&bld, vals); err != nil {
-		return err.Error()
-	}
+	buildString(&bld, vals)
 	if trace.buf.Len() > 0 {
-		bld.WriteString(fmt.Sprintf("\nTrace:\n%s", trace.buf.String()))
+		bld.WriteString(fmt.Sprintf("Trace:<br>%s", trace.buf.String()))
 	}
 	return bld.String()
 }
@@ -219,6 +218,6 @@ func (cd *Code) compileAndRun(src string) error {
 		return err
 	}
 	out := cd.runFunc(irPkg.FindFunc("Main"))
-	cd.out.set(out)
+	cd.out.setHTML(out)
 	return nil
 }
