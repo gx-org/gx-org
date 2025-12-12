@@ -6,7 +6,9 @@ import "math"
 import "math/grad"
 
 func sigmoid(x float32) float32 {
-    return 1 / (1 + math.Exp(-x))
+    result := 1 / (1 + math.Exp(-x))
+    result = result + 2
+    return result
 }
 
 
