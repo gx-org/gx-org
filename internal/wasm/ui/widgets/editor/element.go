@@ -65,6 +65,7 @@ func New(gui *ui.UI, parent dom.Element, updateCode, runCode func(src string)) *
 		parent,
 		ui.Class("code_source_textinput"),
 		ui.Property("contenteditable", "true"),
+		ui.Property("spellcheck", "false"),
 		ui.Listener("input", ed.onSourceChange),
 		ui.Listener("paste", ed.onPaste),
 		ui.KeyListener(ed.onKeyPress),
