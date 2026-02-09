@@ -1,6 +1,6 @@
 ## Arrays with Symbolic Axis Lengths
 
-Arrays support symbolic axis lengths that will be defined by the host language. A symbolic axis length is declared using `var` at the package level and use thebuiltin static basic type `intlen`.
+Arrays support symbolic axis lengths that will be defined by the host language. A symbolic axis length is declared using `var` at the package level and use the builtin static basic type `intlen`.
 
 Such symbolic axis length, are defined by the host language at runtime. See the config below that defines `Width` and `Height` for GX.
 The host language defines these values before compiling the function. For some backend, changing the value of a static variable triggers a recompilation of the function (Google XLA for example).
