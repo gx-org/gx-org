@@ -65,6 +65,7 @@ var chapters = map[string][]string{
 		"types",
 		"func",
 		"struct",
+		"slice",
 	},
 	"devs": {
 		"fill",
