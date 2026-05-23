@@ -46,7 +46,7 @@ type Code struct {
 }
 
 func New(gui *ui.UI, parent dom.HTMLElement) *Code {
-	bld := builder.New(importers.NewCacheLoader(
+	bld := builder.NewWithLoader(importers.NewCacheLoader(
 		stdlib.Importer(nil),
 	))
 	cd := &Code{
@@ -147,7 +147,7 @@ func (cd *Code) lessonOptions(fun ir.Func) []options.PackageOption {
 					continue
 				}
 				opts = append(opts, options.PackageVarSetValue{
-					Pkg:   pkg.FullName(),
+					Pkg:   pkg.Path(),
 					Var:   name,
 					Value: types.DefaultInt(ir.Int(val.(float64))).GXValue(),
 				})

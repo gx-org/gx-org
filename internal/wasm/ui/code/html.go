@@ -54,7 +54,7 @@ func irNodeHTML(w *strings.Builder, node string) {
 func toHTMLB(w *strings.Builder, val any) {
 	switch valT := val.(type) {
 	case *values.IRNode:
-		irNodeHTML(w, valT.String())
+		irNodeHTML(w, valT.DefineString(nil))
 	case error:
 		errorB(w, valT)
 	default:
