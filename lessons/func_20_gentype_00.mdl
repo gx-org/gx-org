@@ -1,0 +1,39 @@
+## Generic Types
+
+Generic functions can also be defined for multiple types as long as these types satisfy some constraints. As in Go, a set of constraints is defined by defining a new type as an interface and listing the types satisfying the constraint. In the following example, the type constraints `ints` is defined as a `int32` or a `int64`.
+
+```
+type ints interface {
+    int32 | int64
+}
+```
+
+In the example, we define two constraints `ints` and `floats`, and a function that converts a value with a type satisfying `ints` into a type satisfying `floats`.
+
+Whenever possible, the compiler will use arguments to infer the type parameters of the function, as in the second call to `toFloats` in the example.
+
+```code:main
+package main
+
+type ints interface {
+    int32 | int64
+}
+
+type floats interface {
+    float32 | float64
+}
+
+func toFloats[Dest floats, Src ints](a Src) Dest {
+    return Dest(a)
+}
+
+func Main() (float32, float64) {
+    a := int64(2) 
+    f32a := toFloats[float32, int64](a)
+    // In the following call, the compiler uses type inference
+    // to determine the type of the function parameter Src from its argument.
+    f64a := toFloats[float64](a)
+    return f32a, f64a
+}
+```
+

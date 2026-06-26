@@ -1,0 +1,19 @@
+## Arrays: cast and reshape
+
+Casting can be used to change the datatype of an array or its shape, as shown in the example.
+
+Reshaping or casting a scalar into an array creates an array filled with that scalar value. For example, `[2][2]float32(5)` returns an array of `float32` and axis lengths `[2][2]` initialized with 5. Note the use of `()` as in a cast instead of `{}`.
+
+```code:main
+package main
+
+func Main() ([2][3]int32, [1][3][2]float32, [2][2]float32) {
+    a := [2][3]float32{
+        {1, 2, 3},
+        {4, 5, 6},
+    }
+    aInt32 := [2][3]int32(a)
+    aReshaped := [1][3][2]float32(a)
+    return aInt32, aReshaped, [2][2]float32(5)
+}
+```

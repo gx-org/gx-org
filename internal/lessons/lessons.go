@@ -20,6 +20,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
+	"strings"
 
 	"github.com/gx-org/gx-org/internal/mdtext"
 	"github.com/gx-org/gx-org/lessons"
@@ -65,7 +67,6 @@ var chapters = map[string][]string{
 		"types",
 		"func",
 		"struct",
-		"slice",
 	},
 	"devs": {
 		"fill",
@@ -89,14 +90,39 @@ func New() (map[string][]*Chapter, error) {
 	return m, nil
 }
 
+func readEntries(pathPrefix string) ([]string, error) {
+	if pathPrefix == "" {
+		pathPrefix = "."
+	}
+	entries, err := lessons.Lessons.ReadDir(pathPrefix)
+	if err != nil {
+		return nil, err
+	}
+	var all []string
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		if !strings.HasSuffix(entry.Name(), ".mdl") {
+			continue
+		}
+		all = append(all, entry.Name())
+	}
+	return all, nil
+}
+
 func readChapters(pathPrefix string, chapterNames []string) ([]*Chapter, error) {
+	entries, err := readEntries(pathPrefix)
+	if err != nil {
+		return nil, err
+	}
 	chapters := make([]*Chapter, len(chapterNames))
 	var last *Lesson
 	for i, name := range chapterNames {
 		chap := &Chapter{name: name, ID: i, PathPrefix: pathPrefix}
 		chapters[i] = chap
 		var err error
-		last, err = chap.readLessons(last)
+		last, err = chap.readLessons(entries, last)
 		if err != nil {
 			return nil, err
 		}
@@ -107,14 +133,24 @@ func readChapters(pathPrefix string, chapterNames []string) ([]*Chapter, error) 
 	return chapters, nil
 }
 
-func (chap *Chapter) readLessons(prevL *Lesson) (*Lesson, error) {
-	for {
-		lesson, err := chap.readLesson()
+func (chap *Chapter) filterEntries(entries []string) []string {
+	var selected []string
+	for _, entry := range entries {
+		if !strings.HasPrefix(entry, chap.name) {
+			continue
+		}
+		selected = append(selected, entry)
+	}
+	sort.Strings(selected)
+	return selected
+}
+
+func (chap *Chapter) readLessons(entries []string, prevL *Lesson) (*Lesson, error) {
+	chapEntries := chap.filterEntries(entries)
+	for _, entry := range chapEntries {
+		lesson, err := chap.readLesson(entry)
 		if err != nil {
 			return nil, err
-		}
-		if lesson == nil {
-			return prevL, nil
 		}
 		if prevL != nil {
 			lesson.Prev = prevL
@@ -122,15 +158,15 @@ func (chap *Chapter) readLessons(prevL *Lesson) (*Lesson, error) {
 		}
 		prevL = lesson
 	}
+	return prevL, nil
 }
 
 const defaultCode = `package main
 `
 
-func (chap *Chapter) readLesson() (*Lesson, error) {
+func (chap *Chapter) readLesson(entry string) (*Lesson, error) {
 	lessonID := len(chap.Content) + 1
-	fileName := fmt.Sprintf("%s_%d.mdl", chap.Name(), lessonID)
-	path := fileName
+	path := entry
 	if chap.PathPrefix != "" {
 		path = filepath.Join(chap.PathPrefix, path)
 	}
@@ -144,7 +180,7 @@ func (chap *Chapter) readLesson() (*Lesson, error) {
 	mdt := mdtext.Parse(data)
 	lesson := &Lesson{
 		Chapter:  chap,
-		FileName: fileName,
+		FileName: entry,
 		ID:       lessonID,
 		Config:   make(map[string]any),
 	}

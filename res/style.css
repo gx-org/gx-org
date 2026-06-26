@@ -28,6 +28,7 @@ h2 {
 
 pre {
 	margin: 2px;
+	background: var(--code-bg-color);
 }
 
 p {

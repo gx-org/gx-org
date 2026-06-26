@@ -1,0 +1,30 @@
+## Arrays
+
+Arrays are specified by first declaring their axis lengths and then their data type as in `[2][3]float32` which defines an array of `float32` with 2 axes of length 2 and 3. The content of the array can be defined using the `{}` notation.
+
+Arrays of `string` are not supported.
+
+If the content of the array is empty, as in `[2][3]float32`, then the array is initiazed with 0.
+
+The axis lengths are also checked by the compiler. For example, the following code does not compile:
+
+
+```
+package main
+
+func Main() [2][3]float32 {
+    a := [3][2]float32{}
+    return a // ERROR cannot use [3][2]float32 as [2][3]float32
+}
+```
+
+```code:main
+package main
+
+func Main() [2][3]float32 {
+    return [2][3]float32{
+        {1, 2, 3},
+        {4, 5, 6},
+    }
+}
+```

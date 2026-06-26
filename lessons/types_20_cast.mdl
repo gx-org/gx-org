@@ -1,0 +1,19 @@
+## Type casting
+
+A cast convert a value of a type to another type and use the following notation `T(value)` where `T` is the target type as in `int32(2)`.
+```
+<target_type>(<val>)
+```
+
+In the example, `a` has type `int32` and is converted to a `float32` when being returned.
+
+All type conversions are explicit in GX.
+
+```code:main
+package main
+
+func Main() float32 {
+    a := int32(2)
+    return float32(a)
+}
+```

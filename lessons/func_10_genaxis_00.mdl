@@ -1,0 +1,27 @@
+## Generic Axis Lengths
+
+Functions can use arrays with a generic axis lengths by declaring generic arguments between `[]` after the function name to define the axis lengths.
+
+For example: 
+```
+func add[A, B intlen](float32, [A][B]float32) [A][B]float32
+```
+defines an `add` function with two generic arguments, `A` and `B` of type `intlen`, and which takes two non-generic (runtime) arguments: a `float32` scalar, and an array of `float32` with two axes of generic axis length of lengths `A` and `B`. `add` returns an array with the same axis lengths. 
+
+The `add` function can then be called with different array shapes as in the example. In this example, `A` and `B` are automatically inferred by the compiler when calling `add`.
+
+```code:main
+package main
+
+func add[A, B intlen](a float32, b [A][B]float32) [A][B]float32 {
+    return a+b
+}
+
+func Main() ([1][2]float32, [2][3]float32) {
+    // In this call, A and B in add will be equal to 1 and 2 respectively.
+    a := add(-10, [1][2]float32{{1, 2}})
+    // In this call, A and B in add will be equal to 2 and 3 respectively.
+    b := add(10, [2][3]float32{{1, 2, 3}, {4, 5, 6}})
+    return a, b
+}
+```

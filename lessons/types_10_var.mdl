@@ -1,0 +1,24 @@
+## Variable
+
+Use `:=` and `=` to declare and define a variable, respectively. When using `:=`, the type of the variable is inferred from the value on the right side. Once a variable has been assigned a type, it cannot change. So, values assigned to that variable needs to be of the correct type.
+
+The compiler checks that the type of variable is consistent with its use. In the following example, the variable `a` has type `int32` and cannot be used as a return value, which expect a `float32` type.
+
+```
+package main
+
+func Main() float32 {
+    a := int32(2)
+    return a // ERROR: cannot use int32 as float32
+}
+```
+
+```code:main
+package main
+
+func Main() int64 {
+    a := 2
+    a = 3
+    return a
+}
+```

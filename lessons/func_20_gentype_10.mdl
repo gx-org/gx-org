@@ -1,0 +1,29 @@
+## Generic Types and Generic Arrays
+
+Generic functions can define both generic types with generic axis lengths as demonstrated in this example where the `toFloats` now takes an input array of any shape as long as its data type satisfies the `ints` constraint.
+
+```code:main
+package main
+
+type ints interface {
+    int32 | int64
+}
+
+type floats interface {
+    float32 | float64
+}
+
+func toFloats[Dest floats, Src ints, Shape []intlen](a Src) Dest {
+    return Dest(a)
+}
+
+func Main() (float32, float64) {
+    a := [2][3]int64{{1, 2, 3}, {4, 5, 6}} 
+    f32a := toFloats[float32, int64](a)
+    // In the following call, the compiler uses type inference
+    // to determine the type of the function parameter Src from its argument.
+    f64a := toFloats[float64](a)
+    return f32a, f64a
+}
+```
+
