@@ -27,7 +27,6 @@ import (
 	"github.com/gx-org/gx/api/tracer"
 	"github.com/gx-org/gx/api/values"
 	"github.com/gx-org/gx/build/builder"
-	"github.com/gx-org/gx/build/importers"
 	"github.com/gx-org/gx/build/ir"
 	"github.com/gx-org/gx/golang/backend"
 	"github.com/gx-org/gx/golang/backend/kernels"
@@ -46,9 +45,7 @@ type Code struct {
 }
 
 func New(gui *ui.UI, parent dom.HTMLElement) *Code {
-	bld := builder.New(importers.NewCacheLoader(
-		stdlib.Importer(nil),
-	))
+	bld := builder.New(stdlib.Importer())
 	cd := &Code{
 		gui: gui,
 		bld: bld,
@@ -147,7 +144,7 @@ func (cd *Code) lessonOptions(fun ir.Func) []options.PackageOption {
 					continue
 				}
 				opts = append(opts, options.PackageVarSetValue{
-					Pkg:   pkg.FullName(),
+					Pkg:   pkg.Path(),
 					Var:   name,
 					Value: types.DefaultInt(ir.Int(val.(float64))).GXValue(),
 				})
