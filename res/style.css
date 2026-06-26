@@ -7,6 +7,7 @@
 	--code-bg-color: rgb(205, 230, 255);
 	--gx-color: rgb(66, 133, 244);
 	--header-height: 50px;
+	--footer-height: 14px;
 }
 
 html {
@@ -47,7 +48,7 @@ ul {
 	justify-content: flex-start;
 	gap: 1px;
 	background: var(--flex-bg-color);
-	height: calc(99vh - var(--header-height));
+	height: calc(100vh - var(--header-height) - var(--footer-height));
 	flex-grow: 0;
 }
 
@@ -60,6 +61,14 @@ header {
 	font-size: 35px;
 }
  
+footer {
+	margin-bottom: 0;
+	padding: 0;
+	color: var(--main-fg-color);
+	height: var(--footer-height);
+	font-size: 12px;
+}
+
 .body_root {
 	display: flex;
 	flex-direction: column;
