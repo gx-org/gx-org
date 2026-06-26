@@ -1,0 +1,24 @@
+A slice is a dynamically sized view into an underlying container. Unlike arrays, which have a strict, fixed length, slices can grow and shrink.
+
+A slice is specified using the `[]` prefix without a size. In this example, the function `Main` returns both an array (type: `[2]int64`) and a slice (type `[]int64`).
+
+```code:main
+package main
+
+func newArray() [2]int64 {
+    return [2]int64{1, 2}
+}
+
+func newSlice() []int64 {
+    return []int64{3, 4}
+}
+
+func Main() ([2]int64, []int64) {
+    return newArray(), newSlice()
+}
+```
+
+```code:options
+{ "chapter_title": "Slices" }
+```
+

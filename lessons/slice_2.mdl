@@ -1,0 +1,13 @@
+Like arrays, slices can contain other slices. Unlike arrays, a slice can contain slices of different lengths as shown in this example.
+
+```code:main
+package main
+
+func Main() [][]int64 {
+    return [][]int64{
+        {1, 2, 3},
+        {4},
+        {5, 6},
+    }
+}
+```
