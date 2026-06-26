@@ -19,6 +19,7 @@ package ui
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 
 	"honnef.co/go/js/dom/v2"
 )
@@ -58,7 +59,7 @@ func Listener[T dom.Event](typ string, listener func(T)) ElementOption {
 		})
 	}
 	return ElementOptionF(func(el dom.Element) {
-		el.AddEventListener(typ, false, castEvent)
+		el.AddEventListener(typ, true, castEvent)
 	})
 }
 
@@ -79,6 +80,18 @@ func SetVisibleProperty(el dom.Element, visible bool) {
 func SetVisible(visible bool) ElementOption {
 	return ElementOptionF(func(el dom.Element) {
 		SetVisibleProperty(el, visible)
+	})
+}
+
+func Focus() ElementOption {
+	return ElementOptionF(func(el dom.Element) {
+		el.(dom.HTMLElement).Focus()
+	})
+}
+
+func TabIndex(i int) ElementOption {
+	return ElementOptionF(func(el dom.Element) {
+		el.SetAttribute("tabindex", strconv.Itoa(i))
 	})
 }
 

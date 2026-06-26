@@ -136,6 +136,10 @@ body {
 	flex-shrink: 0;
 	resize: horizontal;
 	overflow: auto;
+	/* Hide the outline when receiving keyboard event */
+	outline: none;
+	outline-width: 0;
+	box-shadow: none;
 }
 
 .lesson_content {

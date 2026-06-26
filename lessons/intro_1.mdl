@@ -1,10 +1,10 @@
 # Welcome to the GX overview
 
-GX is a domain specialised language to write array-based programs, including machine learning algorithms, data processing, or scientific programming. GX is designed to be embedded in a host language, Javascript and Go WASM for this website, and compiled at runtime.
+GX is a domain specialised language to write array-based programs, including machine learning algorithms, data processing, or scientific programming. GX is designed to be embedded in a host language such as C++, Go or Python. For this website, GX is embedded in Javascript using WASM.
 
 Click on the Run button to execute the function named `Main`.
 
-This overview is split into chapters, each chapter is composed of lessons. Access to the next lesson by clicking on the arrow below.
+This overview is split into chapters, each chapter is composed of lessons. Access to the next lesson by clicking on the arrow below or using the keyboard arrows.
 
 ```code:main
 package main
