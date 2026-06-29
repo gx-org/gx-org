@@ -54,7 +54,7 @@ type Editor struct {
 	lastUpdate          int
 }
 
-func New(gui *ui.UI, parent dom.Element, updateCode, runCode func(src string)) *Editor {
+func New2(gui *ui.UI, parent dom.Element, updateCode, runCode func(src string)) *Editor {
 	ed := &Editor{
 		source:     history.New(stateEq),
 		formatter:  codefmt.Go(),

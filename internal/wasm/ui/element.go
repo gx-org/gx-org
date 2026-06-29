@@ -36,6 +36,12 @@ func (f ElementOptionF) Apply(el dom.Element) {
 	f(el)
 }
 
+func ID(id string) ElementOption {
+	return ElementOptionF(func(el dom.Element) {
+		el.SetID(id)
+	})
+}
+
 func Class(class string) ElementOption {
 	return ElementOptionF(func(el dom.Element) {
 		el.Class().Add(class)
