@@ -26,7 +26,7 @@ type Source struct {
 	code      *Code
 	container *dom.HTMLDivElement
 	control   *dom.HTMLDivElement
-	editor    *editor.ACEEditor
+	editor    *editor.Editor
 }
 
 func newSource(code *Code, parent dom.Element) *Source {

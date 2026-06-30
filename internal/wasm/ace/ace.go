@@ -22,7 +22,7 @@ import (
 )
 
 type ACE struct {
-	ace js.Value
+	js.Value
 }
 
 func get() (*ACE, error) {
@@ -30,43 +30,10 @@ func get() (*ACE, error) {
 	if ace.IsUndefined() {
 		return nil, fmt.Errorf("ace javascript not loaded")
 	}
-	ace.Get("config").Call("set", "basePath", "/resources/js/lib/ace")
-	return &ACE{ace: ace}, nil
+	ace.Get("config").Call("set", "basePath", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/")
+	return &ACE{Value: ace}, nil
 }
 
 func (a *ACE) edit(id string) js.Value {
-	return a.ace.Call("edit", id)
-}
-
-type Editor struct {
-	ace    *ACE
-	editor js.Value
-}
-
-func New(id string) (*Editor, error) {
-	ace, err := get()
-	if err != nil {
-		return nil, err
-	}
-	return &Editor{
-		ace:    ace,
-		editor: ace.edit(id),
-	}, nil
-}
-
-func (ed *Editor) SetValue(src string) {
-	ed.editor.Call("setValue", src)
-	ed.editor.Get("session").Get("selection").Call("clearSelection")
-}
-
-func (ed *Editor) GetValue() string {
-	return ed.editor.Call("getValue").String()
-}
-
-func (ed *Editor) SetTheme(theme string) {
-	ed.editor.Call("setTheme", theme)
-}
-
-func (ed *Editor) SetMode(mode string) {
-	ed.editor.Get("session").Call("setMode", mode)
+	return a.Call("edit", id)
 }
