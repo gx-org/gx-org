@@ -146,7 +146,7 @@ func (cd *Code) lessonOptions(fun ir.Func) []options.PackageOption {
 				opts = append(opts, options.PackageVarSetValue{
 					Pkg:   pkg.Path(),
 					Var:   name,
-					Value: types.DefaultInt(ir.Int(val.(float64))).GXValue(),
+					Value: types.Int(ir.Int(val.(float64))).GXValue(),
 				})
 			}
 		}

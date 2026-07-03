@@ -4,9 +4,9 @@ Slices are used to define generic functions that manipulate arrays with any numb
 
 For example: 
 ```
-func add[Shape intlen](float32, [unpack(Shape)]float32) [unpack(Shape)]float32
+func add[Shape int](float32, [unpack(Shape)]float32) [unpack(Shape)]float32
 ```
-defines an `add` function with one generic argument, `Shape` of type `[]intlen`, and which takes two non-generic (runtime) arguments: a `float32` scalar, and an array of `float32` with any number of axes. `add` returns an array with the same shape. 
+defines an `add` function with one generic argument, `Shape` of type `[]int`, and which takes two non-generic (runtime) arguments: a `float32` scalar, and an array of `float32` with any number of axes. `add` returns an array with the same shape. 
 
 We use the `unpack` builtin function to transform the slice `Shape` into the axis lengths of an array. (This syntax is temporary and will probably be replaced with `Shape...` instead).
 
@@ -15,14 +15,14 @@ The `add` function can then be called with different array shapes as in the exam
 ```code:main
 package main
 
-func add[Shape []intlen](a float32, b [unpack(Shape)]float32) [unpack(Shape)]float32 {
+func add[Shape []int](a float32, b [unpack(Shape)]float32) [unpack(Shape)]float32 {
     return a+b
 }
 
 func Main() ([1][2]float32, float32) {
-    // In this call, Shape is equal to []intlen{1,2}.
+    // In this call, Shape is equal to []int{1,2}.
     a := add(-10, [1][2]float32{{1, 2}})
-    // In this call, Shape is equal to []intlen{}.
+    // In this call, Shape is equal to []int{}.
     b := add(10, 10)
     return a, b
 }

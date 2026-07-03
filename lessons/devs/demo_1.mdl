@@ -7,12 +7,12 @@ import "shapes"
 import "num"
 import "math"
 
-var QKVDim intlen
+var QKVDim int
 
 func rope(x [QKVDim]float32, pos float32) [QKVDim]float32 {
     maxWavelength := [QKVDim/2]float32(10000)
     maxIota := 2 / float32(QKVDim)
-    freqExp := [...]float32(num.IotaFull([]intlen{QKVDim/2})) * maxIota
+    freqExp := [...]float32(num.IotaFull([]int{QKVDim/2})) * maxIota
     timescale := math.Pow(maxWavelength, freqExp)
     radians := pos / timescale
     sin, cos := math.Sin(radians), math.Cos(radians)

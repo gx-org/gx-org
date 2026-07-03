@@ -4,16 +4,16 @@ Functions can use arrays with a generic axis lengths by declaring generic argume
 
 For example: 
 ```
-func add[A, B intlen](float32, [A][B]float32) [A][B]float32
+func add[A, B int](float32, [A][B]float32) [A][B]float32
 ```
-defines an `add` function with two generic arguments, `A` and `B` of type `intlen`, and which takes two non-generic (runtime) arguments: a `float32` scalar, and an array of `float32` with two axes of generic axis length of lengths `A` and `B`. `add` returns an array with the same axis lengths. 
+defines an `add` function with two generic arguments, `A` and `B` of type `int`, and which takes two non-generic (runtime) arguments: a `float32` scalar, and an array of `float32` with two axes of generic axis length of lengths `A` and `B`. `add` returns an array with the same axis lengths. 
 
 The `add` function can then be called with different array shapes as in the example. In this example, `A` and `B` are automatically inferred by the compiler when calling `add`.
 
 ```code:main
 package main
 
-func add[A, B intlen](a float32, b [A][B]float32) [A][B]float32 {
+func add[A, B int](a float32, b [A][B]float32) [A][B]float32 {
     return a+b
 }
 

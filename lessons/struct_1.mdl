@@ -4,7 +4,7 @@ A structure defines a collection of fields grouped together to form a single, co
 ```code:main
 package main
 
-var InputSize intlen
+var InputSize int
 
 type LinearRegression struct {
     StepSize float32
