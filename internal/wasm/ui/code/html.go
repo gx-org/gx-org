@@ -55,6 +55,8 @@ func toHTMLB(w *strings.Builder, val any) {
 	switch valT := val.(type) {
 	case *values.IRNode:
 		irNodeHTML(w, valT.DefineString(nil))
+	case *values.String:
+		preB(w, valT.StringValue())
 	case error:
 		errorB(w, valT)
 	default:
