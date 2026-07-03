@@ -16,7 +16,7 @@ type LinearRegression struct {
 }
 
 func (lr LinearRegression) Predict(input [InputSize]float32) float32 {
-    return num.Sum[[]intidx{0}](lr.Weights * input) + lr.Bias
+    return num.Sum[[]int{0}](lr.Weights * input) + lr.Bias
 }
 
 func (lr LinearRegression) Update(input [InputSize]float32, diff float32) LinearRegression {
