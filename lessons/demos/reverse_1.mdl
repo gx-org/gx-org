@@ -13,7 +13,7 @@ func sigmoid(x float32) float32 {
 
 func Main() (float32, float32) {
     // Macro computed by the compiler.
-    vjpSig := grad.VJP(sigmoid) 
+    vjpSig := grad.Reverse(sigmoid) 
     // Trace the function at runtime to print it in the output.
     trace(vjpSig)  
     // Compute sigmoid(0.0) and a gradient function at 0.0.
