@@ -18,10 +18,14 @@ github.com/gx-org/backend v0.3.1-0.20260625164847-77049fefa9d8 h1:zeP+fX8iUXFH6d
 github.com/gx-org/backend v0.3.1-0.20260625164847-77049fefa9d8/go.mod h1:7/vxVrdZy+XCB2lXO+rCAhHrYlx3Byi6fivxAPVtRUE=
 github.com/gx-org/backend v0.3.1-0.20260702145205-f205c968f773 h1:BcCbH+xmIcyKXArXjtjxdWdUV2IWY2CfEM7UCP1gYJ4=
 github.com/gx-org/backend v0.3.1-0.20260702145205-f205c968f773/go.mod h1:7/vxVrdZy+XCB2lXO+rCAhHrYlx3Byi6fivxAPVtRUE=
+github.com/gx-org/backend v0.3.1-0.20260703191348-228b14b60b94 h1:k8xBOImeYq63eOIDyo9/3ffhVZgjEGM0vYxqOwXpdhM=
+github.com/gx-org/backend v0.3.1-0.20260703191348-228b14b60b94/go.mod h1:7/vxVrdZy+XCB2lXO+rCAhHrYlx3Byi6fivxAPVtRUE=
 github.com/gx-org/gx v0.6.2-0.20260626100149-d2d1b87f6699 h1:kXVJ60qt2XXkssNH1tPUCN5/1wTtzKu7G6cj1kshlrY=
 github.com/gx-org/gx v0.6.2-0.20260626100149-d2d1b87f6699/go.mod h1:/GqI2UjrB+07L5TYoSwOhLioyv69a4OmjyY+dvBClwQ=
 github.com/gx-org/gx v0.6.2-0.20260703095736-30325913b6e5 h1:EBExJDxO+1DP0+mWC9lafhOEHy3IioNAhnLfcYq8BJE=
 github.com/gx-org/gx v0.6.2-0.20260703095736-30325913b6e5/go.mod h1:Qi1T8mfUxe2U8w2ajk9FLL8rvv3PxpO4TBUQbcykUqY=
+github.com/gx-org/gx v0.6.2-0.20260721094419-10729ed0ff46 h1:H+vsHqp32pFdqOa+go7YiX/JjfNTlLjwfdFCrDycopc=
+github.com/gx-org/gx v0.6.2-0.20260721094419-10729ed0ff46/go.mod h1:6/WeGNR31GOYOlJGu2NhiyFjIkBv4eNTMcwy7RbaWF4=
 github.com/hexops/gotextdiff v1.0.3 h1:gitA9+qJrrTCsiCl7+kh75nPqQt1cx4ZkudSTLoUqJM=
 github.com/hexops/gotextdiff v1.0.3/go.mod h1:pSWU5MAI3yDq+fZBTazCSJysOMbxWL1BSow5/V2vxeg=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
