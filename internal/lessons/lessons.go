@@ -75,6 +75,7 @@ var chapters = map[string][]string{
 	},
 	"demos": {
 		"reverse",
+		"sandbox",
 	},
 }
 

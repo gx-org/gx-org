@@ -1,0 +1,16 @@
+
+```code:main
+package main
+
+func Main() [2]float32 {
+    return [2]float32{3, 4}
+}
+```
+
+```code:options
+{ 
+    "hide_text": true,
+    "chapter_title_as_page_title": true,
+    "chapter_title": "Playground"
+}
+```
