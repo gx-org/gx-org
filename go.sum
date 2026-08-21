@@ -20,6 +20,10 @@ github.com/gx-org/backend v0.3.1-0.20260820192500-e317dd7d00dd h1:BFiyGRHBMI0GEU
 github.com/gx-org/backend v0.3.1-0.20260820192500-e317dd7d00dd/go.mod h1:/FRuZHqsmK3FBVrlq8ZTjdamsxOL91X3FaxtUAzfNp4=
 github.com/gx-org/gx v0.6.2-0.20260821095158-64160c314198 h1:hgED/kjGXD8WX2p0iY9eEAYshn1K4dYDY/qcd9BZRkE=
 github.com/gx-org/gx v0.6.2-0.20260821095158-64160c314198/go.mod h1:5euI0AtQAjpiX2AwfWC4uKu+5oRQCnh2gO7y77xazOc=
+github.com/gx-org/gx v0.6.2-0.20260821135546-aa088742c147 h1:Avh7gIum/2wwoKq1610HMlOH+zan8gcgETjPAgJpimM=
+github.com/gx-org/gx v0.6.2-0.20260821135546-aa088742c147/go.mod h1:5euI0AtQAjpiX2AwfWC4uKu+5oRQCnh2gO7y77xazOc=
+github.com/gx-org/gx v0.6.2-0.20260821170139-6ba1c19f4c9f h1:gQUxcVAPCXldIy6sje+29Hjk1Itqqo7UhydBkR1MkVg=
+github.com/gx-org/gx v0.6.2-0.20260821170139-6ba1c19f4c9f/go.mod h1:5euI0AtQAjpiX2AwfWC4uKu+5oRQCnh2gO7y77xazOc=
 github.com/hexops/gotextdiff v1.0.3 h1:gitA9+qJrrTCsiCl7+kh75nPqQt1cx4ZkudSTLoUqJM=
 github.com/hexops/gotextdiff v1.0.3/go.mod h1:pSWU5MAI3yDq+fZBTazCSJysOMbxWL1BSow5/V2vxeg=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=

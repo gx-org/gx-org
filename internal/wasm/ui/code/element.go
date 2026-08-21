@@ -108,12 +108,7 @@ func flatten(out []values.Value) []values.Value {
 	return flat
 }
 
-func buildString(w *strings.Builder, outs []values.Value) {
-	vals, err := values.ToHost(kernels.Allocator(), flatten(outs))
-	if err != nil {
-		errorB(w, err)
-		return
-	}
+func buildString[T any](w *strings.Builder, vals []T) {
 	if len(vals) == 0 {
 		return
 	}
@@ -169,10 +164,17 @@ func (r *traceWriter) Trace(file *ir.File, call *ir.FuncCallExpr, vals []values.
 	return nil
 }
 
-func (cd *Code) runFunc(fun ir.Func) string {
-	if fun == nil {
-		return errorF("Main function not found")
+func (cd *Code) runFuncCompEval(fun *ir.FuncDecl) string {
+	_, outs, err := builder.CompEvalFunc(cd.bld, fun)
+	if err != nil {
+		return err.Error()
 	}
+	bld := strings.Builder{}
+	buildString(&bld, outs)
+	return bld.String()
+}
+
+func (cd *Code) runFuncDecl(fun *ir.FuncDecl) string {
 	numArgs := fun.FuncType().Params.Len()
 	if numArgs > 0 {
 		return errorF("func Main must have no arguments")
@@ -181,7 +183,7 @@ func (cd *Code) runFunc(fun ir.Func) string {
 	if err != nil {
 		return errorF("cannot initialise backend: %v", err)
 	}
-	runner, err := tracer.Trace(dev, fun.(*ir.FuncDecl), nil, nil, cd.lessonOptions(fun))
+	runner, err := tracer.Trace(dev, fun, nil, nil, cd.lessonOptions(fun))
 	if err != nil {
 		return errorF("cannot compile the code: %v", err)
 	}
@@ -190,12 +192,30 @@ func (cd *Code) runFunc(fun ir.Func) string {
 	if err != nil {
 		return err.Error()
 	}
+	flattenVals, err := values.ToHost(kernels.Allocator(), flatten(vals))
+	if err != nil {
+		return err.Error()
+	}
 	bld := strings.Builder{}
-	buildString(&bld, vals)
+	buildString(&bld, flattenVals)
 	if trace.buf.Len() > 0 {
 		bld.WriteString(fmt.Sprintf("Trace:<br>%s", trace.buf.String()))
 	}
 	return bld.String()
+}
+
+func (cd *Code) runFunc(fun ir.PkgFunc) string {
+	if fun == nil {
+		return errorF("Main function not found")
+	}
+	funDecl, isFuncDecl := fun.(*ir.FuncDecl)
+	if !isFuncDecl {
+		return "cannot run builtin functions"
+	}
+	if fun.FuncType().CompEval {
+		return cd.runFuncCompEval(funDecl)
+	}
+	return cd.runFuncDecl(funDecl)
 }
 
 func indent(s string) string {
