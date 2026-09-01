@@ -7,7 +7,7 @@ require (
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/gomarkdown/markdown v0.0.0-20260411013819-759bbc3e3207
 	github.com/google/go-cmp v0.7.0
-	github.com/gx-org/gx v0.6.2-0.20260821170139-6ba1c19f4c9f
+	github.com/gx-org/gx v0.6.2-0.20260826165809-0acb2e7e89c0
 	honnef.co/go/js/dom/v2 v2.0.0-20250304181735-b5e52f05e89d
 )
 
