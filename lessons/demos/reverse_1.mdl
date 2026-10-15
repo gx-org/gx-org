@@ -13,6 +13,7 @@ func sigmoid(x float32) float32 {
 
 func Main() (float32, float32) {
     vjpSigmoid := grad.Reverse(sigmoid) 
+    trace(vjpSigmoid)
     y, gradY := vjpSigmoid(0.0) 
     return y, gradY(1.0)
 }
