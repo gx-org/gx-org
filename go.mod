@@ -3,18 +3,19 @@ module github.com/gx-org/gx-org
 go 1.27
 
 require (
-	github.com/alecthomas/chroma/v2 v2.23.1
-	github.com/go-chi/chi/v5 v5.2.5
-	github.com/gomarkdown/markdown v0.0.0-20260411013819-759bbc3e3207
+	github.com/alecthomas/chroma/v2 v2.27.0
+	github.com/go-chi/chi/v5 v5.5.0
+	github.com/gomarkdown/markdown v0.0.0-20261011113952-f83953680332
+	github.com/gomlx/compute v0.1.14
 	github.com/google/go-cmp v0.7.0
-	github.com/gx-org/gx v0.6.2-0.20260909135444-6b8c4a467dba
+	github.com/gx-org/gx v0.6.2-0.20261014214522-b55f1ac32cdf
 	honnef.co/go/js/dom/v2 v2.0.0-20250304181735-b5e52f05e89d
 )
 
 require (
-	github.com/dlclark/regexp2 v1.11.5 // indirect
-	github.com/gomlx/compute v0.0.0-20260628062407-1a23cf2ada5b // indirect
-	github.com/gomlx/gopjrt v0.10.0 // indirect
-	github.com/gx-org/backend v0.3.1-0.20260909104736-d97af00b2500 // indirect
+	github.com/dlclark/regexp2/v2 v2.8.4 // indirect
+	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	golang.org/x/exp v0.0.0-20260908205506-85c1c2202aba // indirect
+	k8s.io/klog/v2 v2.140.0 // indirect
 )
