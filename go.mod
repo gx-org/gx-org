@@ -8,7 +8,7 @@ require (
 	github.com/gomarkdown/markdown v0.0.0-20261011113952-f83953680332
 	github.com/gomlx/compute v0.1.14
 	github.com/google/go-cmp v0.7.0
-	github.com/gx-org/gx v0.6.2-0.20261014214522-b55f1ac32cdf
+	github.com/gx-org/gx v0.6.2-0.20261015132309-04077bf9e26f
 	honnef.co/go/js/dom/v2 v2.0.0-20250304181735-b5e52f05e89d
 )
 
