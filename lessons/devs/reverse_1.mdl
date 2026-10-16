@@ -1,24 +1,3 @@
-
-```code:main
-package main
-
-import "math"
-import "math/grad"
-
-func sigmoid(x float32) float32 {
-    result := 1 / (1 + math.Exp(-x))
-    result = result + 2
-    return result
-}
-
-
-func Main() (float32, float32) {
-    vjpSig := grad.Reverse(sigmoid) // Macro computed by the compiler
-    y, gradY := vjpSig(0.0) // Returns sigmoid(0.0) and a gradient function at 0.0
-    return y, gradY(1.0)
-}
-```
-
 ```code:options
 { 
     "hide_text": true,

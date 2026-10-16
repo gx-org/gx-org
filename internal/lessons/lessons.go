@@ -187,7 +187,12 @@ func (chap *Chapter) readLesson(entry string) (*Lesson, error) {
 		Config:   make(map[string]any),
 	}
 	lesson.HTML = mdt.HTML
-	lesson.Code = mdt.Code["main"]
+	gxPath := strings.TrimSuffix(path, ".mdl") + ".gx"
+	gxData, err := lessons.Lessons.ReadFile(gxPath)
+	if err != nil {
+		return nil, fmt.Errorf("cannot read %s: %v", gxPath, err)
+	}
+	lesson.Code = string(gxData)
 	if lesson.Code == "" {
 		lesson.Code = defaultCode
 	}

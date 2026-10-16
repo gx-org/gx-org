@@ -12,13 +12,3 @@ func Main() float32 {
     return a // ERROR: cannot use int32 as float32
 }
 ```
-
-```code:main
-package main
-
-func Main() int64 {
-    a := 2
-    a = 3
-    return a
-}
-```

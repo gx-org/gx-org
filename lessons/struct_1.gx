@@ -1,0 +1,17 @@
+package main
+
+var InputSize int
+
+type LinearRegression struct {
+    StepSize float32
+    Weights [InputSize]float32
+    Bias float32
+}
+
+func Main() LinearRegression {
+    return LinearRegression{
+        StepSize: .5,
+        Weights: [InputSize]float32{},
+        Bias: 1.0,
+    }
+}

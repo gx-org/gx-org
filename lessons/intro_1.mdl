@@ -6,14 +6,6 @@ Click on the Run button to execute the function named `Main`.
 
 This overview is split into chapters, each chapter is composed of lessons. Access to the next lesson by clicking on the arrow below or using the keyboard arrows.
 
-```code:main
-package main
-
-func Main() [2]float32 {
-    return [2]float32{1, 2}
-}
-```
-
 ```code:options
 { "chapter_title": "Introduction" }
 ```
