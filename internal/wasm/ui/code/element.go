@@ -21,14 +21,16 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/gomlx/compute/gobackend"
 	"github.com/gx-org/gx-org/internal/lessons"
 	"github.com/gx-org/gx-org/internal/wasm/ui"
+	"github.com/gx-org/gx/api"
+	"github.com/gx-org/gx/api/hostio"
 	"github.com/gx-org/gx/api/options"
-	"github.com/gx-org/gx/api/tracer"
+	"github.com/gx-org/gx/api/runner"
 	"github.com/gx-org/gx/api/values"
 	"github.com/gx-org/gx/build/builder"
 	"github.com/gx-org/gx/build/ir"
-	"github.com/gx-org/gx/golang/backend"
 	"github.com/gx-org/gx/golang/backend/kernels"
 	"github.com/gx-org/gx/golang/binder/gobindings/types"
 	"github.com/gx-org/gx/stdlib"
@@ -91,15 +93,15 @@ func (cd *Code) updateCodeOutput(f func(src string) error, src string) {
 	}
 }
 
-func flatten(out []values.Value) []values.Value {
-	flat := []values.Value{}
+func flatten(out []hostio.Value) []hostio.Value {
+	flat := []hostio.Value{}
 	for _, v := range out {
 		slice, ok := v.(*values.Slice)
 		if !ok {
 			flat = append(flat, v)
 			continue
 		}
-		vals := make([]values.Value, slice.Len())
+		vals := make([]hostio.Value, slice.Len())
 		for i := 0; i < slice.Len(); i++ {
 			vals[i] = slice.Element(i)
 		}
@@ -153,8 +155,8 @@ type traceWriter struct {
 	buf strings.Builder
 }
 
-func (r *traceWriter) Trace(file *ir.File, call *ir.FuncCallExpr, vals []values.Value) error {
-	vals, err := values.ToHost(kernels.Allocator(), vals)
+func (r *traceWriter) Trace(file *ir.File, call *ir.FuncCallExpr, vals []hostio.Value) error {
+	vals, err := hostio.ToHost(kernels.DefaultAllocator(), vals)
 	if err != nil {
 		return err
 	}
@@ -179,11 +181,15 @@ func (cd *Code) runFuncDecl(fun *ir.FuncDecl) string {
 	if numArgs > 0 {
 		return errorF("func Main must have no arguments")
 	}
-	dev, err := backend.New(cd.bld).Device(0)
+	bck, err := gobackend.New("")
 	if err != nil {
-		return errorF("cannot initialise backend: %v", err)
+		return errorF("cannot create Go native backend: %v", err)
 	}
-	runner, err := tracer.Trace(dev, fun, nil, nil, cd.lessonOptions(fun))
+	dev, err := api.NewRuntime(bck, cd.bld).Device(0)
+	if err != nil {
+		return errorF("cannot create device: %v", err)
+	}
+	runner, err := runner.Trace(dev, fun, nil, nil, cd.lessonOptions(fun))
 	if err != nil {
 		return errorF("cannot compile the code: %v", err)
 	}
@@ -192,7 +198,7 @@ func (cd *Code) runFuncDecl(fun *ir.FuncDecl) string {
 	if err != nil {
 		return err.Error()
 	}
-	flattenVals, err := values.ToHost(kernels.Allocator(), flatten(vals))
+	flattenVals, err := hostio.ToHost(kernels.DefaultAllocator(), flatten(vals))
 	if err != nil {
 		return err.Error()
 	}
@@ -212,7 +218,7 @@ func (cd *Code) runFunc(fun ir.PkgFunc) string {
 	if !isFuncDecl {
 		return "cannot run builtin functions"
 	}
-	if fun.FuncType().CompEval {
+	if fun.FuncType().Nature.CompEval {
 		return cd.runFuncCompEval(funDecl)
 	}
 	return cd.runFuncDecl(funDecl)

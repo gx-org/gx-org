@@ -58,6 +58,10 @@ func toHTMLB(w *strings.Builder, val any) {
 		irNodeHTML(w, valT.SourceString(nil))
 	case *values.IRNode:
 		irNodeHTML(w, valT.DefineString(nil))
+	case *values.Struct:
+		preB(w, valT.SourceString(nil))
+	case *values.NamedType:
+		preB(w, valT.SourceString(nil))
 	case *values.String:
 		preB(w, valT.StringValue())
 	case error:

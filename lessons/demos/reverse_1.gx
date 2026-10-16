@@ -1,16 +1,18 @@
 package main
 
 import (
-    "math"
-    "math/grad"
+	"math"
+	"math/grad"
 )
 
 func sigmoid(x float32) float32 {
-    return 1 / (1 + math.Exp(-x))
+	return 1 / (1 + math.Exp(-x))
 }
 
 func Main() (float32, float32) {
-    vjpSigmoid := grad.Reverse(sigmoid) 
-    y, gradY := vjpSigmoid(0.0) 
-    return y, gradY(1.0)
+	vjpSigmoid := grad.Reverse(sigmoid)
+	trace(vjpSigmoid)
+	y, gradY := vjpSigmoid(0.0)
+	return y, gradY(1.0)
 }
+

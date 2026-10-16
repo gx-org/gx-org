@@ -61,6 +61,7 @@
 /* LiteralNumberOct */ .chroma_chroma .chroma_mo { color: #1c01ce }
 /* Operator */ .chroma_chroma .chroma_o { color: #000000 }
 /* OperatorWord */ .chroma_chroma .chroma_ow { color: #000000 }
+/* OperatorReserved */ .chroma_chroma .chroma_or { color: #000000 }
 /* Comment */ .chroma_chroma .chroma_c { color: #177500 }
 /* CommentHashbang */ .chroma_chroma .chroma_ch { color: #177500 }
 /* CommentMultiline */ .chroma_chroma .chroma_cm { color: #177500 }
