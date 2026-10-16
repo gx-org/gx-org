@@ -50,6 +50,7 @@ ul {
 	background: var(--flex-bg-color);
 	height: calc(100vh - var(--header-height) - var(--footer-height));
 	flex-grow: 0;
+	position: relative;
 }
 
 header {
@@ -170,6 +171,8 @@ body {
 	height: 100%;
 	overflow-y: auto;
 	margin: 1em;
+	/* Reserve space at the bottom so content doesn't hide behind the nav bar */
+	padding-bottom: 3em;
 }
 
 .lesson_config {
@@ -184,6 +187,14 @@ body {
 	justify-content: center;
 	align-content: space-around;
 	margin: 0em;
+	/* lesson_navigation is a sibling of lesson_container/code_container in main_root.
+	   Remove it from the flex row and pin it to the bottom of the lesson column. */
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 50vw;
+	background: var(--main-element-bg-color);
+	border-top: 1px solid var(--flex-bg-color);
 }
 
 .navigation_button {
@@ -264,6 +275,19 @@ body {
 		height: auto;
 		flex-grow: 1;
 		min-height: 80px;
+	}
+
+	/* Restore lesson_navigation to normal document flow at the end of the column */
+	.lesson_navigation {
+		position: static;
+		width: 100%;
+		border-top: 1px solid var(--flex-bg-color);
+		padding: 4px 0;
+	}
+
+	/* No longer needed: nav is not overlaying lesson_content on mobile */
+	.lesson_content {
+		padding-bottom: 0;
 	}
 
 	header {
