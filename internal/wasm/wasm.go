@@ -39,6 +39,7 @@ type root struct {
 }
 
 func (r *root) DisplayLesson(les *lessons.Lesson) {
+	r.gui.ScrollToTop()
 	r.text.SetContent(les)
 	r.code.SetContent(les)
 	r.header.SetContent(les)

@@ -38,6 +38,10 @@ func (ui *UI) UpdateURL(newURL string) {
 	js.Global().Get("window").Get("history").Call("pushState", nil, "GX", newURL)
 }
 
+func (ui *UI) ScrollToTop() {
+	js.Global().Get("window").Call("scrollTo", 0, 0)
+}
+
 func (ui *UI) URL() (*url.URL, error) {
 	return url.Parse(ui.win.Location().Href())
 }
