@@ -1,6 +1,6 @@
 package main
 
-func add[Shape []int](a float32, b [unpack(Shape)]float32) [unpack(Shape)]float32 {
+func add[Shape []int](a float32, b [Shape...]float32) [Shape...]float32 {
     return a+b
 }
 

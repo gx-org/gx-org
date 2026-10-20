@@ -4,10 +4,8 @@ Slices are used to define generic functions that manipulate arrays with any numb
 
 For example: 
 ```
-func add[Shape int](float32, [unpack(Shape)]float32) [unpack(Shape)]float32
+func add[Shape int](float32, [Shape...]float32) [Shape...]float32
 ```
-defines an `add` function with one generic argument, `Shape` of type `[]int`, and which takes two non-generic (runtime) arguments: a `float32` scalar, and an array of `float32` with any number of axes. `add` returns an array with the same shape. 
-
-We use the `unpack` builtin function to transform the slice `Shape` into the axis lengths of an array. (This syntax is temporary and will probably be replaced with `Shape...` instead).
+defines an `add` function with one generic argument, `Shape` of type `[]int`, and which takes two non-generic (runtime) arguments: a `float32` scalar, and an array of `float32` with any number of axes. `add` returns an array with the same shape. We use `Shape...` to expand the slice `Shape` to multiple axis lengths.
 
 The `add` function can then be called with different array shapes as in the example.

@@ -8,8 +8,8 @@ type floats interface {
     float32 | float64
 }
 
-func toFloats[Dest floats, Src ints, Shape []int](a [unpack(Shape)]Src) [unpack(Shape)]Dest {
-    return [unpack(Shape)]Dest(a)
+func toFloats[Dest floats, Src ints, Shape []int](a [Shape...]Src) [Shape...]Dest {
+    return [Shape...]Dest(a)
 }
 
 func Main() ([2][3]float32, [2][3]float64) {
