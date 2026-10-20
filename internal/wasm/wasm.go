@@ -39,6 +39,7 @@ type root struct {
 }
 
 func (r *root) DisplayLesson(les *lessons.Lesson) {
+	r.gui.ScrollToTop()
 	r.text.SetContent(les)
 	r.code.SetContent(les)
 	r.header.SetContent(les)
@@ -70,6 +71,10 @@ func main() {
 	root.footer = footer.New(gui)
 	root.text = text.New(gui, body, root)
 	root.code = code.New(gui, body)
+	// Move lesson_navigation to the end of main_root so that on mobile
+	// (flex-direction: column) it appears after code_container.
+	// AppendChild moves an already-parented node rather than cloning it.
+	body.AppendChild(root.text.Nav())
 
 	chapters, err := lessons.New()
 	if err != nil {

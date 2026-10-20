@@ -106,6 +106,11 @@ func (tt *Text) setConfig() {
 	tt.config.SetInnerHTML("GX Config:<br>" + config)
 }
 
+// Nav returns the navigation div so the caller can reposition it in the DOM.
+func (tt *Text) Nav() *dom.HTMLDivElement {
+	return tt.nav
+}
+
 func (tt *Text) SetContent(les *lessons.Lesson) {
 	tt.actions.current = les
 	if les.Options.HideText {
