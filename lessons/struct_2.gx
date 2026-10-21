@@ -1,35 +1,15 @@
 package main
 
-import "num"
-
-var InputSize int
-
-type LinearRegression struct {
-    StepSize float32
-    Weights [InputSize]float32
-    Bias float32
+type Rectangle struct {
+    Width  float32
+    Height float32
 }
 
-func (lr LinearRegression) Predict(input [InputSize]float32) float32 {
-    return num.Sum[[]int{0}](lr.Weights * input) + lr.Bias
+func (r Rectangle) Area() float32 {
+    return r.Width * r.Height
 }
 
-func (lr LinearRegression) Update(input [InputSize]float32, diff float32) LinearRegression {
-    lr.Weights += lr.StepSize * input * diff
-    lr.Bias += lr.StepSize * diff
-    return lr
-}
-
-
-func Main() LinearRegression {
-    lr := LinearRegression{
-        StepSize: 0.5/(float32(InputSize)+1),
-        Weights: [InputSize]float32{},
-        Bias: 1.0,
-    }
-    input := [InputSize]float32(2)
-    prediction := lr.Predict(input)
-    target := float32(10)
-    diff := target - prediction
-    return lr.Update(input, diff)
+func Main() float32 {
+    r := Rectangle{Width: 2, Height: 3}
+    return r.Area()
 }

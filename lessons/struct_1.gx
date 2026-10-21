@@ -1,17 +1,10 @@
 package main
 
-var InputSize int
-
-type LinearRegression struct {
-    StepSize float32
-    Weights [InputSize]float32
-    Bias float32
+type Rectangle struct {
+    Width  float32
+    Height float32
 }
 
-func Main() LinearRegression {
-    return LinearRegression{
-        StepSize: .5,
-        Weights: [InputSize]float32{},
-        Bias: 1.0,
-    }
+func Main() Rectangle {
+    return Rectangle{Width: 2, Height: 3}
 }

@@ -1,12 +1,10 @@
-Functions can be defined for a structure, and more generaly any custom type, using methods. This is done using a receiver, a parameter between the `func` keyword and the function name. The receiver defines the type to which the method is attached and the name to use to access the type data.
+## Methods
 
-A receiver is equivalent to `self` in Python but its name should be a reflection of its identity, such as a [one or two letters abbreviation](https://go.dev/wiki/CodeReviewComments#receiver-names). 
+A method is a function attached to a type. It is declared with a receiver: a parameter written between the `func` keyword and the method name.
 
-```code:config
-{
-    "InputSize": 3
-}
-```
+In the example, the receiver `(r Rectangle)` attaches the method `Area` to `Rectangle`. Inside the method, the fields are accessed with a dot, as in `r.Width`. The method is called with the same notation: `r.Area()`.
+
+The receiver is similar to `self` in Python. By convention, its name is a [short abbreviation](https://go.dev/wiki/CodeReviewComments#receiver-names) of the type, such as `r` for `Rectangle`.
 
 ```code:options
 { "chapter_title": "Structures" }
