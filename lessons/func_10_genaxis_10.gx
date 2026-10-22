@@ -1,13 +1,13 @@
 package main
 
 func add[Shape []int](a float32, b [Shape...]float32) [Shape...]float32 {
-    return a+b
+	return a + b
 }
 
 func Main() ([1][2]float32, float32) {
-    // In this call, Shape is equal to []int{1,2}.
-    a := add(-10, [1][2]float32{{1, 2}})
-    // In this call, Shape is equal to []int{}.
-    b := add(10, 10)
-    return a, b
+	// In this call, Shape is equal to []int{1,2}.
+	a := add(-10, [1][2]float32{{1, 2}})
+	// In this call, Shape is equal to []int{}.
+	b := add(10, 10)
+	return a, b
 }

@@ -1,5 +1,5 @@
 package main
 
 func Main() (float32, int32, string, bool) {
-    return 1, 2, "Hi", true
+	return 1, 2, "Hi", true
 }

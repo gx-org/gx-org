@@ -1,29 +1,29 @@
 package main
 
 type Shape interface {
-    Area() float32
+	Area() float32
 }
 
 type Rectangle struct {
-    Width, Height float32
+	Width, Height float32
 }
 
 func (r Rectangle) Area() float32 {
-    return r.Width * r.Height
+	return r.Width * r.Height
 }
 
 type Square struct {
-    Side float32
+	Side float32
 }
 
 func (s Square) Area() float32 {
-    return s.Side * s.Side
+	return s.Side * s.Side
 }
 
 func totalArea(a, b Shape) float32 {
-    return a.Area() + b.Area()
+	return a.Area() + b.Area()
 }
 
 func Main() float32 {
-    return totalArea(Rectangle{Width: 2, Height: 3}, Square{Side: 4})
+	return totalArea(Rectangle{Width: 2, Height: 3}, Square{Side: 4})
 }

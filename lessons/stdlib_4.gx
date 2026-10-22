@@ -3,5 +3,5 @@ package main
 import "num"
 
 func Main() ([2][3]int64, [2][3]int64) {
-    return num.IotaFull[[]int{2, 3}](), num.Iota[[]int{2, 3}](1)
+	return num.IotaFull[[]int{2, 3}, int64](), num.Iota[[]int{2, 3}, int64](1)
 }

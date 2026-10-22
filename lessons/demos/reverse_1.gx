@@ -15,4 +15,3 @@ func Main() (float32, float32) {
 	y, gradY := vjpSigmoid(0.0)
 	return y, gradY(1.0)
 }
-

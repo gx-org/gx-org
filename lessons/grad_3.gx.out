@@ -1,0 +1,4 @@
+Params{
+	W: float32(0.2),
+	B: float32(0.6),
+}

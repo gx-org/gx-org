@@ -1,0 +1,4 @@
+Rectangle{
+	Width: float32(2),
+	Height: float32(3),
+}

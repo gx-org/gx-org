@@ -1,22 +1,22 @@
 package main
 
 type Counter struct {
-    Count int32
+	Count int32
 }
 
 func (c Counter) Reset() {
-    c.Count = 0
+	c.Count = 0
 }
 
 func (c Counter) Increment() Counter {
-    c.Count += 1
-    return c
+	c.Count += 1
+	return c
 }
 
 func Main() (int32, int32) {
-    c := Counter{Count: 5}
-    c.Reset()
-    afterReset := c.Count
-    c = c.Increment()
-    return afterReset, c.Count
+	c := Counter{Count: 5}
+	c.Reset()
+	afterReset := c.Count
+	c = c.Increment()
+	return afterReset, c.Count
 }

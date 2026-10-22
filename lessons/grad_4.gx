@@ -3,12 +3,12 @@ package main
 import "math/grad"
 
 func f(x float32) float32 {
-    return 3*x*x + 2*x
+	return 3*x*x + 2*x
 }
 
 // gx:=grad.Func(f, "x")
 func valueAndGrad()
 
 func Main() (float32, float32) {
-    return valueAndGrad(2)
+	return valueAndGrad(2)
 }

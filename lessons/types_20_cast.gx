@@ -1,6 +1,6 @@
 package main
 
 func Main() float32 {
-    a := int32(2)
-    return float32(a)
+	a := int32(2)
+	return float32(a)
 }

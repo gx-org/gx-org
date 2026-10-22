@@ -1,5 +1,5 @@
 package main
 
 func Main() ([2][3]float32, [2]bool) {
-    return [2][3]float32{}, [2]bool{}
+	return [2][3]float32{}, [2]bool{}
 }

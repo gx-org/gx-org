@@ -1,9 +1,9 @@
 package main
 
 func Main() int {
-    sum := 0
-    for i := range 5 {
-        sum += i
-    }
-    return sum
+	sum := 0
+	for i := range 5 {
+		sum += i
+	}
+	return sum
 }

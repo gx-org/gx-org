@@ -1,18 +1,18 @@
 package main
 
 type Layer[In, Out int] struct {
-    Weights [In][Out]float32
-    Bias    [Out]float32
+	Weights [In][Out]float32
+	Bias    [Out]float32
 }
 
 const (
-    Inputs  = 3
-    Outputs = 2
+	Inputs  = 3
+	Outputs = 2
 )
 
 func Main() Layer[Inputs, Outputs] {
-    return Layer[Inputs, Outputs]{
-        Weights: [Inputs][Outputs]float32(1),
-        Bias:    [Outputs]float32{0.5, -0.5},
-    }
+	return Layer[Inputs, Outputs]{
+		Weights: [Inputs][Outputs]float32(1),
+		Bias:    [Outputs]float32{0.5, -0.5},
+	}
 }

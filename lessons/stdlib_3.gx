@@ -3,9 +3,9 @@ package main
 import "num"
 
 func Main() ([3]float32, float32, [2]float32, [2]int) {
-    x := [2][3]float32{
-        {1, 5, 3},
-        {4, 2, 6},
-    }
-    return num.Sum[[]int{0}](x), num.Sum[[]int{0, 1}](x), num.ReduceMax[[]int{1}](x), num.ArgMax[1](x)
+	x := [2][3]float32{
+		{1, 5, 3},
+		{4, 2, 6},
+	}
+	return num.Sum[[]int{0}](x), num.Sum[[]int{0, 1}](x), num.ReduceMax[[]int{1}](x), num.ArgMax[1](x)
 }

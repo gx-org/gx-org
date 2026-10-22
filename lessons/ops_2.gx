@@ -1,7 +1,7 @@
 package main
 
 func Main() ([4]bool, [4]float32) {
-    x := [4]float32{0, 1, 2, 3}
-    large := x > 1
-    return large, [4]float32(large) * x
+	x := [4]float32{0, 1, 2, 3}
+	large := x > 1
+	return large, [4]float32(large) * x
 }

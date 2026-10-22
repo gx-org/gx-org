@@ -1,14 +1,14 @@
 package main
 
 type Point struct {
-    X, Y float32
+	X, Y float32
 }
 
 type Segment struct {
-    Start, End Point
+	Start, End Point
 }
 
 func Main() (Segment, float32) {
-    s := Segment{End: Point{X: 3, Y: 4}}
-    return s, s.End.X - s.Start.X
+	s := Segment{End: Point{X: 3, Y: 4}}
+	return s, s.End.X - s.Start.X
 }

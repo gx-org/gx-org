@@ -1,10 +1,10 @@
 package main
 
 type Rectangle struct {
-    Width  float32
-    Height float32
+	Width  float32
+	Height float32
 }
 
 func Main() Rectangle {
-    return Rectangle{Width: 2, Height: 3}
+	return Rectangle{Width: 2, Height: 3}
 }

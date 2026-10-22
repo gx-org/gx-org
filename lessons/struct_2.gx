@@ -1,15 +1,15 @@
 package main
 
 type Rectangle struct {
-    Width  float32
-    Height float32
+	Width  float32
+	Height float32
 }
 
 func (r Rectangle) Area() float32 {
-    return r.Width * r.Height
+	return r.Width * r.Height
 }
 
 func Main() float32 {
-    r := Rectangle{Width: 2, Height: 3}
-    return r.Area()
+	r := Rectangle{Width: 2, Height: 3}
+	return r.Area()
 }

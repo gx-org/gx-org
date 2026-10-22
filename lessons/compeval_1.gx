@@ -2,17 +2,17 @@ package main
 
 //gx:compeval
 func size(shape []int) int {
-    n := 1
-    for _, ax := range shape {
-        n *= ax
-    }
-    return n
+	n := 1
+	for _, ax := range shape {
+		n *= ax
+	}
+	return n
 }
 
 func flatten[S []int](x [S...]float32) [size(S)]float32 {
-    return [size(S)]float32(x)
+	return [size(S)]float32(x)
 }
 
 func Main() [6]float32 {
-    return flatten([2][3]float32{{1, 2, 3}, {4, 5, 6}})
+	return flatten([2][3]float32{{1, 2, 3}, {4, 5, 6}})
 }
