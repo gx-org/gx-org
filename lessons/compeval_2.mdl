@@ -1,4 +1,4 @@
-## Requirements
+## Require
 
 The builtin function `require` checks a condition when the code is compiled. If the condition is false, the compiler reports an error with the given message.
 
