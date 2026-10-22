@@ -1,0 +1,11 @@
+# Arrays
+
+## Inferring axis lengths
+
+In an array literal, `[...]` lets the compiler infer the axis lengths from the content of the literal. A single `[...]` stands for all the axes: `[...]int{{1, 2, 3}, {4, 5, 6}}` has 2 rows of 3 elements, so its type is `[2][3]int`.
+
+All the rows must have the same length.
+
+```code:options
+{ "chapter_title": "Arrays" }
+```

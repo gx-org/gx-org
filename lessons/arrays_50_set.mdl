@@ -1,0 +1,7 @@
+## Updating values
+
+Arrays are values: assigning an element, as in `v[1] = 42`, is not supported.
+
+Instead, the builtin function `set` returns a copy of the array with the value at a given position replaced. The position is given after the value: `set(v, float32(42), 1)` replaces the element at index 1. The value can also be an array: `set(m, v, 0)` replaces the first row of `m`.
+
+The value must have the same data type as the array, hence `float32(42)` instead of `42`.

@@ -1,0 +1,8 @@
+package main
+
+import "math"
+
+func Main() ([3]float32, float32) {
+    x := [3]float32{1, 4, 9}
+    return math.Sqrt(x), math.Pi
+}

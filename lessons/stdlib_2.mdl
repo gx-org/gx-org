@@ -1,0 +1,5 @@
+## Linear algebra
+
+The `num` package provides numerical functions on arrays. `num.MatMul` multiplies two matrices, `num.MatVecMul` multiplies a matrix by a vector, and `num.VecMul` computes the dot product of two vectors.
+
+The compiler checks that the axis lengths of the arguments are compatible.

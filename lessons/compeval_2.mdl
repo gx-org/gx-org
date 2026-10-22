@@ -1,0 +1,5 @@
+## Requirements
+
+The builtin function `require` checks a condition when the code is compiled. If the condition is false, the compiler reports an error with the given message.
+
+In the example, `add` only accepts arrays with an even length. Change the length of `x` to 3 to see the error.

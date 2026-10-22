@@ -1,0 +1,5 @@
+## Variadic functions
+
+A function accepts a variable number of arguments when the type of its last parameter is prefixed with `...`. Inside the function, the parameter is a slice.
+
+A slice can be passed to a variadic function by following it with `...`, as in `sum(values...)`.

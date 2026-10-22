@@ -1,0 +1,5 @@
+## Generated functions
+
+The compiler generates the body of a function declared after a `gx:=` comment.
+
+`grad.Func(f, "x")` generates a function returning the value of `f` together with its derivative with respect to the argument `x`.

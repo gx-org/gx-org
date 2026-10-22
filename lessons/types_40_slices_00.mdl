@@ -2,6 +2,6 @@
 
 A slice is a dynamically sized view into an underlying container. Unlike arrays, which have a strict, fixed length, slices can grow and shrink.
 
-A slice is specified using the `[]` prefix without a size. In this example, the function `Main` returns both an array (type: `[2]int64`) and a slice (type `[]int64`).
+A slice is specified using the `[]` prefix without a size. In this example, the function `Main` returns both an array (type `[2]int64`) and a slice (type `[]int64`).
 
-For Python developers, arrays and slices in GX are respectively equivalent to numpy arrays and Python list.
+For Python developers, arrays and slices in GX are respectively equivalent to NumPy arrays and Python lists.

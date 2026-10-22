@@ -1,0 +1,5 @@
+## Multiple results
+
+A function can return any number of results. `divmod` returns two values: the quotient and the remainder of an integer division.
+
+Use the blank identifier `_` to ignore a result, as in `_, r := divmod(17, 5)`.

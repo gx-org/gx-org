@@ -1,0 +1,16 @@
+package main
+
+//gx:compeval
+func checkEven(n int) int {
+    require(n%2 == 0, "length %d is not even", n)
+    return n
+}
+
+func add[N int](x, y [N]float32) [checkEven(N)]float32 {
+    return x + y
+}
+
+func Main() [4]float32 {
+    x := [4]float32{1, 2, 3, 4}
+    return add(x, x)
+}

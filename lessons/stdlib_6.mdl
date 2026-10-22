@@ -1,0 +1,5 @@
+## Transposing and broadcasting
+
+`shape.Transpose` reverses the order of the axes of an array.
+
+`shape.Broadcast` repeats an array along its axes of length 1 to obtain the shape given as generic argument. In the example, `row` is repeated to fill the 2 rows of the result.

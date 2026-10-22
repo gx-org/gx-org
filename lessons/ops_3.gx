@@ -1,0 +1,7 @@
+package main
+
+func Main() ([4]bool, [4]bool, [4]bool) {
+    x := [4]float32{-2, -1, 1, 2}
+    small := x > -1.5 && x < 1.5
+    return small, !small, small || x > 0
+}

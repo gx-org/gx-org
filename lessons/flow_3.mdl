@@ -1,0 +1,5 @@
+## If
+
+`if` runs a block of code only when its condition is true. The optional `else` block runs otherwise.
+
+Like loops, `if` statements are evaluated when the code is compiled. The condition can only use values known at compile time, like loop indices or axis lengths. To select values of an array, use comparisons and masks as shown in the chapter about operators.

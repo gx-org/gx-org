@@ -1,0 +1,14 @@
+package main
+
+import (
+    "dtype"
+    "math"
+)
+
+func relu[T dtype.Floats, S []int](x [S...]T) [S...]T {
+    return math.Max(x, 0)
+}
+
+func Main() ([3]float32, [2][2]float64) {
+    return relu([3]float32{-1, 0, 2}), relu([2][2]float64{{-1, 1}, {2, -2}})
+}

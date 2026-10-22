@@ -65,8 +65,14 @@ var chapters = map[string][]string{
 	"": {
 		"intro",
 		"types",
+		"arrays",
+		"ops",
+		"flow",
 		"func",
 		"struct",
+		"stdlib",
+		"compeval",
+		"grad",
 	},
 	"devs": {
 		"fill",

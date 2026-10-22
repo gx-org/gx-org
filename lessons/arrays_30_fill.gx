@@ -1,0 +1,5 @@
+package main
+
+func Main() ([2][2]float32, [3]int32) {
+    return [2][2]float32(5), [3]int32(-1)
+}

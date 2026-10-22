@@ -1,5 +1,3 @@
-## Arrays: cast and reshape
-
-Casting can be used to change the datatype of an array or its shape, as shown in the example.
+## Filling arrays
 
 Reshaping or casting a scalar into an array creates an array filled with that scalar value. For example, `[2][2]float32(5)` returns an array of `float32` and axis lengths `[2][2]` initialized with 5. Note the use of `()` as in a cast instead of `{}`.

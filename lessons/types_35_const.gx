@@ -1,0 +1,15 @@
+package main
+
+const Pi = 3.14159
+
+const (
+    Rows = 2
+    Cols = Rows + 1
+)
+
+func Main() (float32, [Rows][Cols]float32) {
+    return 2 * Pi, [Rows][Cols]float32{
+        {1, 2, 3},
+        {4, 5, 6},
+    }
+}

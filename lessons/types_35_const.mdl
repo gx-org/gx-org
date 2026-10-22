@@ -1,0 +1,7 @@
+## Constants
+
+Constants are declared with the `const` keyword. Their value is known by the compiler and cannot change.
+
+Like number literals, constants declared without a type take the type required by the context: `Pi` is a `float32` in the example. A type can also be given explicitly, as in `const Steps int32 = 10`.
+
+Integer constants can be used as axis lengths, as in `[Rows][Cols]float32`.

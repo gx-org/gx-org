@@ -1,0 +1,5 @@
+## Explicit generic arguments
+
+The compiler cannot always infer generic arguments, for example when they do not appear in the parameters of the function. Generic arguments are then given between `[]` after the function name: `ones[3]()` returns an array of length 3.
+
+A generic shape is given as a slice literal, as in `zeros[[]int{2, 2}]()`. Many functions of the standard library use this notation.

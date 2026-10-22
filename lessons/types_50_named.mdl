@@ -1,0 +1,5 @@
+## Named types
+
+The `type` keyword defines a new named type from an existing type. `Celsius` has the same representation as `float32` but it is a different type: conversions between the two must be explicit, as in `Celsius(100)` and `float32(c)`.
+
+Named types prevent mixing values with different meanings: `toFahrenheit` does not accept a `float32` variable.

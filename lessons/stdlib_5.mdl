@@ -1,0 +1,7 @@
+## Concatenating and splitting
+
+The `shape` package changes the shape of arrays.
+
+`shape.Concat[0](a, b)` concatenates arrays along axis 0. All the other axes must have the same lengths.
+
+`shape.Split[0][2](ab)` splits axis 0 into 2 parts of equal length. The parts are stacked along a new first axis.

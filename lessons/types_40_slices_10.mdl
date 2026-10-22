@@ -1,1 +1,3 @@
-Like arrays, slices can contain other slices. Unlike arrays, a slice can contain slices of different lengths as shown in this example.
+## Slices of slices
+
+Like arrays with several axes, slices can contain other slices. Unlike arrays, a slice can contain slices of different lengths, as shown in this example.

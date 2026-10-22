@@ -1,6 +1,6 @@
 ## Generic Types
 
-Generic functions can also be defined for multiple types as long as these types satisfy some constraints. As in Go, a set of constraints is defined by defining a new type as an interface and listing the types satisfying the constraint. In the following example, the type constraints `ints` is defined as a `int32` or a `int64`.
+Generic functions can also be defined for multiple types as long as these types satisfy some constraints. As in Go, a set of constraints is defined by declaring a new interface type listing the types satisfying the constraint. In the following example, the type constraint `ints` is defined as an `int32` or an `int64`.
 
 ```
 type ints interface {

@@ -1,0 +1,9 @@
+package main
+
+func Main() ([3]float32, [2][3]float32) {
+    v := [3]float32{1, 2, 3}
+    v = set(v, float32(42), 1)
+    m := [2][3]float32{}
+    m = set(m, v, 0)
+    return v, m
+}

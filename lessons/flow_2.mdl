@@ -1,0 +1,5 @@
+## Range over arrays
+
+`range` also iterates over arrays and slices. Each iteration assigns an index and a value. For an array, the loop iterates along the first axis: in the example, each value is a row of `m`.
+
+The blank identifier `_` ignores the index. If only the index is needed, the value can be omitted, as in `for i := range m`.

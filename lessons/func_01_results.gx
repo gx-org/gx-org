@@ -1,0 +1,10 @@
+package main
+
+func divmod(a, b int32) (int32, int32) {
+    return a / b, a % b
+}
+
+func Main() (int32, int32) {
+    q, r := divmod(17, 5)
+    return q, r
+}

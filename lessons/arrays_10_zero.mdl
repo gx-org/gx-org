@@ -1,0 +1,5 @@
+## Zero values
+
+An array literal without elements, like `[2][3]float32{}`, creates an array where all the elements are zero (`false` for `bool`).
+
+The axis lengths cannot be inferred from an empty literal: they must be given explicitly.

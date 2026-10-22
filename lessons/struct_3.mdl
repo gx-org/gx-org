@@ -1,0 +1,5 @@
+## Zero values and nested structures
+
+Fields omitted in a structure literal are set to zero. In the example, `s.Start` is a `Point` with both coordinates set to 0.
+
+A field can itself be a structure. Selectors are chained to access its fields, as in `s.End.X`.

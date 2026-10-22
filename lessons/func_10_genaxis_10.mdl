@@ -4,7 +4,7 @@ Slices are used to define generic functions that manipulate arrays with any numb
 
 For example: 
 ```
-func add[Shape int](float32, [Shape...]float32) [Shape...]float32
+func add[Shape []int](float32, [Shape...]float32) [Shape...]float32
 ```
 defines an `add` function with one generic argument, `Shape` of type `[]int`, and which takes two non-generic (runtime) arguments: a `float32` scalar, and an array of `float32` with any number of axes. `add` returns an array with the same shape. We use `Shape...` to expand the slice `Shape` to multiple axis lengths.
 

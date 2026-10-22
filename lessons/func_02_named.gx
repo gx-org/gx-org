@@ -1,0 +1,11 @@
+package main
+
+func split(total float32) (large, small float32) {
+    large = total * 0.75
+    small = total - large
+    return
+}
+
+func Main() (float32, float32) {
+    return split(16)
+}

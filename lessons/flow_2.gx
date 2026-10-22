@@ -1,0 +1,14 @@
+package main
+
+func Main() [2]float32 {
+    m := [3][2]float32{
+        {1, 2},
+        {3, 4},
+        {5, 6},
+    }
+    sum := [2]float32{}
+    for _, row := range m {
+        sum += row
+    }
+    return sum
+}

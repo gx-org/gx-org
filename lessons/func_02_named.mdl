@@ -1,0 +1,7 @@
+## Named results
+
+The results of a function can be named. Named results are variables defined at the top of the function.
+
+A `return` statement without arguments returns the current values of the named results.
+
+`Main` returns all the results of `split` with `return split(16)`.

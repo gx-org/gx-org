@@ -1,0 +1,5 @@
+## Comparisons
+
+The comparison operators `==`, `!=`, `<`, `<=`, `>`, and `>=` also operate element-wise. Comparing arrays returns an array of `bool`.
+
+Converting an array of `bool` to numbers gives 1 for `true` and 0 for `false`. In the example, the result is used as a mask to keep only the values of `x` greater than 1.

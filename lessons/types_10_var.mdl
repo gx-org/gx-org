@@ -1,8 +1,8 @@
-## Variable
+## Variables
 
-Use `:=` and `=` to declare and define a variable, respectively. When using `:=`, the type of the variable is inferred from the value on the right side. Once a variable has been assigned a type, it cannot change. So, values assigned to that variable needs to be of the correct type.
+Use `:=` and `=` to declare and assign a variable, respectively. When using `:=`, the type of the variable is inferred from the value on the right side. Once a variable has been assigned a type, it cannot change. So, values assigned to that variable need to be of the correct type.
 
-The compiler checks that the type of variable is consistent with its use. In the following example, the variable `a` has type `int32` and cannot be used as a return value, which expect a `float32` type.
+The compiler checks that the type of a variable is consistent with its use. In the following example, the variable `a` has type `int32` and cannot be used as a return value, which expects a `float32`.
 
 ```
 package main

@@ -1,0 +1,5 @@
+## Gradient descent
+
+A function can also be differentiated with respect to a structure. The gradient is then a structure of the same type.
+
+`reflect.Leaves[Params]()` returns the paths to all the fields of `Params`. A path `k` indexes a structure, as in `p[k]`. The loop applies one step of gradient descent to all the parameters.

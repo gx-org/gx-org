@@ -1,0 +1,6 @@
+package main
+
+func Main() ([4]int32, [4]int32, [4]int32) {
+    x := [4]int32{1, 2, 3, 4}
+    return x % 3, x << 1, x & 1
+}

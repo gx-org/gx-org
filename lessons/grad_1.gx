@@ -1,0 +1,13 @@
+package main
+
+import "math/grad"
+
+func square(x float32) float32 {
+    return x * x
+}
+
+func Main() (float32, float32) {
+    vjp := grad.Reverse(square)
+    y, backward := vjp(3)
+    return y, backward(1)
+}

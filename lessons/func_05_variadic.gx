@@ -1,0 +1,14 @@
+package main
+
+func sum(xs ...float32) float32 {
+    total := float32(0)
+    for _, x := range xs {
+        total += x
+    }
+    return total
+}
+
+func Main() (float32, float32) {
+    values := []float32{4, 5, 6}
+    return sum(1, 2, 3), sum(values...)
+}

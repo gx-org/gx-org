@@ -1,0 +1,5 @@
+## Indexing
+
+`a[i]` returns the element at index `i` along the first axis of `a`. Indices start at 0. For an array with several axes, the result is an array with one axis less: `a[1]` is the second row of `a`, and `a[1][2]` is a single value.
+
+The builtin function `axlengths` returns the axis lengths of an array as a slice. `len` returns the length of the first axis.

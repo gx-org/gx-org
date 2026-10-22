@@ -1,9 +1,9 @@
 # Functions
 
-Functions are declared using the `func` keyword. Functions needs to declare all their arguments and return values types.
-Like the Go programming language, types are declared after the name of the arguments.
+Functions are declared using the `func` keyword. Functions need to declare the types of all their arguments and return values.
+As in the Go programming language, types are declared after the names of the arguments.
 
-In the example, `reshape` takes arguments `a` and `b` both of types `[2][3]float32` and return a single value of type `[3][2]float32`.
+In the example, `addReshape` takes two arguments, `a` and `b`, both of type `[2][3]float32`, and returns a single value of type `[3][2]float32`.
 
 ```code:options
 { "chapter_title": "Functions" }

@@ -1,0 +1,7 @@
+## Iota
+
+`num.IotaFull` returns an array of the given shape filled with consecutive numbers starting from 0.
+
+`num.Iota` counts along a single axis instead, given as argument: axis 1 in the example.
+
+Combined with comparisons, iotas are useful to build masks.

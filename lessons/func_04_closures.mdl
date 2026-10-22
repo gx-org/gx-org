@@ -1,0 +1,5 @@
+## Closures
+
+A function literal can use variables defined outside of its body. Such a function is called a closure.
+
+In the example, `scaler` returns a closure. Each closure keeps its own value of `factor`.

@@ -1,0 +1,10 @@
+package main
+
+import "rand"
+
+func Main() ([3]float32, [3]float32) {
+    rnd := rand.New(rand.NewSource(42))
+    rnd, a := rnd.Float32[[]int{3}]()
+    rnd, b := rnd.Float32[[]int{3}]()
+    return a, b
+}

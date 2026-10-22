@@ -1,0 +1,5 @@
+## Structures are values
+
+GX has no pointers: structures are values and a method receives a copy of its receiver. In the example, `Reset` sets the count of its own copy to 0: `c` is not modified.
+
+To update a structure, a method returns a new value which is then assigned, as in `c = c.Increment()`.

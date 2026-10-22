@@ -1,0 +1,22 @@
+# Standard library
+
+## Packages
+
+GX code is organized in packages. Every file starts with a `package` clause: the lessons use the package `main`.
+
+The `import` statement gives access to other packages, like the packages of the GX standard library. Names from an imported package are prefixed with the package name, as in `math.Sqrt`. Like in Go, a package only exports names starting with a capital letter.
+
+Functions of the `math` package operate element-wise on arrays of any shape.
+
+Several packages can be imported at once:
+
+```
+import (
+    "math"
+    "num"
+)
+```
+
+```code:options
+{ "chapter_title": "Standard library" }
+```

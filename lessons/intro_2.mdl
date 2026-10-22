@@ -1,0 +1,5 @@
+## Tracing values
+
+The builtin function `trace` prints values while the code runs. Traces are displayed after the results of `Main`, under `Trace:`.
+
+Use `trace` to look at intermediate values when debugging your code.

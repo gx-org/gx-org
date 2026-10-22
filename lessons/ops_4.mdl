@@ -1,0 +1,5 @@
+## Integer operators
+
+Integers support additional operators: the remainder `%`, the bit shifts `<<` and `>>`, and the bitwise operators `&` (and), `|` (or), and `^` (xor).
+
+These operators are not defined on floating point numbers.

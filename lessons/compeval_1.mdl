@@ -1,0 +1,9 @@
+# Compile-time evaluation
+
+A function annotated with `//gx:compeval` is evaluated by the compiler. Such functions can compute axis lengths from other axis lengths.
+
+In the example, `size` computes the number of elements of an array from its shape. `flatten` uses `size` to define the shape of its result.
+
+```code:options
+{ "chapter_title": "Compile-time evaluation" }
+```

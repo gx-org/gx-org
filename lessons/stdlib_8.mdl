@@ -1,0 +1,5 @@
+## Random numbers
+
+The `rand` package generates pseudo-random numbers. `rand.NewSource(42)` creates a source from a seed and `rand.New` creates a generator from that source.
+
+A generator cannot modify its own state. Instead, each call returns a new generator together with the random values. The new generator is then used for the next call: calling the same generator twice returns the same numbers.

@@ -1,6 +1,6 @@
 ## Type casting
 
-A cast convert a value of a type to another type and use the following notation `T(value)` where `T` is the target type as in `int32(2)`.
+A cast converts a value of a type to another type and uses the following notation `T(value)` where `T` is the target type as in `int32(2)`.
 ```
 <target_type>(<val>)
 ```

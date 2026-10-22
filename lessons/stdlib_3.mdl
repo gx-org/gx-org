@@ -1,0 +1,5 @@
+## Reductions
+
+A reduction combines the elements of an array along some axes. The axes are given as a generic argument: `num.Sum[[]int{0}](x)` sums along the first axis and `num.Sum[[]int{0, 1}](x)` sums all the elements.
+
+`num.ReduceMax` computes maximums the same way. `num.ArgMax[1](x)` returns the indices of the maximums along axis 1.

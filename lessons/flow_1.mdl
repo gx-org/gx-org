@@ -1,0 +1,11 @@
+# Flow control
+
+## For
+
+GX has only one looping construct: the `for` loop with `range`. `for i := range 5` runs the body of the loop 5 times, with `i` going from 0 to 4.
+
+Loops are unrolled when the code is compiled. The number of iterations must then be known at compile time: it is usually a constant or an axis length.
+
+```code:options
+{ "chapter_title": "Flow control" }
+```

@@ -1,0 +1,5 @@
+## Function values
+
+Functions are values too. They can be assigned to variables and passed as arguments to other functions, like `applyTwice`.
+
+A function literal, like `square`, defines a function without a name.

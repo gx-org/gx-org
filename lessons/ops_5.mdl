@@ -1,0 +1,5 @@
+## Einstein notation
+
+`einsum` computes products of arrays written with the [Einstein notation](https://en.wikipedia.org/wiki/Einstein_notation). Each array is followed by names for its axes between `{}`. The names after the result variable, on the left of `:=`, define the axes of the result.
+
+Axes that do not appear in the result are summed over. In the example, `dot` has no axis: it is the sum of `a[i]*c[i]` over `i`. `outer` has two axes: `outer[i][j]` is `a[i]*b[j]`.

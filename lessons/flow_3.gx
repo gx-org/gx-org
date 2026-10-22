@@ -1,0 +1,13 @@
+package main
+
+func Main() (int, int) {
+    even, odd := 0, 0
+    for i := range 6 {
+        if i%2 == 0 {
+            even += i
+        } else {
+            odd += i
+        }
+    }
+    return even, odd
+}

@@ -1,0 +1,5 @@
+## Cast and reshape
+
+Casting can be used to change the datatype of an array or its shape, as shown in the example.
+
+When reshaping, the number of elements must stay the same.

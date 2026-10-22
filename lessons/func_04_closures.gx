@@ -1,0 +1,14 @@
+package main
+
+func scaler(factor float32) func([2]float32) [2]float32 {
+    return func(x [2]float32) [2]float32 {
+        return factor * x
+    }
+}
+
+func Main() ([2]float32, [2]float32) {
+    double := scaler(2)
+    triple := scaler(3)
+    x := [2]float32{1, 2}
+    return double(x), triple(x)
+}

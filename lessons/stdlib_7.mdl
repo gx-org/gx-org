@@ -1,0 +1,5 @@
+## Type constraints
+
+The `dtype` package defines common constraints for generic functions: `dtype.Floats` for floating point types, `dtype.Ints` for integer types, and `dtype.Nums` for both.
+
+In the example, `relu` accepts arrays of any shape with any floating point type. Functions of the standard library, like `math.Max`, are generic too.

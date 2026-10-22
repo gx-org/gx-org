@@ -1,0 +1,12 @@
+package main
+
+type Celsius float32
+
+func toFahrenheit(c Celsius) float32 {
+    return float32(c)*1.8 + 32
+}
+
+func Main() float32 {
+    boiling := Celsius(100)
+    return toFahrenheit(boiling)
+}
