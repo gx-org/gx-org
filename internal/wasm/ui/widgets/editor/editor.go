@@ -44,18 +44,26 @@ func New(gui *ui.UI, parent dom.Element, updateCode, runCode func(src string)) *
 	ed.ace.SetTheme("ace/theme/xcode")
 	ed.ace.Session().SetMode("ace/mode/golang")
 	ed.ace.Session().OnChange(ed.onChange)
-	ed.ace.Commands().AddCommand(ace.Command{
-		Name: "Run",
-		BindKey: ace.KeyBinding{
-			Mac: "Shift-Enter",
-			Win: "Shift-Enter",
-		},
-		Exec: ed.onRunCode,
-	})
+	// Run the code on Shift+Enter wherever the focus is: in the editor or
+	// anywhere else in the page (e.g. main_root or lesson_container).
+	gui.Dom().Document().AddEventListener("keydown", false, ed.onKeyDown)
 	return ed
 }
 
-func (ed *Editor) onRunCode(*ace.Editor) {
+// onKeyDown runs the code when Shift+Enter is pressed anywhere in the document,
+// unless the key has already been handled.
+func (ed *Editor) onKeyDown(ev dom.Event) {
+	keyEvent, isKeyEvent := ev.(*dom.KeyboardEvent)
+	if !isKeyEvent || keyEvent.DefaultPrevented() {
+		return
+	}
+	if keyEvent.Key() != "Enter" || !keyEvent.ShiftKey() ||
+		keyEvent.CtrlKey() || keyEvent.AltKey() || keyEvent.MetaKey() {
+		return
+	}
+	// Prevent the default action, for example inserting a new line in the
+	// editor or clicking on a focused button.
+	keyEvent.PreventDefault()
 	ed.runCode(ed.Text())
 }
 

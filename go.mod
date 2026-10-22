@@ -8,7 +8,8 @@ require (
 	github.com/gomarkdown/markdown v0.0.0-20261011113952-f83953680332
 	github.com/gomlx/compute v0.1.14
 	github.com/google/go-cmp v0.7.0
-	github.com/gx-org/gx v0.6.2-0.20261022170312-373d176daa1b
+	github.com/gx-org/gx v0.6.2-0.20261022194853-e2cebf573b69
+	github.com/pkg/errors v0.9.1
 	honnef.co/go/js/dom/v2 v2.0.0-20250304181735-b5e52f05e89d
 )
 
@@ -16,7 +17,6 @@ require (
 	github.com/dlclark/regexp2/v2 v2.8.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/spf13/cobra v1.10.2 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
 	golang.org/x/exp v0.0.0-20260908205506-85c1c2202aba // indirect
