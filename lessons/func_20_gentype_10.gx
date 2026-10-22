@@ -9,7 +9,7 @@ type floats interface {
 }
 
 func toFloats[Dest floats, Src ints, Shape []int](a [Shape...]Src) [Shape...]Dest {
-	return [Shape...]Dest(a)
+	return [...]Dest(a)
 }
 
 func Main() ([2][3]float32, [2][3]float64) {

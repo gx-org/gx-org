@@ -2,4 +2,6 @@
 
 Casting can be used to change the datatype of an array or its shape, as shown in the example.
 
+To change only the datatype, `[...]` lets the compiler infer the axis lengths from the array being cast: `[...]int32(a)` has the same axis lengths as `a`, so its type is `[2][3]int32`.
+
 When reshaping, the number of elements must stay the same.
