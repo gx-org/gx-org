@@ -1,5 +1,5 @@
-## Interfaces
+## Generic types
 
-An interface type is defined by a set of methods. A value of any type implementing these methods can be used where the interface is expected.
+Generic parameters can also be types. `Polygon` now has two generic parameters: its number of vertices `N` and the type `T` of its coordinates. As for generic functions, a type parameter has a constraint: `floats` restricts `T` to `float32` or `float64`.
 
-Like in Go, a type implements an interface by implementing its methods. There is no `implements` keyword.
+`Polygon[3, float32]` is a triangle with `float32` coordinates and `Polygon[4, float64]` a square with `float64` coordinates.

@@ -1,0 +1,5 @@
+## Interfaces
+
+An interface type is defined by a set of methods. A value of any type implementing these methods can be used where the interface is expected.
+
+Like in Go, a type implements an interface by implementing its methods. There is no `implements` keyword.

@@ -1,5 +1,3 @@
 ## Generic structures
 
-Like functions, structures can have generic parameters. `Layer` has two generic axis lengths, `In` and `Out`, defining the shapes of its fields. `Layer[Inputs, Outputs]` is a layer with 3 inputs and 2 outputs.
-
-Generic parameters can also be types, as in `type Pair[T any] struct { A, B T }`.
+Like functions, structures can have generic parameters. `Polygon` has a generic axis length `N`, its number of vertices, defining the shapes of its fields `X` and `Y`. `Polygon[3]{}` is a triangle and `Polygon[4]{}` a quadrilateral, with all their coordinates set to zero.

@@ -1,1 +1,8 @@
-float32(22)
+struct{
+	X: [3]float32{0, 1, 0},
+	Y: [3]float32{0, 0, 1},
+}
+struct{
+	X: [4]float64{0, 1, 1, 0},
+	Y: [4]float64{0, 0, 1, 1},
+}

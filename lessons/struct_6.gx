@@ -1,29 +1,21 @@
 package main
 
-type Shape interface {
-	Area() float32
+type floats interface {
+	float32 | float64
 }
 
-type Rectangle struct {
-	Width, Height float32
+type Polygon[N int, T floats] struct {
+	X, Y [N]T
 }
 
-func (r Rectangle) Area() float32 {
-	return r.Width * r.Height
-}
-
-type Square struct {
-	Side float32
-}
-
-func (s Square) Area() float32 {
-	return s.Side * s.Side
-}
-
-func totalArea(a, b Shape) float32 {
-	return a.Area() + b.Area()
-}
-
-func Main() float32 {
-	return totalArea(Rectangle{Width: 2, Height: 3}, Square{Side: 4})
+func Main() (Polygon[3, float32], Polygon[4, float64]) {
+	triangle := Polygon[3, float32]{
+		X: [3]float32{0, 1, 0},
+		Y: [3]float32{0, 0, 1},
+	}
+	square := Polygon[4, float64]{
+		X: [4]float64{0, 1, 1, 0},
+		Y: [4]float64{0, 0, 1, 1},
+	}
+	return triangle, square
 }
