@@ -22,14 +22,11 @@ import (
 
 type Session struct {
 	js.Value
-
-	ed *Editor
 }
 
 func (ed *Editor) Session() *Session {
 	return &Session{
 		Value: ed.Get("session"),
-		ed:    ed,
 	}
 }
 

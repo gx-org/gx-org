@@ -107,11 +107,6 @@ body {
 	min-width: 0;
 }
 
-.code_source_container {
-	background: var(--main-element-bg-color);
-	flex-direction: column-reverse;
-}
-
 .code_source_textinput_container {
 	height: 80%;
 	background: var(--code-bg-color);

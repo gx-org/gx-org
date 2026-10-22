@@ -41,8 +41,6 @@ type (
 		ID         int
 		Title      string
 		Content    []*Lesson
-		Prev       *Chapter
-		Next       *Chapter
 	}
 
 	Lesson struct {
@@ -216,10 +214,6 @@ func (chap *Chapter) readLesson(entry string) (*Lesson, error) {
 		return nil, err
 	}
 	return lesson, nil
-}
-
-func (chap *Chapter) Name() string {
-	return chap.name
 }
 
 func (chap *Chapter) NumLessons() int {

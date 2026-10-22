@@ -19,10 +19,9 @@ func simplify(s string) string {
 
 func TestParse(t *testing.T) {
 	tests := []struct {
-		wantHTML  string
-		wantTitle string
-		md        []byte
-		code      map[string]string
+		wantHTML string
+		md       []byte
+		code     map[string]string
 	}{
 		{ /*Empty source*/ },
 		{

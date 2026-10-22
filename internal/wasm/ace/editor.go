@@ -20,7 +20,6 @@ import "syscall/js"
 
 type Editor struct {
 	js.Value
-	ace *ACE
 }
 
 func New(id string) (*Editor, error) {
@@ -29,7 +28,6 @@ func New(id string) (*Editor, error) {
 		return nil, err
 	}
 	return &Editor{
-		ace:   ace,
 		Value: ace.edit(id),
 	}, nil
 }

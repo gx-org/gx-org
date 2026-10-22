@@ -48,12 +48,6 @@ func Class(class string) ElementOption {
 	})
 }
 
-func Property(property, value string) ElementOption {
-	return ElementOptionF(func(el dom.Element) {
-		el.SetAttribute(property, value)
-	})
-}
-
 func Listener[T dom.Event](typ string, listener func(T)) ElementOption {
 	castEvent := func(ev dom.Event) {
 		evT, ok := any(ev).(T)
@@ -66,12 +60,6 @@ func Listener[T dom.Event](typ string, listener func(T)) ElementOption {
 	}
 	return ElementOptionF(func(el dom.Element) {
 		el.AddEventListener(typ, true, castEvent)
-	})
-}
-
-func InnerHTML(s string) ElementOption {
-	return ElementOptionF(func(el dom.Element) {
-		el.SetInnerHTML(s)
 	})
 }
 

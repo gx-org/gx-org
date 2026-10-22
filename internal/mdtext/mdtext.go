@@ -22,16 +22,6 @@ func processCodeWithGXTags(m map[string]*ast.CodeBlock) func(node *ast.CodeBlock
 	}
 }
 
-func titleNode(heading **ast.Heading) func(node *ast.Heading) ast.WalkStatus {
-	return func(node *ast.Heading) ast.WalkStatus {
-		if node.Level != 1 {
-			return ast.GoToNext
-		}
-		*heading = node
-		return ast.GoToNext
-	}
-}
-
 func walk[T ast.Node](process func(T) ast.WalkStatus) ast.NodeVisitorFunc {
 	return func(node ast.Node, entering bool) ast.WalkStatus {
 		if !entering {
@@ -64,8 +54,6 @@ func Parse(src []byte) *MDText {
 	htmlFlags := html.CommonFlags | html.HrefTargetBlank
 	opts := html.RendererOptions{Flags: htmlFlags}
 	renderer := html.NewRenderer(opts)
-	var title *ast.Heading
-	ast.Walk(doc, walk(titleNode(&title)))
 	mdt.HTML = string(markdown.Render(doc, renderer))
 	return mdt
 }

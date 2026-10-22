@@ -24,16 +24,14 @@ import (
 )
 
 type Output struct {
-	code *Code
-	div  *dom.HTMLDivElement
+	div *dom.HTMLDivElement
 
 	crash string
 }
 
 func newOutput(code *Code, parent dom.Element) *Output {
 	out := &Output{
-		code: code,
-		div:  code.gui.CreateDIV(parent, ui.Class("code_output_container")),
+		div: code.gui.CreateDIV(parent, ui.Class("code_output_container")),
 	}
 	ui.SetCrashOutput(func(crash string) {
 		out.crash = crash

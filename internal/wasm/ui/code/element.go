@@ -224,17 +224,6 @@ func (cd *Code) runFunc(fun ir.PkgFunc) string {
 	return cd.runFuncDecl(funDecl)
 }
 
-func indent(s string) string {
-	var lines []string
-	for line := range strings.Lines(s) {
-		lines = append(lines, "  "+line)
-	}
-	if lines[len(lines)-1] != "\n" {
-		lines = append(lines, "\n")
-	}
-	return strings.Join(lines, "")
-}
-
 func (cd *Code) compileAndRun(src string) error {
 	irPkg, err := cd.compileCode(src)
 	if err != nil {

@@ -25,7 +25,6 @@ import (
 )
 
 type Editor struct {
-	el                  *dom.HTMLDivElement
 	ace                 *ace.Editor
 	updateCode, runCode func(string)
 }
@@ -36,10 +35,7 @@ func New(gui *ui.UI, parent dom.Element, updateCode, runCode func(src string)) *
 		updateCode: updateCode,
 		runCode:    runCode,
 	}
-	ed.el = gui.CreateDIV(
-		parent,
-		ui.ID(id),
-	)
+	gui.CreateDIV(parent, ui.ID(id))
 	var err error
 	ed.ace, err = ace.New(id)
 	if err != nil {
