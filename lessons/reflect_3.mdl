@@ -1,0 +1,5 @@
+## Arrays
+
+A leaf can also be an array. An operation on `l[k]` then applies to all the elements of the array.
+
+Because the loop is unrolled, each leaf keeps its own type: `l[k]` is a `[2][3]float32` matrix in the first iteration and a `[3]float32` vector in the second.

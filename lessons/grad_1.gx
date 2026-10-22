@@ -8,6 +8,8 @@ func square(x float32) float32 {
 
 func Main() (float32, float32) {
 	vjp := grad.Reverse(square)
+	// Trace vjp to output its implementation.
+	trace(vjp)
 	y, backward := vjp(3)
 	return y, backward(1)
 }

@@ -1,0 +1,16 @@
+package main
+
+import "reflect"
+
+type Params struct {
+	W float32
+	B float32
+}
+
+func Main() Params {
+	p := Params{W: 1, B: 2}
+	for _, k := range reflect.Leaves[Params]() {
+		p[k] += 10
+	}
+	return p
+}

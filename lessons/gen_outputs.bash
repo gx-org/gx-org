@@ -12,3 +12,6 @@ go tool gx fmt -w .
 for f in *.gx */*.gx; do
   go tool gx run "$f" > "$f.out"
 done
+
+go test ./...
+

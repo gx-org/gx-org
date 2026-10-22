@@ -1,0 +1,5 @@
+## Nested structures
+
+A structure can be seen as a tree: the fields which are structures are branches and the other fields are leaves. `reflect.Leaves` returns the paths to all the leaves, at any depth.
+
+In the example, the loop updates the 4 leaves of `s`: `s.Start.X`, `s.Start.Y`, `s.End.X`, and `s.End.Y`.

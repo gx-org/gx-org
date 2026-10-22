@@ -1,2 +1,11 @@
 float32(9)
 float32(6)
+func(x float32) (float32, func(res float32) float32) {
+	fwd0 := x*x
+	selfVJPFunc := func(res float32) float32 {
+		bck0y := x*res
+		bck0x := res*x
+		return bck0x+bck0y
+	}
+	return fwd0, selfVJPFunc
+}

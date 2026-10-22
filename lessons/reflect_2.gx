@@ -1,0 +1,19 @@
+package main
+
+import "reflect"
+
+type Point struct {
+	X, Y float32
+}
+
+type Segment struct {
+	Start, End Point
+}
+
+func Main() Segment {
+	s := Segment{End: Point{X: 3, Y: 4}}
+	for _, k := range reflect.Leaves[Segment]() {
+		s[k] += 1
+	}
+	return s
+}

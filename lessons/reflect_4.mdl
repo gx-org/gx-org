@@ -1,0 +1,5 @@
+## Initialization
+
+Fields omitted in a structure literal are set to zero: all the arrays of `Model{}` are filled with zeros.
+
+Adding 1 to every leaf then initializes all the arrays of the model with ones, whatever the number of layers and the shapes of their arrays.

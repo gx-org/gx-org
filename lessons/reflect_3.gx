@@ -1,0 +1,19 @@
+package main
+
+import "reflect"
+
+type Layer struct {
+	W [2][3]float32
+	B [3]float32
+}
+
+func Main() Layer {
+	l := Layer{
+		W: [2][3]float32{{1, 2, 3}, {4, 5, 6}},
+		B: [3]float32{7, 8, 9},
+	}
+	for _, k := range reflect.Leaves[Layer]() {
+		l[k] *= 2
+	}
+	return l
+}

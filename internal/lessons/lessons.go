@@ -71,6 +71,7 @@ var chapters = map[string][]string{
 		"stdlib",
 		"compeval",
 		"grad",
+		"reflect",
 	},
 	"devs": {
 		"fill",

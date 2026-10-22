@@ -1,0 +1,10 @@
+Segment{
+	Start: Point{
+		X: float32(1),
+		Y: float32(1),
+	},
+	End: Point{
+		X: float32(4),
+		Y: float32(5),
+	},
+}

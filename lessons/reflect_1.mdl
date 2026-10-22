@@ -1,0 +1,13 @@
+# Reflection
+
+## Leaves of a structure
+
+The `reflect` package inspects types when the code is compiled.
+
+`reflect.Leaves[Params]()` returns a slice with the path to each field of `Params`. A path `k` indexes a structure, as in `p[k]`, to read or update the field it points to.
+
+Like all loops in GX, this loop is unrolled by the compiler: its body is repeated for each field, with `p[k]` replaced by `p.W` and then by `p.B`.
+
+```code:options
+{ "chapter_title": "Reflection" }
+```

@@ -1,0 +1,20 @@
+package main
+
+import "reflect"
+
+type Layer struct {
+	W [2][3]float32
+	B [3]float32
+}
+
+type Model struct {
+	L1, L2 Layer
+}
+
+func Main() Model {
+	m := Model{}
+	for _, k := range reflect.Leaves[Model]() {
+		m[k] += 1
+	}
+	return m
+}

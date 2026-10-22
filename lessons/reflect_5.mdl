@@ -1,0 +1,5 @@
+## Updating parameters
+
+The same path can index several structures of the same type. Since the gradient of `loss` has the same type as its argument, `params[k]` in `sgd` is a parameter and `grads[k]` is its gradient.
+
+`sgd` applies one step of gradient descent to all the parameters of `Linear`. Unlike the example of the chapter about automatic differentiation, it does not list the fields: adding a field to `Linear` requires no change to `sgd`.
