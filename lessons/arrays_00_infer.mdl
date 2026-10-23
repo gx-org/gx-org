@@ -1,4 +1,4 @@
-# Arrays
+# Array manipulation
 
 ## Inferring axis lengths
 
@@ -7,5 +7,5 @@ In an array literal, `[...]` lets the compiler infer the axis lengths from the c
 All the rows must have the same length.
 
 ```code:options
-{ "chapter_title": "Arrays" }
+{ "chapter_title": "Array manipulation" }
 ```

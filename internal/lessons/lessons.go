@@ -63,6 +63,7 @@ var chapters = map[string][]string{
 	"": {
 		"intro",
 		"types",
+		"vars",
 		"arrays",
 		"ops",
 		"flow",
