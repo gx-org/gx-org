@@ -20,7 +20,6 @@ import (
 	"fmt"
 
 	"github.com/gx-org/gx-org/internal/lessons"
-	"github.com/gx-org/gx-org/internal/wasm/codefmt"
 	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"honnef.co/go/js/dom/v2"
 )
@@ -29,11 +28,9 @@ type Text struct {
 	gui     *ui.UI
 	lesson  *dom.HTMLDivElement
 	content *dom.HTMLDivElement
-	config  *dom.HTMLDivElement
 	nav     *dom.HTMLDivElement
 
-	configFmt *codefmt.Formatter
-	actions   navActions
+	actions navActions
 }
 
 func New(gui *ui.UI, parent dom.HTMLElement, page Page) *Text {
@@ -44,14 +41,9 @@ func New(gui *ui.UI, parent dom.HTMLElement, page Page) *Text {
 			ui.TabIndex(0),
 			ui.Focus(),
 		),
-		configFmt: codefmt.JSON(),
-		actions:   navActions{page: page},
+		actions: navActions{page: page},
 	}
 	text.content = gui.CreateDIV(text.lesson, ui.Class("lesson_content"))
-	text.config = gui.CreateDIV(
-		gui.CreateDIV(text.lesson, ui.Class("lesson_config")),
-		ui.Class("code_source_textinput"),
-	)
 	text.nav = gui.CreateDIV(text.lesson, ui.Class("lesson_navigation"))
 	text.lesson.AddEventListener("keydown", true, text.onKeyDown)
 	return text
@@ -104,19 +96,6 @@ func (tt *Text) setNavigation() {
 	tt.createNavButton("Next lesson", arrowRight, tt.actions.hasNext(), tt.actions.displayNext)
 }
 
-func (tt *Text) setConfig() {
-	les := tt.actions.current
-	ui.ClearChildren(tt.config)
-	if len(les.Config) == 0 {
-		ui.SetVisibleProperty(tt.config, false)
-		return
-	} else {
-		ui.SetVisibleProperty(tt.config, true)
-	}
-	config := tt.configFmt.Format(les.ConfigSrc)
-	tt.config.SetInnerHTML("GX Config:<br>" + config)
-}
-
 // Nav returns the navigation div so the caller can reposition it in the DOM.
 func (tt *Text) Nav() *dom.HTMLDivElement {
 	return tt.nav
@@ -130,7 +109,6 @@ func (tt *Text) SetContent(les *lessons.Lesson) {
 	} else {
 		ui.SetVisibleProperty(tt.lesson, true)
 	}
-	tt.setConfig()
 	tt.setNavigation()
 	tt.content.SetInnerHTML(les.HTML)
 }

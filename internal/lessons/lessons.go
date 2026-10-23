@@ -48,11 +48,9 @@ type (
 		FileName string
 		ID       int
 
-		HTML      string
-		Code      string
-		Options   Options
-		Config    map[string]any
-		ConfigSrc string
+		HTML    string
+		Code    string
+		Options Options
 
 		Prev *Lesson
 		Next *Lesson
@@ -190,7 +188,6 @@ func (chap *Chapter) readLesson(entry string) (*Lesson, error) {
 		Chapter:  chap,
 		FileName: entry,
 		ID:       lessonID,
-		Config:   make(map[string]any),
 	}
 	lesson.HTML = mdt.HTML
 	gxPath := strings.TrimSuffix(path, ".mdl") + ".gx"
@@ -211,9 +208,6 @@ func (chap *Chapter) readLesson(entry string) (*Lesson, error) {
 	}
 	if lesson.Options.ChapterTitle != "" {
 		chap.Title = lesson.Options.ChapterTitle
-	}
-	if err := lesson.parseConfig(mdt); err != nil {
-		return nil, err
 	}
 	return lesson, nil
 }
@@ -239,17 +233,6 @@ func (l *Lesson) parseOptions(mdt *mdtext.MDText) error {
 	}
 	if err := json.Unmarshal([]byte(options), &(l.Options)); err != nil {
 		return fmt.Errorf("%s: cannot load options: %v\n%s", l.FileName, err, options)
-	}
-	return nil
-}
-
-func (l *Lesson) parseConfig(mdt *mdtext.MDText) error {
-	l.ConfigSrc = mdt.Code["config"]
-	if l.ConfigSrc == "" {
-		return nil
-	}
-	if err := json.Unmarshal([]byte(l.ConfigSrc), &(l.Config)); err != nil {
-		return fmt.Errorf("%s: cannot load config: %v\n%s", l.FileName, err, l.ConfigSrc)
 	}
 	return nil
 }
