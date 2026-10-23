@@ -19,6 +19,7 @@ package code
 import (
 	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"github.com/gx-org/gx-org/internal/wasm/ui/widgets/editor"
+	"github.com/gx-org/gx/src/gx/format"
 	"honnef.co/go/js/dom/v2"
 )
 
@@ -52,6 +53,17 @@ func (s *Source) updateCode(src string) {
 
 func (s *Source) runCode(src string) {
 	ui.Go(func() {
-		s.code.updateCodeOutput(s.code.compileAndRun, src)
+		s.code.updateCodeOutput(s.code.compileAndRun, s.formatCode(src))
 	})
+}
+
+// formatCode formats the source code and updates the content of the editor.
+// The source code is returned unchanged if it cannot be formatted.
+func (s *Source) formatCode(src string) string {
+	formatted, err := format.Source([]byte(src))
+	if err != nil {
+		return src
+	}
+	s.editor.Reformat(string(formatted))
+	return string(formatted)
 }

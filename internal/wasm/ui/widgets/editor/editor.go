@@ -33,6 +33,8 @@ type Editor struct {
 
 	// errorMarkers are the IDs of the markers underlining errors.
 	errorMarkers []int
+	// reformatting is true while the text is replaced by its formatted version.
+	reformatting bool
 }
 
 func New(gui *ui.UI, parent dom.Element, updateCode, runCode func(src string)) *Editor {
@@ -77,11 +79,30 @@ func (ed *Editor) onKeyDown(ev dom.Event) {
 }
 
 func (ed *Editor) onChange() {
+	if ed.reformatting {
+		// The caller of Reformat processes the formatted text.
+		return
+	}
 	ed.updateCode(ed.Text())
 }
 
 func (ed *Editor) Set(src string) {
 	ed.ace.SetValue(src)
+}
+
+// Reformat replaces the text of the editor by its formatted version.
+// The cursor stays at the same place in the code.
+// Contrary to the changes made by the user, updateCode is not called.
+func (ed *Editor) Reformat(formatted string) {
+	text := ed.Text()
+	if formatted == text {
+		return
+	}
+	cursor := reformattedCursor(text, formatted, ed.ace.CursorIndex())
+	ed.reformatting = true
+	defer func() { ed.reformatting = false }()
+	ed.ace.SetValue(formatted)
+	ed.ace.MoveCursorToIndex(cursor)
 }
 
 func (ed *Editor) Text() string {

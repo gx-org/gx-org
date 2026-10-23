@@ -41,6 +41,20 @@ func (ed *Editor) GetValue() string {
 	return ed.Call("getValue").String()
 }
 
+// CursorIndex returns the position of the cursor as an index in the value of the editor.
+// The index counts UTF-16 code units, like in a Javascript string.
+func (ed *Editor) CursorIndex() int {
+	doc := ed.Session().Get("doc")
+	return doc.Call("positionToIndex", ed.Call("getCursorPosition")).Int()
+}
+
+// MoveCursorToIndex clears the selection and moves the cursor to an index in the value of the editor.
+// The index counts UTF-16 code units, like in a Javascript string.
+func (ed *Editor) MoveCursorToIndex(index int) {
+	pos := ed.Session().Get("doc").Call("indexToPosition", index)
+	ed.Call("navigateTo", pos.Get("row"), pos.Get("column"))
+}
+
 func (ed *Editor) SetTheme(theme string) {
 	ed.Call("setTheme", theme)
 }
