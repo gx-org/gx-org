@@ -12,7 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Run checks on the piper branch to merge with the main branch.
+# Merge the dev branch (the source of truth) into main, move to the latest
+# version of GX, regenerate the files, run the tests and push to main.
+#
+# Triggered by dev.yml on each push to dev, and by the Piper workflow of
+# gx-org/gx when GX is updated.
 
 name: Main update
 
@@ -46,31 +50,41 @@ jobs:
     - name: Setup an identity
       run: git config user.email "noreply@github.com" && git config user.name "Github Action"
 
+    - name: Merge dev (the source of truth) into main
+      # Record dev as merged but replace the content of main with the content of
+      # dev, so that dev overrides any change made in main.
+      run: git merge -s ours --no-commit origin/dev && git read-tree -u --reset origin/dev
+
     - name: Move to the latest version
       run: go get -u github.com/gx-org/gx@main
 
     - name: Tidy (best effort)
       run: go mod tidy
 
+    - name: Generating the time file
+      working-directory: internal/wasm/buildtime
+      run: bash ./buildtime.bash
+
     - name: Generating code
       run: go generate ./...
 
-    - name: Test after piper merged into main
+    - name: Test after dev merged into main
       run: go test -v ./...
 
-    - name: Commit generated and modified files
+    - name: Commit the merge, generated and modified files
+      # The WASM file is ignored in dev but GitHub Pages serves it from main.
       run: |
-        if output=$(git status --porcelain) && [ -z "$output" ]; then
-          exit 0
-        else
-          git add .
-          git commit -a -m "Auto-commit after Go file generation."
+        git add -A
+        git add -f res/main.wasm
+        if git rev-parse -q --verify MERGE_HEAD > /dev/null; then
+          git commit -m "Merge dev into main."
+        elif ! git diff --cached --quiet; then
+          git commit -m "Auto-commit after Go file generation."
         fi
 
     - name: Push to main
-      # Replay the auto-commit on top of anything pushed to main during the run.
-      run: |
-        git pull --rebase origin main
-        git push origin main
+      # No rebase: it would flatten the merge. Runs are queued and only this
+      # workflow pushes to main, so main does not move during a run.
+      run: git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
