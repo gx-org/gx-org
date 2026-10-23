@@ -35,10 +35,6 @@ func Go() *Formatter {
 	return newFormatter(lexers.Go)
 }
 
-func JSON() *Formatter {
-	return newFormatter(lexers.Get("JSON"))
-}
-
 func newFormatter(lexer chroma.Lexer) *Formatter {
 	return &Formatter{
 		lexer: lexer,

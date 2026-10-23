@@ -31,14 +31,12 @@ import (
 	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"github.com/gx-org/gx/api"
 	"github.com/gx-org/gx/api/hostio"
-	"github.com/gx-org/gx/api/options"
 	"github.com/gx-org/gx/api/runner"
 	"github.com/gx-org/gx/api/values"
 	"github.com/gx-org/gx/build/builder"
 	"github.com/gx-org/gx/build/fmterr"
 	"github.com/gx-org/gx/build/ir"
 	"github.com/gx-org/gx/golang/backend/kernels"
-	"github.com/gx-org/gx/golang/binder/gobindings/types"
 	"github.com/gx-org/gx/stdlib"
 	"honnef.co/go/js/dom/v2"
 )
@@ -47,7 +45,6 @@ type Code struct {
 	gui *ui.UI
 	src *Source
 	out *Output
-	les *lessons.Lesson
 
 	bld *builder.Builder
 }
@@ -67,7 +64,6 @@ func New(gui *ui.UI, parent dom.HTMLElement) *Code {
 
 func (cd *Code) SetContent(les *lessons.Lesson) {
 	cd.src.editor.Set(les.Code)
-	cd.les = les
 }
 
 func (cd *Code) compile(src string) error {
@@ -221,32 +217,6 @@ func buildString[T any](w *strings.Builder, vals []T) {
 	enumerateB(w, htmls)
 }
 
-func (cd *Code) lessonOptions(fun ir.Func) []options.PackageOption {
-	if cd.les == nil {
-		return nil
-	}
-	if cd.les.Config == nil {
-		return nil
-	}
-	var opts []options.PackageOption
-	pkg := fun.File().Package
-	for name, val := range cd.les.Config {
-		for _, spec := range pkg.Decls.Vars {
-			for _, vr := range spec.Exprs {
-				if vr.VName.Name != name {
-					continue
-				}
-				opts = append(opts, options.PackageVarSetValue{
-					Pkg:   pkg.Path(),
-					Var:   name,
-					Value: types.Int(ir.Int(val.(float64))).GXValue(),
-				})
-			}
-		}
-	}
-	return opts
-}
-
 type traceWriter struct {
 	buf strings.Builder
 }
@@ -285,7 +255,7 @@ func (cd *Code) runFuncDecl(fun *ir.FuncDecl) string {
 	if err != nil {
 		return errorF("cannot create device: %v", err)
 	}
-	runner, err := runner.Trace(dev, fun, nil, nil, cd.lessonOptions(fun))
+	runner, err := runner.Trace(dev, fun, nil, nil, nil)
 	if err != nil {
 		return errorF("cannot compile the code: %v", err)
 	}

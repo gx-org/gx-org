@@ -27,8 +27,8 @@ func TestParse(t *testing.T) {
 		{
 			md: test01,
 			code: map[string]string{
-				"main":   "some code for main",
-				"config": "some code for config",
+				"main":    "some code for main",
+				"options": "some code for options",
 			},
 			wantHTML: `<h1 id="title-1">Title 1</h1>
 
