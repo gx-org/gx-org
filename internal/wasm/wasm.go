@@ -24,7 +24,6 @@ import (
 	"github.com/gx-org/gx-org/internal/lessons"
 	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"github.com/gx-org/gx-org/internal/wasm/ui/code"
-	"github.com/gx-org/gx-org/internal/wasm/ui/footer"
 	"github.com/gx-org/gx-org/internal/wasm/ui/header"
 	"github.com/gx-org/gx-org/internal/wasm/ui/text"
 	"honnef.co/go/js/dom/v2"
@@ -33,7 +32,6 @@ import (
 type root struct {
 	gui    *ui.UI
 	header *header.Header
-	footer *footer.Footer
 	text   *text.Text
 	code   *code.Code
 }
@@ -43,7 +41,6 @@ func (r *root) DisplayLesson(les *lessons.Lesson) {
 	r.text.SetContent(les)
 	r.code.SetContent(les)
 	r.header.SetContent(les)
-	r.footer.SetContent(les)
 	var pathPrefix string
 	if les.Chapter.PathPrefix != "" {
 		pathPrefix = fmt.Sprintf("&prefix=%s", les.Chapter.PathPrefix)
@@ -68,7 +65,6 @@ func main() {
 
 	root := &root{gui: gui}
 	root.header = header.New(gui)
-	root.footer = footer.New(gui)
 	root.text = text.New(gui, body, root)
 	root.code = code.New(gui, body)
 	// Move lesson_navigation to the end of main_root so that on mobile
