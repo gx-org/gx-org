@@ -78,3 +78,8 @@ func (ed *Editor) Set(src string) {
 func (ed *Editor) Text() string {
 	return ed.ace.GetValue()
 }
+
+// SetAnnotations replaces the annotations displayed in the gutter of the editor.
+func (ed *Editor) SetAnnotations(anns []ace.Annotation) {
+	ed.ace.Session().SetAnnotations(anns)
+}

@@ -40,3 +40,27 @@ func (se *Session) OnChange(f func()) {
 		return nil
 	}))
 }
+
+// Annotation is a message displayed in the gutter of the editor.
+type Annotation struct {
+	// Row and Column of the annotation (zero-based).
+	Row, Column int
+	// Text displayed when hovering over the annotation.
+	Text string
+	// Type of the annotation: "error", "warning", or "info".
+	Type string
+}
+
+// SetAnnotations replaces all the annotations of the session.
+func (se *Session) SetAnnotations(anns []Annotation) {
+	jsAnns := make([]any, len(anns))
+	for i, ann := range anns {
+		jsAnns[i] = map[string]any{
+			"row":    ann.Row,
+			"column": ann.Column,
+			"text":   ann.Text,
+			"type":   ann.Type,
+		}
+	}
+	se.Call("setAnnotations", jsAnns)
+}

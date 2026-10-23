@@ -17,12 +17,14 @@
 package code
 
 import (
+	"errors"
 	"fmt"
 	"runtime/debug"
 	"strings"
 
 	"github.com/gomlx/compute/gobackend"
 	"github.com/gx-org/gx-org/internal/lessons"
+	"github.com/gx-org/gx-org/internal/wasm/ace"
 	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"github.com/gx-org/gx/api"
 	"github.com/gx-org/gx/api/hostio"
@@ -30,6 +32,7 @@ import (
 	"github.com/gx-org/gx/api/runner"
 	"github.com/gx-org/gx/api/values"
 	"github.com/gx-org/gx/build/builder"
+	"github.com/gx-org/gx/build/fmterr"
 	"github.com/gx-org/gx/build/ir"
 	"github.com/gx-org/gx/golang/backend/kernels"
 	"github.com/gx-org/gx/golang/binder/gobindings/types"
@@ -75,10 +78,38 @@ func (cd *Code) compile(src string) error {
 
 func (cd *Code) compileCode(src string) (*ir.Package, error) {
 	pkg := cd.bld.NewIncrementalPackage("main")
-	if err := pkg.Build(src); err != nil {
+	err := pkg.Build(src)
+	cd.src.editor.SetAnnotations(errorAnnotations(err))
+	if err != nil {
 		return nil, err
 	}
 	return pkg.IR(), nil
+}
+
+// errorAnnotations converts compiler errors into annotations for the code editor.
+func errorAnnotations(err error) []ace.Annotation {
+	var errs *fmterr.Errors
+	if !errors.As(err, &errs) {
+		return nil
+	}
+	var anns []ace.Annotation
+	for _, err := range errs.Errors() {
+		var posErr fmterr.ErrorWithPos
+		if !errors.As(err, &posErr) {
+			continue
+		}
+		pos := posErr.Pos().Begin
+		if !pos.IsValid() {
+			continue
+		}
+		anns = append(anns, ace.Annotation{
+			Row:    pos.Line - 1,
+			Column: pos.Column - 1,
+			Text:   posErr.Err().Error(),
+			Type:   "error",
+		})
+	}
+	return anns
 }
 
 func (cd *Code) updateCodeOutput(f func(src string) error, src string) {
