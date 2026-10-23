@@ -74,11 +74,12 @@ func (tt *Text) onKeyDown(ev dom.Event) {
 	}
 }
 
-// SVG paths of the navigation arrows in a 24x24 view box: a short shaft and
-// two straight barbs. The stroke style is defined in res/style.css.
+// SVG paths of the navigation arrows in a 24x24 view box: filled triangles
+// with their base on the side of the text. The fill color is defined in
+// res/style.css.
 const (
-	arrowLeft  = "M19 12H5M11 6l-6 6 6 6"
-	arrowRight = "M5 12h14M13 6l6 6-6 6"
+	arrowLeft  = "M19 5v14L8 12z"
+	arrowRight = "M5 5v14l11-7z"
 )
 
 func (tt *Text) createNavButton(label, arrow string, enabled bool, onClick func()) {

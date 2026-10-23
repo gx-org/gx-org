@@ -223,16 +223,17 @@ body {
 	visibility: hidden;
 }
 
-/* Arrow icon: straight strokes drawn in a 24x24 SVG view box (see text.go).
-   The stroke width matches the stem width of the text. */
+/* Arrow icon: a filled triangle drawn in a 24x24 SVG view box (see text.go).
+   A round-joined stroke of the same color rounds its corners. The stroke grows
+   the 14-unit tall triangle by its width (3): the transform scales it back. */
 .navigation_button svg {
 	width: 1.25em;
 	height: 1.25em;
-	fill: none;
+	fill: var(--flex-bg-color);
 	stroke: var(--flex-bg-color);
-	stroke-width: 1.75;
-	stroke-linecap: round;
+	stroke-width: 3;
 	stroke-linejoin: round;
+	transform: scale(calc(14 / 17));
 }
 
 

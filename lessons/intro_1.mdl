@@ -1,4 +1,4 @@
-# Welcome to the GX overview
+# Welcome to GX
 
 GX is a domain-specialised language to write array-based programs, including machine learning algorithms, data processing, or scientific programming. GX is designed to be embedded in a host language such as C++, Go or Python. For this website, GX is embedded in JavaScript using WebAssembly.
 
