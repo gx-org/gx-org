@@ -64,3 +64,29 @@ func (se *Session) SetAnnotations(anns []Annotation) {
 	}
 	se.Call("setAnnotations", jsAnns)
 }
+
+// Range of text in the session.
+type Range struct {
+	// StartRow and StartColumn of the range (zero-based).
+	StartRow, StartColumn int
+	// EndRow and EndColumn of the range (zero-based, excluded).
+	EndRow, EndColumn int
+}
+
+// jsValue returns the range as an ACE Range javascript object.
+func (r Range) jsValue() js.Value {
+	rangeClass := js.Global().Get("ace").Call("require", "ace/range").Get("Range")
+	return rangeClass.New(r.StartRow, r.StartColumn, r.EndRow, r.EndColumn)
+}
+
+// AddMarker highlights a range of text with a CSS class.
+// The marker is drawn in front of the text.
+// It returns the ID of the marker to remove it with RemoveMarker.
+func (se *Session) AddMarker(rng Range, class string) int {
+	return se.Call("addMarker", rng.jsValue(), class, "text", true).Int()
+}
+
+// RemoveMarker removes a marker added with AddMarker.
+func (se *Session) RemoveMarker(id int) {
+	se.Call("removeMarker", id)
+}

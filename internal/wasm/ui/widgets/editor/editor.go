@@ -24,9 +24,15 @@ import (
 	"honnef.co/go/js/dom/v2"
 )
 
+// errorMarkerClass is the CSS class drawing a red squiggly line under errors.
+const errorMarkerClass = "editor_error_marker"
+
 type Editor struct {
 	ace                 *ace.Editor
 	updateCode, runCode func(string)
+
+	// errorMarkers are the IDs of the markers underlining errors.
+	errorMarkers []int
 }
 
 func New(gui *ui.UI, parent dom.Element, updateCode, runCode func(src string)) *Editor {
@@ -42,6 +48,9 @@ func New(gui *ui.UI, parent dom.Element, updateCode, runCode func(src string)) *
 		fmt.Println("ERROR", err.Error())
 	}
 	ed.ace.SetTheme("ace/theme/xcode")
+	// Draw the icons in the gutter with SVG so that they can be styled with CSS.
+	// The option needs to be set before the gutter displays any annotation.
+	ed.ace.SetOption("useSvgGutterIcons", true)
 	ed.ace.Session().SetMode("ace/mode/golang")
 	ed.ace.Session().OnChange(ed.onChange)
 	// Run the code on Shift+Enter wherever the focus is: in the editor or
@@ -82,4 +91,16 @@ func (ed *Editor) Text() string {
 // SetAnnotations replaces the annotations displayed in the gutter of the editor.
 func (ed *Editor) SetAnnotations(anns []ace.Annotation) {
 	ed.ace.Session().SetAnnotations(anns)
+}
+
+// SetErrorMarkers replaces the red squiggly lines underlining errors in the code.
+func (ed *Editor) SetErrorMarkers(rngs []ace.Range) {
+	session := ed.ace.Session()
+	for _, id := range ed.errorMarkers {
+		session.RemoveMarker(id)
+	}
+	ed.errorMarkers = ed.errorMarkers[:0]
+	for _, rng := range rngs {
+		ed.errorMarkers = append(ed.errorMarkers, session.AddMarker(rng, errorMarkerClass))
+	}
 }

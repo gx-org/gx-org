@@ -19,8 +19,11 @@ package code
 import (
 	"errors"
 	"fmt"
+	"go/scanner"
+	"go/token"
 	"runtime/debug"
 	"strings"
+	"unicode/utf16"
 
 	"github.com/gomlx/compute/gobackend"
 	"github.com/gx-org/gx-org/internal/lessons"
@@ -79,37 +82,99 @@ func (cd *Code) compile(src string) error {
 func (cd *Code) compileCode(src string) (*ir.Package, error) {
 	pkg := cd.bld.NewIncrementalPackage("main")
 	err := pkg.Build(src)
-	cd.src.editor.SetAnnotations(errorAnnotations(err))
+	anns, rngs := errorAnnotations(src, err)
+	cd.src.editor.SetAnnotations(anns)
+	cd.src.editor.SetErrorMarkers(rngs)
 	if err != nil {
 		return nil, err
 	}
 	return pkg.IR(), nil
 }
 
-// errorAnnotations converts compiler errors into annotations for the code editor.
-func errorAnnotations(err error) []ace.Annotation {
+// errorAnnotations converts compiler errors into annotations for the code editor
+// and into ranges of code to underline with a red squiggly line.
+func errorAnnotations(src string, err error) (anns []ace.Annotation, rngs []ace.Range) {
 	var errs *fmterr.Errors
 	if !errors.As(err, &errs) {
-		return nil
+		return nil, nil
 	}
-	var anns []ace.Annotation
 	for _, err := range errs.Errors() {
 		var posErr fmterr.ErrorWithPos
 		if !errors.As(err, &posErr) {
 			continue
 		}
 		pos := posErr.Pos().Begin
-		if !pos.IsValid() {
+		if !pos.IsValid() || pos.Offset > len(src) {
 			continue
 		}
+		row, column := acePosition(src, pos.Offset)
 		anns = append(anns, ace.Annotation{
-			Row:    pos.Line - 1,
-			Column: pos.Column - 1,
+			Row:    row,
+			Column: column,
 			Text:   posErr.Err().Error(),
 			Type:   "error",
 		})
+		start, end := errorToken(src, pos.Offset)
+		rngs = append(rngs, aceRange(src, start, end))
 	}
-	return anns
+	return anns, rngs
+}
+
+// errorToken returns the byte offsets [start, end) in src of the token
+// where an error at offset is. If there is no token at offset (for example,
+// the error is at the end of a line), it returns the previous token on the
+// same line, or an empty range if there is none.
+func errorToken(src string, offset int) (start, end int) {
+	lineStart := strings.LastIndexByte(src[:offset], '\n') + 1
+	lineEnd := len(src)
+	if i := strings.IndexByte(src[offset:], '\n'); i >= 0 {
+		lineEnd = offset + i
+	}
+	fset := token.NewFileSet()
+	file := fset.AddFile("", fset.Base(), len(src))
+	var sc scanner.Scanner
+	sc.Init(file, []byte(src), nil, scanner.ScanComments)
+	start, end = offset, offset
+	for {
+		pos, tok, lit := sc.Scan()
+		tokStart := file.Offset(pos)
+		if tok == token.EOF || tokStart > offset {
+			return start, end
+		}
+		if tok == token.SEMICOLON && lit == "\n" {
+			continue // Semicolon automatically inserted at the end of a line.
+		}
+		tokEnd := file.Offset(sc.End())
+		if tokEnd > offset {
+			// The token contains the offset: keep it on the line of the error.
+			return max(tokStart, lineStart), min(tokEnd, lineEnd)
+		}
+		if tok != token.COMMENT && tokStart >= lineStart {
+			start, end = tokStart, tokEnd
+		}
+	}
+}
+
+// aceRange converts the byte offsets [start, end) in src into a range in the code editor.
+func aceRange(src string, start, end int) ace.Range {
+	startRow, startColumn := acePosition(src, start)
+	endRow, endColumn := acePosition(src, end)
+	return ace.Range{
+		StartRow:    startRow,
+		StartColumn: startColumn,
+		EndRow:      endRow,
+		EndColumn:   endColumn,
+	}
+}
+
+// acePosition converts a byte offset in src into a row and a column in the code editor.
+// Columns are counted in UTF-16 code units, like Javascript strings.
+func acePosition(src string, offset int) (row, column int) {
+	before := src[:offset]
+	for _, r := range before[strings.LastIndexByte(before, '\n')+1:] {
+		column += utf16.RuneLen(r)
+	}
+	return strings.Count(before, "\n"), column
 }
 
 func (cd *Code) updateCodeOutput(f func(src string) error, src string) {

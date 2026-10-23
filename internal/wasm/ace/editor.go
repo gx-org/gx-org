@@ -44,3 +44,8 @@ func (ed *Editor) GetValue() string {
 func (ed *Editor) SetTheme(theme string) {
 	ed.Call("setTheme", theme)
 }
+
+// SetOption sets the value of an option of the editor.
+func (ed *Editor) SetOption(name string, value any) {
+	ed.Call("setOption", name, value)
+}
