@@ -74,23 +74,33 @@ func (tt *Text) onKeyDown(ev dom.Event) {
 	}
 }
 
+// SVG paths of the navigation arrows in a 24x24 view box: a short shaft and
+// two straight barbs. The stroke style is defined in res/style.css.
+const (
+	arrowLeft  = "M19 12H5M11 6l-6 6 6 6"
+	arrowRight = "M5 12h14M13 6l6 6-6 6"
+)
+
+func (tt *Text) createNavButton(label, arrow string, enabled bool, onClick func()) {
+	button := tt.gui.CreateButton(tt.nav, "",
+		func(dom.Event) {
+			onClick()
+		},
+		ui.Class("navigation_button"),
+	)
+	button.SetAttribute("aria-label", label)
+	button.SetTitle(label)
+	// A disabled button is hidden by the CSS but keeps its space
+	// so that the text stays centered.
+	button.SetDisabled(!enabled)
+	tt.gui.CreateSVGIcon(button, "0 0 24 24", arrow)
+}
+
 func (tt *Text) setNavigation() {
 	ui.ClearChildren(tt.nav)
-	tt.gui.CreateButton(tt.nav, "←",
-		func(dom.Event) {
-			tt.actions.displayPrevious()
-		},
-		ui.SetVisible(tt.actions.hasPrev()),
-		ui.Class("navigation_button"),
-	)
+	tt.createNavButton("Previous lesson", arrowLeft, tt.actions.hasPrev(), tt.actions.displayPrevious)
 	tt.gui.CreateParagraph(tt.nav, lessonFooter(tt.actions.current))
-	tt.gui.CreateButton(tt.nav, "→",
-		func(dom.Event) {
-			tt.actions.displayNext()
-		},
-		ui.SetVisible(tt.actions.hasNext()),
-		ui.Class("navigation_button"),
-	)
+	tt.createNavButton("Next lesson", arrowRight, tt.actions.hasNext(), tt.actions.displayNext)
 }
 
 func (tt *Text) setConfig() {

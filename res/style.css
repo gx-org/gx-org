@@ -195,7 +195,9 @@ body {
 	font-size: 150%;
 	flex-direction: row;
 	justify-content: center;
-	align-content: space-around;
+	/* Put the arrows and the text on the same horizontal axis.
+	   (align-content has no effect on a single-line flex container.) */
+	align-items: center;
 	margin: 0em;
 	/* lesson_navigation is a sibling of lesson_container/code_container in main_root.
 	   Remove it from the flex row and pin it to the bottom of the lesson column. */
@@ -207,12 +209,39 @@ body {
 	border-top: 1px solid var(--flex-bg-color);
 }
 
+/* The global p rule adds a top margin which pushes the text below the arrows. */
+.lesson_navigation p {
+	margin: 0;
+}
+
 .navigation_button {
+	/* A flex container (not inline) so that no line box or baseline
+	   adds space around the icon. */
+	display: flex;
+	padding: 0.125em;
 	cursor: pointer;
-	font-size: 150%;
-	vertical-align: middle;
+	font-size: inherit;
+	color: inherit;
 	border: none;
 	background-color: transparent;
+}
+
+/* Hide the button when there is no previous/next lesson but keep its space
+   so that the text stays centered. */
+.navigation_button:disabled {
+	visibility: hidden;
+}
+
+/* Arrow icon: straight strokes drawn in a 24x24 SVG view box (see text.go).
+   The stroke width matches the stem width of the text. */
+.navigation_button svg {
+	width: 1.25em;
+	height: 1.25em;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.75;
+	stroke-linecap: round;
+	stroke-linejoin: round;
 }
 
 
@@ -306,7 +335,6 @@ body {
 
 	/* Larger touch targets for navigation buttons */
 	.navigation_button {
-		font-size: 180%;
-		padding: 6px 12px;
+		padding: 12px;
 	}
 }

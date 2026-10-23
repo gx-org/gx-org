@@ -80,6 +80,23 @@ func (ui *UI) CreateParagraph(parent dom.Element, text string) *dom.HTMLParagrap
 	return el.(*dom.HTMLParagraphElement)
 }
 
+const svgNS = "http://www.w3.org/2000/svg"
+
+// CreateSVGIcon appends to parent an inline SVG icon drawing a single path.
+// The icon is built with createElementNS (no HTML parsing) and is hidden from
+// screen readers: the parent is expected to provide an accessible label.
+func (ui *UI) CreateSVGIcon(parent dom.Element, viewBox, path string) dom.Element {
+	doc := ui.win.Document()
+	svg := doc.CreateElementNS(svgNS, "svg")
+	svg.SetAttribute("viewBox", viewBox)
+	svg.SetAttribute("aria-hidden", "true")
+	pathEl := doc.CreateElementNS(svgNS, "path")
+	pathEl.SetAttribute("d", path)
+	svg.AppendChild(pathEl)
+	parent.AppendChild(svg)
+	return svg
+}
+
 func FindElementByClass[T dom.Element](ui *UI, class string) (zero T, err error) {
 	els := ui.win.Document().GetElementsByClassName(class)
 	if len(els) == 0 {
