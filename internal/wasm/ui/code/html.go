@@ -19,8 +19,8 @@ import (
 	"strings"
 
 	"github.com/gx-org/gx-org/internal/wasm/codefmt"
-	"github.com/gx-org/gx/api/values"
 	"github.com/gx-org/gx/build/ir"
+	"github.com/gx-org/gx/interp/elements"
 )
 
 func preB(w *strings.Builder, x any) {
@@ -56,14 +56,14 @@ func toHTMLB(w *strings.Builder, val any) {
 	switch valT := val.(type) {
 	case ir.Expr:
 		irNodeHTML(w, valT.SourceString(nil))
-	case *values.IRNode:
+	case *elements.IRNode:
 		irNodeHTML(w, valT.DefineString(nil))
-	case *values.Struct:
+	case *elements.Struct:
 		preB(w, valT.SourceString(nil))
-	case *values.NamedType:
+	case *elements.NamedType:
 		preB(w, valT.SourceString(nil))
-	case *values.String:
-		preB(w, valT.StringValue())
+	case *elements.String:
+		preB(w, valT.String())
 	case error:
 		errorB(w, valT)
 	default:

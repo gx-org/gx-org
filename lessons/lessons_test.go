@@ -46,12 +46,12 @@ func run(name string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fn, outs, err := gxmain.FromFile(rtm, vfs, []string{path.Base(name)})
+	fn, outs, traces, err := gxmain.FromFile(rtm, vfs, []string{path.Base(name)})
 	if err != nil {
 		return "", err
 	}
 	var out strings.Builder
-	if err := gxmain.Printf(&out, fn, outs); err != nil {
+	if err := gxmain.Printf(&out, fn, outs, traces); err != nil {
 		return "", err
 	}
 	return out.String(), nil
