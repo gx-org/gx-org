@@ -32,7 +32,6 @@ import (
 	"github.com/gx-org/gx/api"
 	"github.com/gx-org/gx/api/hostio"
 	"github.com/gx-org/gx/api/runner"
-	"github.com/gx-org/gx/api/values"
 	"github.com/gx-org/gx/build/builder"
 	"github.com/gx-org/gx/build/fmterr"
 	"github.com/gx-org/gx/build/ir"
@@ -185,23 +184,6 @@ func (cd *Code) updateCodeOutput(f func(src string) error, src string) {
 	}
 }
 
-func flatten(out []hostio.Value) []hostio.Value {
-	flat := []hostio.Value{}
-	for _, v := range out {
-		slice, ok := v.(*values.Slice)
-		if !ok {
-			flat = append(flat, v)
-			continue
-		}
-		vals := make([]hostio.Value, slice.Len())
-		for i := 0; i < slice.Len(); i++ {
-			vals[i] = slice.Element(i)
-		}
-		flat = append(flat, flatten(vals)...)
-	}
-	return flat
-}
-
 func buildString[T any](w *strings.Builder, vals []T) {
 	if len(vals) == 0 {
 		return
@@ -264,12 +246,12 @@ func (cd *Code) runFuncDecl(fun *ir.FuncDecl) string {
 	if err != nil {
 		return err.Error()
 	}
-	flattenVals, err := hostio.ToHost(kernels.DefaultAllocator(), flatten(vals))
+	hostVals, err := hostio.ToHost(kernels.DefaultAllocator(), vals)
 	if err != nil {
 		return err.Error()
 	}
 	bld := strings.Builder{}
-	buildString(&bld, flattenVals)
+	buildString(&bld, hostVals)
 	if trace.buf.Len() > 0 {
 		bld.WriteString(fmt.Sprintf("Trace:<br>%s", trace.buf.String()))
 	}

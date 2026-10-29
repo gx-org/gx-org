@@ -1,3 +1,6 @@
 [2]float32{10, 20}
-[2]float32{1, 2}
-[2]float32{10, 20}
+Trace:
+intro_2.gx:0
+	[2]float32{1, 2}
+intro_2.gx:1
+	[2]float32{10, 20}

@@ -1,8 +1,8 @@
-struct{
+Polygon[3, float32]{
 	X: [3]float32{0, 1, 0},
 	Y: [3]float32{0, 0, 1},
 }
-struct{
+Polygon[4, float64]{
 	X: [4]float64{0, 1, 1, 0},
 	Y: [4]float64{0, 0, 1, 1},
 }
