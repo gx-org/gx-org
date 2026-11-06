@@ -31,11 +31,10 @@ import (
 	"github.com/gx-org/gx-org/internal/wasm/ui"
 	"github.com/gx-org/gx/api"
 	"github.com/gx-org/gx/api/hostio"
-	"github.com/gx-org/gx/api/runner"
 	"github.com/gx-org/gx/build/builder"
 	"github.com/gx-org/gx/build/fmterr"
 	"github.com/gx-org/gx/build/ir"
-	"github.com/gx-org/gx/golang/backend/kernels"
+	"github.com/gx-org/gx/interp/grapheval"
 	"github.com/gx-org/gx/stdlib"
 	"honnef.co/go/js/dom/v2"
 )
@@ -204,7 +203,7 @@ type traceWriter struct {
 }
 
 func (r *traceWriter) Trace(file *ir.File, call *ir.FuncCallExpr, vals []hostio.Value) error {
-	vals, err := hostio.ToHost(kernels.DefaultAllocator(), vals)
+	vals, err := hostio.ToHost(vals)
 	if err != nil {
 		return err
 	}
@@ -237,16 +236,16 @@ func (cd *Code) runFuncDecl(fun *ir.FuncDecl) string {
 	if err != nil {
 		return errorF("cannot create device: %v", err)
 	}
-	runner, err := runner.Trace(dev, fun, nil, nil, nil)
+	cfunc, err := grapheval.Trace(dev, fun, nil, nil, nil)
 	if err != nil {
 		return errorF("cannot compile the code: %v", err)
 	}
 	var trace traceWriter
-	vals, err := runner.Run(nil, nil, &trace)
+	vals, err := cfunc.Run(nil, nil, &trace)
 	if err != nil {
 		return err.Error()
 	}
-	hostVals, err := hostio.ToHost(kernels.DefaultAllocator(), vals)
+	hostVals, err := hostio.ToHost(vals)
 	if err != nil {
 		return err.Error()
 	}
