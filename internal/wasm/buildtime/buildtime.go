@@ -1,4 +1,4 @@
 package buildtime
 
 // BuildTime at which the WASM file has been generated.
-const BuildTime = "2026-11-18 15:36:54"
+const BuildTime = "2026-11-18 15:41:31"
