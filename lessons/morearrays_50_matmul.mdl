@@ -1,0 +1,5 @@
+## Matrix multiplication
+
+The `num` package of the standard library provides functions to multiply vectors and matrices: `num.VecMul` computes the dot product of two vectors, `num.VecMatMul` multiplies a vector by a matrix, `num.MatVecMul` multiplies a matrix by a vector, and `num.MatMul` multiplies two matrices.
+
+Like the Einstein notation, these functions sum over the axis shared by their two arguments: `mn := num.MatMul(m, n)` computes the same result as `mn{i, k} := einsum(m{i, j} * n{j, k})`. The compiler checks that the shared axes have the same length.

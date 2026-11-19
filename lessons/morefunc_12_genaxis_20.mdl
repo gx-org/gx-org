@@ -1,0 +1,7 @@
+## Explicit generic arguments
+
+The compiler infers generic arguments from the types of the arguments of a call. In the example, `onesLike(a)` does not give `N`: the compiler infers that `N` is 3 from the type `[3]float32` of `a`.
+
+The compiler cannot infer generic arguments which do not appear in the parameters of the function, like `N` in `ones`: `ones()` does not compile. Generic arguments are then given between `[]` after the function name: `ones[3]()` returns an array of length 3.
+
+A generic shape is given as a slice literal, as in `zeros[[]int{2, 2}]()`. Many functions of the standard library use this notation.

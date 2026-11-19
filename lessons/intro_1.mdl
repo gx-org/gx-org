@@ -4,7 +4,9 @@ GX is a domain-specialised language to write array-based programs, including mac
 
 Click on the Run button (or press Shift+Enter) to execute the function named `Main`.
 
-This overview is split into chapters, each composed of lessons. Access the next lesson by clicking on the arrow below or by using the keyboard arrows.
+This overview is split into chapters, each composed of lessons. At the end of the overview, you will be able to understand all the code on the right and more.
+
+Access the next lesson by clicking on the arrow below or by using the keyboard arrows.
 
 ```code:options
 { "chapter_title": "Introduction" }

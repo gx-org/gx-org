@@ -1,5 +1,33 @@
 package main
 
-func Main() [2]float32 {
-	return [2]float32{1, 2}
+import (
+	"math/grad"
+	"num"
+	"reflect"
+)
+
+type Linear struct {
+	W [3]float32
+	B float32
+}
+
+func loss(l, target Linear) float32 {
+	x := [3]float32{1, 2, 3}
+	err := num.VecMul(l.W, x) + l.B - (num.VecMul(target.W, x) + target.B)
+	return err * err
+}
+
+func sgd(params, grads Linear, lr float32) Linear {
+	for _, k := range reflect.Leaves[Linear]() {
+		params[k] -= lr * grads[k]
+	}
+	return params
+}
+
+func Main() Linear {
+	target := Linear{W: [3]float32{2, 3, 4}, B: 2}
+	learner := Linear{}
+	_, backward, _ := grad.Reverse(loss)(learner, target)
+	g := backward(1)
+	return sgd(learner, g, 0.01)
 }

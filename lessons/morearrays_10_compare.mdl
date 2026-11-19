@@ -1,0 +1,9 @@
+## Comparison, logical and integer operators
+
+The comparison operators `==`, `!=`, `<`, `<=`, `>`, and `>=` also operate element-wise. Comparing arrays returns an array of `bool`.
+
+Converting an array of `bool` to numbers gives 1 for `true` and 0 for `false`. In the example, the result is used as a mask to keep only the values of `x` greater than 1.
+
+The logical operators `&&` (and), `||` (or), and `!` (not) operate on `bool` values, and element-wise on arrays of `bool`.
+
+Integers support additional operators: the remainder `%`, the bit shifts `<<` and `>>`, and the bitwise operators `&` (and), `|` (or), and `^` (xor). These operators are not defined on floating point numbers.

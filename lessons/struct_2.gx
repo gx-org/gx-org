@@ -9,7 +9,24 @@ func (r Rectangle) Area() float32 {
 	return r.Width * r.Height
 }
 
-func Main() float32 {
+type Counter struct {
+	Count int32
+}
+
+func (c Counter) Reset() {
+	c.Count = 0
+}
+
+func (c Counter) Increment() Counter {
+	c.Count += 1
+	return c
+}
+
+func Main() (float32, int32, int32) {
 	r := Rectangle{Width: 2, Height: 3}
-	return r.Area()
+	c := Counter{Count: 5}
+	c.Reset()
+	afterReset := c.Count
+	c = c.Increment()
+	return r.Area(), afterReset, c.Count
 }

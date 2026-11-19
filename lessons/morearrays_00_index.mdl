@@ -1,0 +1,17 @@
+# More about arrays
+
+## Indexing and updating values
+
+`a[i]` returns the element at index `i` along the first axis of `a`. Indices start at 0. For an array with several axes, the result is an array with one axis less: `a[1]` is the second row of `a`, and `a[1][2]` is a single value.
+
+The builtin function `axlengths` returns the axis lengths of an array as a slice. `len` returns the length of the first axis.
+
+Arrays are values: assigning an element, as in `v[1] = 42`, is not supported.
+
+Instead, the builtin function `set` returns a copy of the array with the value at a given position replaced. The position is given after the value: `set(v, float32(42), 1)` replaces the element at index 1. The value can also be an array: `set(m, v, 0)` replaces the first row of `m`.
+
+The value must have the same data type as the array, hence `float32(42)` instead of `42`.
+
+```code:options
+{ "chapter_title": "More about arrays" }
+```

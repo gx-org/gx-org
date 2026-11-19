@@ -5,6 +5,16 @@ type Rectangle struct {
 	Height float32
 }
 
-func Main() Rectangle {
-	return Rectangle{Width: 2, Height: 3}
+type Point struct {
+	X, Y float32
+}
+
+type Segment struct {
+	Start, End Point
+}
+
+func Main() (Rectangle, Segment, float32) {
+	r := Rectangle{Width: 2, Height: 3}
+	s := Segment{End: Point{X: 3, Y: 4}}
+	return r, s, s.End.X - s.Start.X
 }

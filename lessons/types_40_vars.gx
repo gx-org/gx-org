@@ -1,0 +1,9 @@
+package main
+
+func Main() int {
+	a := 2
+	trace(a)
+	a = a * 10
+	trace(a)
+	return a
+}
