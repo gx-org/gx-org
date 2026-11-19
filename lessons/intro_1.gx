@@ -11,9 +11,10 @@ type Linear struct {
 	B float32
 }
 
-func loss(l, target Linear) float32 {
-	x := [3]float32{1, 2, 3}
-	err := num.VecMul(l.W, x) + l.B - (num.VecMul(target.W, x) + target.B)
+func loss(x [3]float32, predictor, target Linear) float32 {
+	prediction := num.VecMul(predictor.W, x) + predictor.B
+	want := num.VecMul(target.W, x) + target.B
+	err := want - prediction
 	return err * err
 }
 
@@ -27,7 +28,8 @@ func sgd(params, grads Linear, lr float32) Linear {
 func Main() Linear {
 	target := Linear{W: [3]float32{2, 3, 4}, B: 2}
 	learner := Linear{}
-	_, backward, _ := grad.Reverse(loss)(learner, target)
+	input := [3]float32{1, 2, 3}
+	_, _, backward, _ := grad.Reverse(loss)(input, learner, target)
 	g := backward(1)
 	return sgd(learner, g, 0.01)
 }
