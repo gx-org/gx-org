@@ -1,6 +1,6 @@
 ## Variables
 
-Use `:=` and `=` to declare and assign a variable, respectively. When using `:=`, the type of the variable is inferred from the value on the right side. Once a variable has been assigned a type, it cannot change. In the following example, the variable `a` has type `int`, the default type of `2`, and cannot be used as a return value, which expects a `float32`.
+Use `:=` and `=` to declare and assign a variable, respectively. When using `:=`, the type of the variable is inferred from the value on the right side. Once a variable has been assigned a type, that type cannot change. In the following example, the variable `a` has type `int`, the default type of `2`, and cannot be used as a return value, which expects a `float32`.
 
 ```
 package main

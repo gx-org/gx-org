@@ -2,6 +2,6 @@
 
 A function can also be differentiated with respect to a structure. The gradient is then a structure of the same type: `g.W` is the derivative of `loss` with respect to `p.W`, and `g.B` with respect to `p.B`.
 
-`Main` applies one step of gradient descent with a step-size (also named learning rate) of 0.1: each parameter moves in the opposite direction of its derivative. The chapter about reflection shows how to update all the fields of a structure with a single loop.
+`Main` applies one step of gradient descent with a step size (also called the learning rate) of 0.1: each parameter moves in the opposite direction of its derivative. The chapter about reflection shows how to update all the fields of a structure with a single loop.
 
 Methods can also be differentiated: the receiver is then treated like an argument. `grad.Reverse(p.Predict)` returns a backward function for `p`, followed by a backward function for `x`.

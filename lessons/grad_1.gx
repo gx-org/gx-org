@@ -1,25 +1,20 @@
 package main
 
-import (
-	"math/grad"
-	"num"
-)
+import "math/grad"
 
 func square(x float32) float32 {
 	return x * x
 }
 
-func dot(w, x [3]float32) float32 {
-	return num.VecMul(w, x)
+func linear(w, x, b float32) float32 {
+	return w*x + b
 }
 
-func Main() (float32, float32, [3]float32, [3]float32) {
+func Main() (float32, float32, float32, float32, float32) {
 	vjp := grad.Reverse(square)
 	// Trace vjp to output its implementation.
 	trace(vjp)
 	y, backward := vjp(3)
-	w := [3]float32{1, 2, 3}
-	x := [3]float32{4, 5, 6}
-	_, backW, backX := grad.Reverse(dot)(w, x)
-	return y, backward(1), backW(1), backX(1)
+	_, backW, backX, backB := grad.Reverse(linear)(2, 5, 1)
+	return y, backward(1), backW(1), backX(1), backB(1)
 }

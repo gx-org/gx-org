@@ -1,6 +1,6 @@
 ## Type Constraint
 
-Interfaces are also used to define type constraints. Generic functions can be defined for multiple types as long as these types satisfy some constraints. As in Go, a set of constraints is defined by declaring a new interface type listing the types satisfying the constraint. In the following example, the type constraint `ints` is defined as an `int32` or an `int64`.
+Interfaces are also used to define type constraints. Generic functions can be defined for multiple types as long as these types satisfy some constraints. As in Go, a constraint is defined by declaring an interface type listing the types that satisfy it. In the following example, the type constraint `ints` is defined as an `int32` or an `int64`.
 
 ```
 type ints interface {
@@ -8,7 +8,7 @@ type ints interface {
 }
 ```
 
-In the example, we define two constraints `ints` and `floats`, and a function that converts a value with a type satisfying `ints` into a type satisfying `floats`.
+In the example, we define two constraints, `ints` and `floats`, and a function that converts a value with a type satisfying `ints` into a type satisfying `floats`.
 
 Generic functions can define both generic types and generic axis lengths: `toFloats` takes a scalar or an array of any shape as long as its data type satisfies the `ints` constraint.
 
