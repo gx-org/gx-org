@@ -1,6 +1,6 @@
 # Slices
 
-A slice is a dynamically sized view into an underlying container. Unlike arrays, which have a strict, fixed length, slices can grow and shrink. In GX, slices are often used to store the axis lengths of arrays (see next lesson).
+A slice is a dynamically sized view into an underlying container. Unlike arrays, which have a fixed length, slices can grow and shrink. In GX, slices are often used to store the axis lengths of arrays (see next lesson).
 
 A slice is specified using the `[]` prefix without a size. In this example, the function `Main` returns an array (type `[2]int64`), a slice (type `[]int64`), and a slice of slices (type `[][]int64`).
 

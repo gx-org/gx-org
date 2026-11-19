@@ -3,11 +3,10 @@
 
 An array literal without elements, like `[2][2]float32{}`, creates an array where all the elements are zero (`false` for `bool`).
 
-A cast, written `T(value)`, converts a value to the type `T`. All type conversions are explicit in GX. Casting can be used to change the datatype or the shape of an array.
+A cast, written `T(value)`, converts a value to the type `T`. All type conversions are explicit in GX. Casting can be used to change the shape or the data type of an array.
 
-To change the datatype, `[...]<new data type>` as in `[...]int32(a)` to let the compiler infer the axis lengths from the array being cast. The result has the same axis lengths as `a`, so its type is `[2][3]int32`.
+Reshaping is a cast to an array with different axis lengths. In the example, `[1][3][2]float32(a)` reshapes `a` from `[2][3]float32` to `[1][3][2]float32`. When reshaping, the number of elements must stay the same. To change the data type, use `[...]<new data type>`, as in `[...]int32(a)`, to let the compiler infer the axis lengths from the array being cast. The result has the same axis lengths as `a`, so its type is `[2][3]int32`.
 
-In the example, `[1][3][2]float32(a)` reshapes `a` from `[2][3]float32` to `[1][3][2]float32`. When reshaping, the number of elements must stay the same.
 
-Casting a scalar into an array creates an array filled with that scalar value: `[2][2]float32(5)` is an array with axis lengths `[2][2]` where all the elements are 5. Note the use of `()` as in a cast instead of `{}`.
+Casting a scalar into an array creates an array filled with that scalar value: `[2][2]float32(5)` is an array with axis lengths `[2][2]` where all the elements are 5. Note the use of `()`, as in a cast, instead of `{}`.
 
