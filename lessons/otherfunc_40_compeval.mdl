@@ -1,9 +1,5 @@
 ## Compile-time functions
 
-A function annotated with `//gx:compeval` is evaluated by the compiler. Such functions can compute axis lengths from other axis lengths.
+A function annotated with `//gx:compeval` is evaluated by the compiler. Such functions can compute axis lengths from other axis lengths. In the example, `size` computes the number of elements of an array from its shape. `flatten` uses `size` to define the shape of its result.
 
-In the example, `size` computes the number of elements of an array from its shape. `flatten` uses `size` to define the shape of its result.
-
-The builtin function `require` checks a condition when the code is compiled. If the condition is false, the compiler reports an error with the given message.
-
-In the example, `add` only accepts arrays with an even length. Change the length of `x` to 3 to see the error.
+The builtin function `require` checks a condition when the code is compiled. If the condition is false, the compiler reports an error with the given message. In the example, `add` only accepts arrays with an even length. Change the length of `x` to 3 to see the error.

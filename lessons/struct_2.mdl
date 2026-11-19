@@ -2,13 +2,9 @@
 
 A method is a function attached to a type. It is declared with a receiver: a parameter written between the `func` keyword and the method name.
 
-In the example, the receiver `(r Rectangle)` attaches the method `Area` to `Rectangle`. The method is called with the same notation as fields: `r.Area()`.
+In the example, the receiver `(r Rectangle)` attaches the method `Area` to `Rectangle`. The method is called with the same notation as fields: `r.Area()`. The receiver is similar to `self` in Python. By convention, its name is a [short abbreviation](https://go.dev/wiki/CodeReviewComments#receiver-names) of the type, such as `r` for `Rectangle`.
 
-The receiver is similar to `self` in Python. By convention, its name is a [short abbreviation](https://go.dev/wiki/CodeReviewComments#receiver-names) of the type, such as `r` for `Rectangle`.
-
-GX has no pointers: structures are values and a method receives a copy of its receiver. In the example, `Reset` sets the count of its own copy to 0: `c` is not modified.
-
-To update a structure, a method returns a new value which is then assigned, as in `c = c.Increment()`.
+GX has no pointers: structures are values and a method receives a copy of its receiver. In the example, `Reset` sets the count of its own copy to 0: `c` is not modified. To update a structure, a method returns a new value which is then assigned, as in `c = c.Increment()`.
 
 ```code:options
 { "chapter_title": "Structures" }

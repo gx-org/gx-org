@@ -2,12 +2,7 @@
 
 Arrays are specified by first declaring their axis lengths and then their data type as in `[2][3]float32` which defines an array of `float32` with 2 axes of lengths 2 and 3. The content of the array can be defined using the `{}` notation.
 
-In an array literal, `[...]` lets the compiler infer the axis lengths from the content of the literal. A single `[...]` stands for all the axes: `[...]int{{1, 2, 3}, {4, 5, 6}}` has 2 rows of 3 elements, so its type is `[2][3]int`. All the rows must have the same length. 
-
-Arrays of `string` are not supported.
-
-The axis lengths are also checked by the compiler. For example, the following code does not compile:
-
+In an array literal, `[...]` lets the compiler infer the axis lengths from the content of the literal. A single `[...]` stands for all the axes: `[...]int{{1, 2, 3}, {4, 5, 6}}` has 2 rows of 3 elements, so its type is `[2][3]int`. All the rows must have the same length. Axis lengths are also checked by the compiler. For example, the following code does not compile:
 
 ```
 package main
@@ -17,6 +12,9 @@ func Main() [2][3]float32 {
 }
 ```
 
+Arrays of `string` are not supported.
+
 ```code:options
 { "chapter_title": "Arrays" }
 ```
+
