@@ -1,3 +1,0 @@
-## Several arguments
-
-When a function has several arguments, `grad.Reverse` returns one backward function per argument. Each gradient has the same type as its argument.

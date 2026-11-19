@@ -4,6 +4,10 @@ A structure is a type that groups several fields together. Each field has a name
 
 In the example, the structure `Rectangle` has two fields, `Width` and `Height`, both of type `float32`. `Rectangle{Width: 2, Height: 3}` creates a value of type `Rectangle` by giving a value to each field.
 
+A field can itself be a structure: `Segment` has two fields, `Start` and `End`, both of type `Point`. Fields are accessed with a dot, and selectors are chained to access the fields of a nested structure, as in `s.End.X`.
+
+Fields omitted in a structure literal are set to zero. In the example, `s.Start` is a `Point` with both coordinates set to 0.
+
 ```code:options
 { "chapter_title": "Structures" }
 ```

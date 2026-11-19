@@ -4,9 +4,11 @@
 
 The `reflect` package inspects types when the code is compiled.
 
-`reflect.Leaves[Params]()` returns a slice with the path to each field of `Params`. A path `k` indexes a structure, as in `p[k]`, to read or update the field it points to.
+A structure can be seen as a tree: the fields which are structures are branches and the other fields are leaves. `reflect.Leaves[Params]()` returns a slice with the path to each leaf of `Params`, at any depth. A path `k` indexes a structure, as in `p[k]`, to read or update the leaf it points to.
 
-Like all loops in GX, this loop is unrolled by the compiler: its body is repeated for each field, with `p[k]` replaced by `p.W` and then by `p.B`.
+A leaf can also be an array. An operation on `p[k]` then applies to all the elements of the array.
+
+Like all loops in GX, this loop is unrolled by the compiler: its body is repeated for each leaf, with `p[k]` replaced by `p.Hidden.W`, `p.Hidden.B`, and then `p.Scale`. Each leaf keeps its own type: `p[k]` is a `[2][3]float32` matrix in the first iteration, a `[3]float32` vector in the second, and a `float32` in the last.
 
 ```code:options
 { "chapter_title": "Reflection" }

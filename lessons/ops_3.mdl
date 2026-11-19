@@ -1,3 +1,0 @@
-## Logical operators
-
-The logical operators `&&` (and), `||` (or), and `!` (not) operate on `bool` values, and element-wise on arrays of `bool`.

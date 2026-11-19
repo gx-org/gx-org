@@ -1,0 +1,9 @@
+## Function values and closures
+
+Functions are values too. They can be assigned to variables and passed as arguments to other functions, like `applyTwice`.
+
+A function literal, like `square`, defines a function without a name.
+
+A function literal can use variables defined outside of its body. Such a function is called a closure.
+
+In the example, `scaler` returns a closure. Each closure keeps its own value of `factor`.

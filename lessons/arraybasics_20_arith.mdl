@@ -1,0 +1,7 @@
+## Arithmetic
+
+The arithmetic operators `+`, `-`, `*`, and `/` operate element-wise on arrays with the same axis lengths. For example, `a + b` adds each element of `a` to the corresponding element of `b`, and return the result into a new array with the same axis lengths.
+
+When one operand is a scalar, the operation is applied between the scalar and every element of the array, as in `2*a - 1`.
+
+Assignment operators, like `+=` or `*=`, combine an operation with an assignment.

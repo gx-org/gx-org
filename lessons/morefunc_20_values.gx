@@ -1,0 +1,21 @@
+package main
+
+func applyTwice(f func([3]float32) [3]float32, x [3]float32) [3]float32 {
+	return f(f(x))
+}
+
+func scaler(factor float32) func([3]float32) [3]float32 {
+	return func(x [3]float32) [3]float32 {
+		return factor * x
+	}
+}
+
+func Main() ([3]float32, [3]float32, [3]float32) {
+	x := [3]float32{1, 2, 3}
+	square := func(x [3]float32) [3]float32 {
+		return x * x
+	}
+	double := scaler(2)
+	triple := scaler(3)
+	return applyTwice(double, x), applyTwice(square, x), triple(x)
+}

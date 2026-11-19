@@ -1,29 +1,27 @@
 package main
 
-type Shape interface {
-	Area() float32
+import "math/grad"
+
+type Params struct {
+	W float32
+	B float32
 }
 
-type Rectangle struct {
-	Width, Height float32
+func (p Params) Predict(x float32) float32 {
+	return p.W*x + p.B
 }
 
-func (r Rectangle) Area() float32 {
-	return r.Width * r.Height
+func loss(p Params) float32 {
+	err := 2*p.W + p.B - 1
+	return err * err
 }
 
-type Square struct {
-	Side float32
-}
-
-func (s Square) Area() float32 {
-	return s.Side * s.Side
-}
-
-func totalArea(a, b Shape) float32 {
-	return a.Area() + b.Area()
-}
-
-func Main() float32 {
-	return totalArea(Rectangle{Width: 2, Height: 3}, Square{Side: 4})
+func Main() (Params, Params, float32) {
+	p := Params{W: 1, B: 1}
+	_, backward := grad.Reverse(loss)(p)
+	g := backward(1)
+	p.W -= 0.1 * g.W
+	p.B -= 0.1 * g.B
+	_, backP, backX := grad.Reverse(p.Predict)(2)
+	return p, backP(1), backX(1)
 }

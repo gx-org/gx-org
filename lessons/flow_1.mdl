@@ -1,10 +1,16 @@
 # Flow control
 
-## For
-
 GX has only one looping construct: the `for` loop with `range`. `for i := range 5` runs the body of the loop 5 times, with `i` going from 0 to 4.
 
-Loops are unrolled when the code is compiled. The number of iterations must then be known at compile time: it is usually a constant or an axis length.
+Loops are unrolled when the code is compiled. The number of iterations must then be known at compile time: it is usually a number, like `5`, or an axis length.
+
+`if` runs a block of code only when its condition is true. The optional `else` block runs otherwise.
+
+Like loops, `if` statements are evaluated when the code is compiled. The condition can only use values known at compile time, like loop indices or axis lengths. To select values of an array, use comparisons and masks as shown in the lesson about comparison operators.
+
+`range` also iterates over arrays and slices. Each iteration assigns an index and a value. For an array, the loop iterates along the first axis: in the example, each value is a row of `m`.
+
+The blank identifier `_` ignores the index. If only the index is needed, the value can be omitted, as in `for i := range m`.
 
 ```code:options
 { "chapter_title": "Flow control" }

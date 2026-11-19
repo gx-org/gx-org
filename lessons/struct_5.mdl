@@ -1,3 +1,7 @@
 ## Generic structures
 
-Like functions, structures can have generic parameters. `Polygon` has a generic axis length `N`, its number of vertices, defining the shapes of its fields `X` and `Y`. `Polygon[3]{}` is a triangle and `Polygon[4]{}` a quadrilateral, with all their coordinates set to zero.
+Like functions, structures can have generic parameters. `Polygon` has a generic axis length `N`, its number of vertices, defining the shapes of its fields `X` and `Y`.
+
+Generic parameters can also be types. The second generic parameter of `Polygon` is the type `T` of its coordinates. As for generic functions, a type parameter has a constraint: `floats` restricts `T` to `float32` or `float64`.
+
+`Polygon[3, float32]` is a triangle with `float32` coordinates and `Polygon[4, float64]` a square with `float64` coordinates.

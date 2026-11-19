@@ -1,0 +1,15 @@
+package main
+
+func Main() ([4]bool, [4]float32, [4]bool, [4]bool, [4]bool, [4]int32, [4]int32, [4]int32) {
+	x := [4]float32{0, 1, 2, 3}
+	// Compare each element of x with 1.
+	large := x > 1
+	y := [4]float32{-2, -1, 1, 2}
+	// Combine two comparisons element-wise.
+	small := y > -1.5 && y < 1.5
+	// Integer operators need an array of integers.
+	n := [4]int32{1, 2, 3, 4}
+	return large, [4]float32(large) * x,
+		small, !small, small || y > 0,
+		n % 3, n << 1, n & 1
+}

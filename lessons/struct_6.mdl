@@ -1,5 +1,0 @@
-## Generic types
-
-Generic parameters can also be types. `Polygon` now has two generic parameters: its number of vertices `N` and the type `T` of its coordinates. As for generic functions, a type parameter has a constraint: `floats` restricts `T` to `float32` or `float64`.
-
-`Polygon[3, float32]` is a triangle with `float32` coordinates and `Polygon[4, float64]` a square with `float64` coordinates.
