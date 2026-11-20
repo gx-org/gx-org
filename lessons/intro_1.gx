@@ -11,11 +11,15 @@ type Linear struct {
 	B float32
 }
 
+func (l Linear) Forward(x [3]float32) float32 {
+	return num.Dot(l.W, x) + l.B
+}
+
 func loss(x [3]float32, predictor, target Linear) float32 {
-	prediction := num.VecMul(predictor.W, x) + predictor.B
-	want := num.VecMul(target.W, x) + target.B
-	err := want - prediction
-	return err * err
+	prediction := predictor.Forward(x)
+	want := target.Forward(x)
+	delta := want - prediction
+	return delta * delta
 }
 
 func sgd(params, grads Linear, lr float32) Linear {
