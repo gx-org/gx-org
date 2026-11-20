@@ -25,6 +25,8 @@ github.com/gx-org/gx v0.6.2-0.20261106174637-7b5f876a8354 h1:PguVO+8e2RjqHcKwNzR
 github.com/gx-org/gx v0.6.2-0.20261106174637-7b5f876a8354/go.mod h1:GaxfSlgPUp89A52oWCPcUToQSw6LUo4cQcHiMez8ehs=
 github.com/gx-org/gx v0.6.2-0.20261120152316-e18cc684dc8e h1:NUSFR+znXXd9Aktt9xCvtaxHVhmS3GU3VqgW67IxTqs=
 github.com/gx-org/gx v0.6.2-0.20261120152316-e18cc684dc8e/go.mod h1:GaxfSlgPUp89A52oWCPcUToQSw6LUo4cQcHiMez8ehs=
+github.com/gx-org/gx v0.6.2-0.20261120172234-a67b9b86a5bd h1:/iCXxSovCwjmhXnkklk84i2d0rdkNpFRMGbcrN9dk0I=
+github.com/gx-org/gx v0.6.2-0.20261120172234-a67b9b86a5bd/go.mod h1:GaxfSlgPUp89A52oWCPcUToQSw6LUo4cQcHiMez8ehs=
 github.com/hexops/gotextdiff v1.0.3 h1:gitA9+qJrrTCsiCl7+kh75nPqQt1cx4ZkudSTLoUqJM=
 github.com/hexops/gotextdiff v1.0.3/go.mod h1:pSWU5MAI3yDq+fZBTazCSJysOMbxWL1BSow5/V2vxeg=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
